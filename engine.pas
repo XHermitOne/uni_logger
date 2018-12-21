@@ -29,8 +29,10 @@ type
     private
       { Менеджер настроек }
       FSettingsManager: TICSettingsManager;
-      { Словарь зарегистрированных объектов }
-      FObjects: TStrDictionary;
+      { Словарь зарегистрированных объектов-источников данных }
+      FSources: TStrDictionary;
+      { Словарь зарегистрированных объектов-получателей данных }
+      FDestinations: TStrDictionary;
 
       //{ Сервер удаленного вызова процедур }
       //FRpcServer: TRpcServer;
@@ -47,15 +49,25 @@ type
       {
       Регистрация нового объекта в словаре внутренних объектов. Регистрация производиться по имени объекта.
       @param Obj Регистрируемый объект
+      @param Objects: Словарь регистрации объектов.
       @return True -  регистрация прошла успешно / False - ошибка
       }
-      function RegObject(Obj: TICObjectProto): Boolean;
+      function RegObject(Obj: TICObjectProto; Objects: TStrDictionary): Boolean;
+      {Регистрация объекта-источника данных}
+      function RegSource(Obj: TICObjectProto): Boolean;
+      {Регистрация объекта-получателя данных}
+      function RegDestination(Obj: TICObjectProto): Boolean;
       {
       Поиск объекта в зарегистрированных по имени
       @param sObjName Наименование объекта
+      @param Objects: Словарь регистрации объектов.
       @return Найденный объект или nil если объект не найден среди зарегистрированных
       }
-      function FindObject(sObjName: AnsiString): TICObjectProto;
+      function FindObject(sObjName: AnsiString; Objects: TStrDictionary): TICObjectProto;
+      { Поиск объекта-источника данных }
+      function FindSource(sObjName: AnsiString): TICObjectProto;
+      { Поиск объекта-получателя данных }
+      function FindDestination(sObjName: AnsiString): TICObjectProto;
       {
       Метод создания объекта контроллера данных с инициализацией его свойств
       @param Properties Словаряь свойств объекта
@@ -64,11 +76,17 @@ type
       function CreateDataCtrl(Properties: TStrDictionary): TICObjectProto;
 
       {
-      Создание объектов по именам
+      Создание объектов-источников данных по именам
       @param ObjectNames Список имен объектов
       @return Список созданных объектов
       }
-      function CreateDataControllers(ObjectNames: TStringList=nil): TList;
+      function CreateSources(ObjectNames: TStringList=nil): TList;
+      {
+      Создание объектов-источников данных по именам
+      @param ObjectNames Список имен объектов
+      @return Список созданных объектов
+      }
+      function CreateDestinations(ObjectNames: TStringList=nil): TList;
 
     end;
 
@@ -147,7 +165,8 @@ begin
   FSettingsManager := TICSettingsManager.Create;
 
   // Словарь зарегистрированных объектов
-  FObjects := TStrDictionary.Create;
+  FSources := TStrDictionary.Create;
+  FDestinations := TStrDictionary.Create;
 
 end;
 
@@ -160,7 +179,8 @@ end;
 
 procedure TICLoggerProto.Free;
 begin
-  FObjects.Free;
+  FSources.Free;
+  FDestinations.Free;
   FSettingsManager.Free;
   inherited Free;
 end;
@@ -196,34 +216,63 @@ end;
 Регистрация нового объекта в словаре внутренних объектов.
 Регистрация производиться по имени объекта.
 @param Obj Регистрируемый объект
+@param Objects: Словарь регистрации объектов.
 @return True -  регистрация прошла успешно / False - ошибка
 }
-function TICLoggerProto.RegObject(Obj: TICObjectProto): Boolean;
+function TICLoggerProto.RegObject(Obj: TICObjectProto; Objects: TStrDictionary): Boolean;
 var
   name: AnsiString;
+
 begin
-  if not obj.IsUnknown then
+  if not Obj.IsUnknown then
   begin
     // Регистрация по имени
-    name := obj.GetName();
-    FObjects.AddObject(name, obj);
+    name := Obj.GetName();
+    Objects.AddObject(name, Obj);
     Result := True;
     Exit;
   end
   else
-    log.WarningMsgFmt('Не возможно зарегистрировать объект класса <%s>', [obj.ClassName]);
+    log.WarningMsgFmt('Не возможно зарегистрировать объект класса <%s>', [Obj.ClassName]);
   Result := False;
+end;
+
+{Регистрация объекта-источника данных}
+function TICLoggerProto.RegSource(Obj: TICObjectProto): Boolean;
+begin
+  Result := RegObject(Obj, FSources);
+end;
+
+{Регистрация объекта-получателя данных}
+function TICLoggerProto.RegDestination(Obj: TICObjectProto): Boolean;
+begin
+  Result := RegObject(Obj, FDestinations);
 end;
 
 {
 Поиск объекта в зарегистрированных по имени.
 }
-function TICLoggerProto.FindObject(sObjName: AnsiString): TICObjectProto;
+function TICLoggerProto.FindObject(sObjName: AnsiString; Objects: TStrDictionary): TICObjectProto;
 begin
-  if FObjects.HasKey(sObjName) then
-    Result := FObjects.GetByName(sObjName) As TICObjectProto;
-  log.WarningMsgFmt('Объект <%s> не найден среди зарегистрированных %s', [sObjName, FObjects.GetKeysStr()]);
-  Result := nil;
+  if Objects.HasKey(sObjName) then
+    Result := Objects.GetByName(sObjName) As TICObjectProto
+  else
+  begin
+    log.WarningMsgFmt('Объект <%s> не найден среди зарегистрированных %s', [sObjName, Objects.GetKeysStr()]);
+    Result := nil;
+  end;
+end;
+
+{ Поиск объекта-источника данных }
+function TICLoggerProto.FindSource(sObjName: AnsiString): TICObjectProto;
+begin
+  Result := FindObject(sObjName, FSources);
+end;
+
+{ Поиск объекта-получателя данных }
+function TICLoggerProto.FindDestination(sObjName: AnsiString): TICObjectProto;
+begin
+  Result := FindObject(sObjName, FDestinations);
 end;
 
 {
@@ -243,8 +292,6 @@ begin
     ctrl_obj := CreateRegDataCtrl(self, type_name, Properties);
     if ctrl_obj <> nil then
       begin
-        // Регистрируем новый объект в словаре внутренних объектов
-        RegObject(ctrl_obj);
         Result := ctrl_obj;
         Exit;
     end;
@@ -258,9 +305,9 @@ begin
 end;
 
 {
-Создание объектов по именам
+Создание объектов-источников данных по именам
 }
-function TICLoggerProto.CreateDataControllers(ObjectNames: TStringList): TList;
+function TICLoggerProto.CreateSources(ObjectNames: TStringList): TList;
 var
   ctrl_objects: TList;
   obj: TICObjectProto;
@@ -270,12 +317,12 @@ var
   is_obj_names_options: Boolean;
 
 begin
-  log.InfoMsg('Создание объектов...');
+  log.InfoMsg('Создание объектов-источников...');
   ctrl_objects := TList.Create;
   is_obj_names_options := False;
   if ObjectNames = nil then
   begin
-    obj_names_str := FSettingsManager.GetOptionValue('OPTIONS', 'objects');
+    obj_names_str := FSettingsManager.GetOptionValue('OPTIONS', 'sources');
     ObjectNames := ParseStrList(obj_names_str);
     is_obj_names_options := True;
   end;
@@ -287,7 +334,11 @@ begin
     // Создаем объекты источников данных
     obj := CreateDataCtrl(obj_properties);
     if obj <> nil then
+    begin
+      // Регистрируем новый объект в словаре внутренних объектов
+      RegSource(obj);
       ctrl_objects.Add(obj)
+    end;
   end;
 
   // Освободить память если мы выделяли
@@ -296,6 +347,51 @@ begin
 
   Result := ctrl_objects;
 end;
+
+{
+Создание объектов-получателей данных по именам
+}
+function TICLoggerProto.CreateDestinations(ObjectNames: TStringList): TList;
+var
+  ctrl_objects: TList;
+  obj: TICObjectProto;
+  obj_names_str: AnsiString;
+  i: Integer;
+  obj_properties: TStrDictionary;
+  is_obj_names_options: Boolean;
+
+begin
+  log.InfoMsg('Создание объектов-получателей...');
+  ctrl_objects := TList.Create;
+  is_obj_names_options := False;
+  if ObjectNames = nil then
+  begin
+    obj_names_str := FSettingsManager.GetOptionValue('OPTIONS', 'destinations');
+    ObjectNames := ParseStrList(obj_names_str);
+    is_obj_names_options := True;
+  end;
+
+  for i := 0 to ObjectNames.Count - 1 do
+  begin
+    obj_properties := FSettingsManager.BuildSection(ObjectNames[i]);
+
+    // Создаем объекты получателей данных
+    obj := CreateDataCtrl(obj_properties);
+    if obj <> nil then
+    begin
+      // Регистрируем новый объект в словаре внутренних объектов
+      RegDestination(obj);
+      ctrl_objects.Add(obj)
+    end;
+  end;
+
+  // Освободить память если мы выделяли
+  if is_obj_names_options then
+    ObjectNames.Free;
+
+  Result := ctrl_objects;
+end;
+
 
 constructor TICLogger.Create(TheOwner: TComponent);
 begin

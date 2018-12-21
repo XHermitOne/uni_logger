@@ -47,18 +47,25 @@ uses
 }
 function CreateRegDataCtrl(oParent: TObject; sTypeName: AnsiString; Properties: TStrDictionary): TICObjectProto;
 begin
-  if sTypeName = 'REMOUTE_OPC_NODE' then
+  if sTypeName = 'OPC_DA' then
   begin
-    result := TICRemouteOPCNode.Create;
+    { Создание и инициализация OPC DA сервера }
+    Result := TICRemouteOPCNode.Create;
     if oParent <> nil then
-        result.SetParent(oParent);
+        Result.SetParent(oParent);
     if Properties <> nil then
-        result.SetProperties(Properties);
-    exit;
+        Result.SetProperties(Properties);
+    Exit;
+  end
+  else if sTypeName = 'POSTGRESQL_TAB_WIDE' then
+  begin
+    { Создание и инициализация журнала таблицы PostgreSQL широкого формата }
+    Result := nil;
+    Exit;
   end;
 
   WarningMsg(Format('Не поддерживаемый тип объекта контроллера данных <%s>', [sTypeName]));
-  result := nil;
+  Result := nil;
 end;
 
 {
@@ -70,13 +77,20 @@ end;
 }
 function CreateRegDataCtrlArgs(oParent: TObject; sTypeName: AnsiString; const aArgs: Array Of Const): TICObjectProto;
 begin
-  if sTypeName = 'OPC_SERVER_NODE' then
+  if sTypeName = 'OPC_DA' then
   begin
+    { Создание и инициализация OPC DA сервера }
     Result := TICOPCServerNode.Create;
     if oParent <> nil then
         Result.SetParent(oParent);
     Result.SetPropertiesArray(aArgs);
     exit;
+  end
+  else if sTypeName = 'POSTGRESQL_TAB_WIDE' then
+  begin
+    { Создание и инициализация журнала таблицы PostgreSQL широкого формата }
+    Result := nil;
+    Exit;
   end;
 
   WarningMsg(Format('Не поддерживаемый тип объекта контроллера данных <%s>', [sTypeName]));

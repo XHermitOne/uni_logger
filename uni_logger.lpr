@@ -117,7 +117,7 @@ Uses
   { add your units here };
 
 begin
-  Application.Title:='Daemon application';
+  //Application.Title:='Daemon application';
   //Application.Title:='UniLoggerService Daemon';
   { Чтение параметров коммандной строки }
   //if Application.HasOption('p', 'port') then
