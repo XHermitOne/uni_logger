@@ -8,16 +8,19 @@
       <Unit0>
         <Filename Value="uni_logger.lpr"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="121"/>
+        <CursorPos X="20" Y="139"/>
         <UsageCount Value="20"/>
+        <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="uni_daemonmapperunit.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="UniLoggerDaemonMapper"/>
-        <IsVisibleTab Value="True"/>
-        <TopLine Value="18"/>
-        <CursorPos Y="41"/>
+        <TopLine Value="29"/>
+        <CursorPos X="6" Y="12"/>
         <UsageCount Value="20"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -29,8 +32,8 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="DataModule"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="37"/>
-        <CursorPos X="97" Y="61"/>
+        <TopLine Value="48"/>
+        <CursorPos X="3" Y="70"/>
         <UsageCount Value="20"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -47,37 +50,32 @@
       <Unit4>
         <Filename Value="engine.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <WindowIndex Value="-1"/>
-        <TopLine Value="-1"/>
-        <CursorPos X="-1" Y="-1"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="399"/>
+        <CursorPos X="3" Y="413"/>
         <UsageCount Value="20"/>
+        <Loaded Value="True"/>
       </Unit4>
       <Unit5>
         <Filename Value="obj_proto.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
-        <WindowIndex Value="-1"/>
-        <TopLine Value="-1"/>
-        <CursorPos X="-1" Y="-1"/>
+        <TopLine Value="73"/>
+        <CursorPos X="12" Y="68"/>
         <UsageCount Value="20"/>
       </Unit5>
       <Unit6>
         <Filename Value="settings.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
-        <WindowIndex Value="-1"/>
-        <TopLine Value="-1"/>
-        <CursorPos X="-1" Y="-1"/>
+        <TopLine Value="61"/>
+        <CursorPos X="33" Y="28"/>
         <UsageCount Value="20"/>
       </Unit6>
       <Unit7>
         <Filename Value="data_ctrl\opc_server_node.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
-        <WindowIndex Value="-1"/>
-        <TopLine Value="-1"/>
-        <CursorPos X="-1" Y="-1"/>
         <UsageCount Value="20"/>
       </Unit7>
       <Unit8>
@@ -262,7 +260,7 @@
         <UsageCount Value="20"/>
       </Unit27>
     </Units>
-    <JumpHistory Count="7" HistoryIndex="6">
+    <JumpHistory Count="22" HistoryIndex="21">
       <Position1>
         <Filename Value="uni_daemonunit.pas"/>
       </Position1>
@@ -290,6 +288,66 @@
         <Filename Value="uni_daemonunit.pas"/>
         <Caret Line="41" Column="3" TopLine="32"/>
       </Position7>
+      <Position8>
+        <Filename Value="engine.pas"/>
+        <Caret Line="154" Column="12" TopLine="131"/>
+      </Position8>
+      <Position9>
+        <Filename Value="engine.pas"/>
+        <Caret Line="160" TopLine="147"/>
+      </Position9>
+      <Position10>
+        <Filename Value="engine.pas"/>
+        <Caret Line="248" Column="12" TopLine="237"/>
+      </Position10>
+      <Position11>
+        <Filename Value="engine.pas"/>
+        <Caret Line="295" Column="11" TopLine="270"/>
+      </Position11>
+      <Position12>
+        <Filename Value="uni_daemonunit.pas"/>
+        <Caret Line="70" Column="3" TopLine="48"/>
+      </Position12>
+      <Position13>
+        <Filename Value="engine.pas"/>
+        <Caret Line="15"/>
+      </Position13>
+      <Position14>
+        <Filename Value="engine.pas"/>
+        <Caret Line="286" TopLine="273"/>
+      </Position14>
+      <Position15>
+        <Filename Value="engine.pas"/>
+        <Caret Line="455" Column="36" TopLine="435"/>
+      </Position15>
+      <Position16>
+        <Filename Value="engine.pas"/>
+        <Caret Line="364" TopLine="347"/>
+      </Position16>
+      <Position17>
+        <Filename Value="engine.pas"/>
+        <Caret Line="411" Column="25" TopLine="397"/>
+      </Position17>
+      <Position18>
+        <Filename Value="engine.pas"/>
+        <Caret Line="413" Column="3" TopLine="399"/>
+      </Position18>
+      <Position19>
+        <Filename Value="uni_logger.lpr"/>
+        <Caret Line="146" TopLine="118"/>
+      </Position19>
+      <Position20>
+        <Filename Value="uni_logger.lpr"/>
+        <Caret Line="108" Column="33" TopLine="89"/>
+      </Position20>
+      <Position21>
+        <Filename Value="uni_logger.lpr"/>
+        <Caret Line="147" TopLine="119"/>
+      </Position21>
+      <Position22>
+        <Filename Value="uni_logger.lpr"/>
+        <Caret Line="128" Column="100" TopLine="119"/>
+      </Position22>
     </JumpHistory>
   </ProjectSession>
 </CONFIG>

@@ -8,7 +8,8 @@ unit uni_daemonunit;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, DaemonApp;
+  Classes, SysUtils, FileUtil, DaemonApp,
+  log, engine;
 
 type
 
@@ -56,16 +57,16 @@ end;
 procedure TUniLoggerDaemon.DataModuleStart(Sender: TCustomDaemon;
   var OK: Boolean);
 begin
-  //engine.READER_ENGINE := TICReader.Create(nil);
-  //engine.READER_ENGINE.StartServer;
+  engine.LOGGER_ENGINE := TICLogger.Create(nil);
+  engine.LOGGER_ENGINE.Start;
 end;
 
 procedure TUniLoggerDaemon.DataModuleStop(Sender: TCustomDaemon; var OK: Boolean
   );
 begin
-  //engine.READER_ENGINE.StopServer;
-  //engine.READER_ENGINE.Free;
-  //engine.READER_ENGINE := nil;
+  engine.LOGGER_ENGINE.Stop;
+  engine.LOGGER_ENGINE.Free;
+  engine.LOGGER_ENGINE := nil;
 end;
 
 

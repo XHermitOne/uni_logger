@@ -8,7 +8,7 @@ unit settings;
 interface
 
 uses
-    {INIFiles = модуль который содержит класс для работы с INI-файлами}
+    {INIFiles - модуль который содержит класс для работы с INI-файлами}
     Classes, SysUtils, INIFiles, StrUtils,
     inifunc, dictionary;
 
