@@ -1,0 +1,19 @@
+object UniLoggerDaemonMapper: TUniLoggerDaemonMapper
+  DaemonDefs = <  
+    item
+      Name = 'UniLoggerService'
+      Description = 'Универсальная служба журналирования данных из различных источников'
+      DisplayName = 'UniLoggerService'
+      Options = [doAllowStop, doAllowPause]
+      WinBindings.Dependencies = <>
+      WinBindings.StartType = stBoot
+      WinBindings.WaitHint = 0
+      WinBindings.IDTag = 0
+      WinBindings.ServiceType = stWin32
+      WinBindings.ErrorSeverity = esIgnore
+      LogStatusReport = True
+    end>
+  OnInstall = UniLoggerDaemonMapperInstall
+  left = 444
+  top = 278
+end

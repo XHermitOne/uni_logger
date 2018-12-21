@@ -1,0 +1,12 @@
+object UniLoggerDaemon: TUniLoggerDaemon
+  OldCreateOrder = False
+  OnStart = DataModuleStart
+  OnStop = DataModuleStop
+  AfterInstall = DataModuleAfterInstall
+  AfterUnInstall = DataModuleAfterUnInstall
+  Height = 188
+  HorizontalOffset = 515
+  VerticalOffset = 165
+  Width = 188
+  PPI = 120
+end
