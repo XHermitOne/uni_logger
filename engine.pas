@@ -34,8 +34,9 @@ type
       { Словарь зарегистрированных объектов-получателей данных }
       FDestinations: TStrDictionary;
 
-      //{ Сервер удаленного вызова процедур }
-      //FRpcServer: TRpcServer;
+      { Флаг запущенного движка }
+      FRunning: Boolean;
+
     public
       constructor Create(TheOwner: TComponent);
       destructor Destroy; override;
@@ -167,6 +168,9 @@ begin
   // Словарь зарегистрированных объектов
   FSources := TStrDictionary.Create;
   FDestinations := TStrDictionary.Create;
+
+  //
+  FRunning := False;
 
 end;
 
@@ -457,56 +461,44 @@ end;
 
 { Инициализировать методы удаленного вызова }
 procedure TICLogger.Start;
-//var
-  //MethodHandler: TRpcMethodHandler;
+var
+  i: Integer;
+  source: TICObjectProto;
+  destination: TICObjectProto;
+  keys: TStringList;
+  key: AnsiString;
 
 begin
-  //if not Assigned(FRpcServer) then
-  //begin
-  //  FRpcServer := TRpcServer.Create;
-  //  FRpcServer.ListenPort := XML_RPC_PORT;
-  //  FRpcServer.EnableIntrospect := True;
-  //
-  //  try
-  //    // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-  //    MethodHandler := TRpcMethodHandler.Create;
-  //    MethodHandler.Name := 'tests.echoString';
-  //    // ВНИМАНИЕ! В Lazarus необходимо указывать @ для связки события с обработчиком
-  //    //                         V
-  //    MethodHandler.Method := @EchoTestRpcMethod;
-  //    MethodHandler.Signature := 'string (string myval)';
-  //    MethodHandler.Help := 'Just a simple test rpc example method';
-  //    FRpcServer.RegisterMethodHandler(MethodHandler);
-  //    // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  //
-  //    // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-  //    MethodHandler := TRpcMethodHandler.Create;
-  //    MethodHandler.Name := 'sources.ReadValueAsString';
-  //    MethodHandler.Method := @ReadValueAsStringRpcMethod;
-  //    MethodHandler.Signature := 'string (string myval)';
-  //    MethodHandler.Help := 'Read value as string from data source';
-  //    FRpcServer.RegisterMethodHandler(MethodHandler);
-  //    // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  //
-  //    // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-  //    MethodHandler := TRpcMethodHandler.Create;
-  //    MethodHandler.Name := 'sources.ReadValuesAsStrings';
-  //    MethodHandler.Method := @ReadValuesAsStringsRpcMethod;
-  //    MethodHandler.Signature := 'string (string myval)';
-  //    MethodHandler.Help := 'Read values as strings from data source';
-  //    FRpcServer.RegisterMethodHandler(MethodHandler);
-  //    // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  //
-  //    FRpcServer.Active := True;
-  //  except
-  //    log.FatalMsg('Ошибка запуска XML RPC сервера');
-  //  end;
-  //end;
+  // Создаем объекты
+  CreateSources();
+  CreateDestinations();
+  FRunning := True;
+
+  while FRunning do
+  begin
+    // Сначала читаем значения источников данных
+    keys := FSources.GetKeys();
+    for i := 0 to keys.Count - 1 do
+    begin
+      key := keys.Names[i];
+      source := FSources.GetByName(key) As TICObjectProto;
+      source.ReadAll();
+    end;
+
+    // Затем производим запись данных в объекты получатели данных
+    keys := FDestinations.GetKeys();
+    for i := 0 to keys.Count - 1 do
+    begin
+      key := keys.Names[i];
+      destination := FDestinations.GetByName(key) As TICObjectProto;
+      destination.WriteAll();
+    end;
+  end;
 end;
 
 procedure TICLogger.Stop;
 begin
-  //FRpcServer.Active := False;
+  FRunning := False;
 end;
 
 //{ Тестовая функция для проверки удаленного вызова процедур }

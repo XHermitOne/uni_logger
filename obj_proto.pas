@@ -62,9 +62,13 @@ type
     function Read(aValues: TStringList): TStringList; virtual;
     { Чтение значений по адресам }
     function ReadAddresses(aValues: Array Of String): TStringList; virtual;
+    { Чтение всех внутренних данных }
+    function ReadAll(): TStringList; virtual;
 
     { Фунция записи данных }
     function Write(aValues: TStringList): Boolean; virtual;
+    { Запись всех внутренних данных }
+    function WriteAll(): Boolean; virtual;
     { Зарегистрировать значения переменных в словаре внутренного состояния }
     function RegState(aValues: TStrDictionary): Boolean;
     { Получить имена записываемых значений в контроллер данных }
@@ -72,6 +76,7 @@ type
 
   published
     property Properties: TStrDictionary read GetProperties write SetProperties;
+    property State: TStrDictionary read FState write FState;
 
 end;
 
@@ -184,6 +189,12 @@ begin
   Result := nil;
 end;
 
+{ Чтение всех внутренних данных }
+function TICObjectProto.ReadAll(): TStringList;
+begin
+  Result := nil;
+end;
+
 function TICObjectProto.ReadAddresses(aValues: Array of String): TStringList;
 begin
   Result := nil;
@@ -193,6 +204,12 @@ end;
 Фунция записи данных
 }
 function TICObjectProto.Write(aValues: TStringList): Boolean;
+begin
+  Result := False;
+end;
+
+{ Запись всех внутренних данных }
+function TICObjectProto.WriteAll(): Boolean;
 begin
   Result := False;
 end;

@@ -60,6 +60,11 @@ type
     }
     function Read(aValues: TStringList): TStringList; override;
     {
+    Фунция чтения всех внутренних данных
+    @param Список строк прочитанных значений
+    }
+    function ReadAll(): TStringList; override;
+    {
     Функция чтения данных по адресам
     @param sValues Массив адресов читаемых значений
     @param Список строк прочитанных значений
@@ -71,6 +76,11 @@ type
     @return True - запись прошла успешно / False - ошибка записи
     }
     function Write(aValues: TStringList): Boolean; override;
+    {
+    Фунция записи всех внутренних данных
+    @return True - запись прошла успешно / False - ошибка записи
+    }
+    function WriteAll(): Boolean; override;
 
     { Установить свойства в виде списка параметров }
     procedure SetPropertiesArray(aArgs: Array Of Const); override;
@@ -177,6 +187,29 @@ begin
   end;
 end;
 
+{
+Фунция чтения всех внутренних данных
+}
+function TICOPCServerNode.ReadAll(): TStringList;
+var
+  i: Integer;
+  name: AnsiString;
+  value: AnsiString;
+
+begin
+  // Кроме чтения данных обновляем
+  // внутреннее состояние источника данных
+  State := CreateTags;
+  Result := Read(nil);
+  for i := 0 to State.Count - 1 do
+  begin
+    name := State.Names[i];
+    value := Result[i];
+    State.SetStrValue(name, value);
+  end;
+end;
+
+
 function TICOPCServerNode.ReadAddresses(aValues: Array Of String): TStringList;
 var
   i: Integer;
@@ -254,6 +287,12 @@ end;
 function TICOPCServerNode.Write(aValues: TStringList): Boolean;
 begin
   Result := False;
+end;
+
+{ Фунция записи всех внутренних данных }
+function TICOPCServerNode.WriteAll(): Boolean;
+begin
+  Result := Write(nil);
 end;
 
 { Выбрать описания тегов из свойств }
