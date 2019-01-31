@@ -1,5 +1,15 @@
 {
 Модуль обработчиков демона/службы
+
+Памятка:
+'uni_logger.exe --install' - Производим инсталляцию службы
+'uni_logger.exe --run' - Запуск службы
+'net start UniLoggerService' - Запуск службы
+'net stop UniLoggerService' - Останов службы
+'uni_logger.exe --uninstall' - Деинсталяция службы
+Все команды должны производиться из под Администратора. Для этого
+открываем консоль (cmd.exe) с правами Администратора и
+в ней выполняем эти комманды.
 }
 unit uni_daemonunit;
 
@@ -46,12 +56,14 @@ end;
 
 procedure TUniLoggerDaemon.DataModuleAfterInstall(Sender: TCustomDaemon);
 begin
-  WriteLn('The ' + Name + ' service is installing');
+  // WriteLn('The ' + Name + ' service is installing');
+  log.InfoMsg('Служба ' + Name + ' проинсталирована');
 end;
 
 procedure TUniLoggerDaemon.DataModuleAfterUnInstall(Sender: TCustomDaemon);
 begin
-  WriteLn('The ' + Name + ' service is deinstalling');
+  // WriteLn('The ' + Name + ' service is deinstalling');
+  log.InfoMsg('Служба ' + Name + ' деинсталирована');
 end;
 
 procedure TUniLoggerDaemon.DataModuleStart(Sender: TCustomDaemon;

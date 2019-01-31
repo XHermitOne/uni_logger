@@ -469,6 +469,8 @@ var
   key: AnsiString;
 
 begin
+  log.InfoMsg('Запуск');
+
   // Создаем объекты
   CreateSources();
   CreateDestinations();
@@ -499,6 +501,7 @@ end;
 procedure TICLogger.Stop;
 begin
   FRunning := False;
+  log.InfoMsg('Останов');
 end;
 
 //{ Тестовая функция для проверки удаленного вызова процедур }

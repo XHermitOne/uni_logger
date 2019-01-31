@@ -1,6 +1,7 @@
 object UniLoggerDaemonMapper: TUniLoggerDaemonMapper
   DaemonDefs = <  
     item
+      DaemonClassName = 'TUniLoggerDaemon'
       Name = 'UniLoggerService'
       Description = 'Универсальная служба журналирования данных из различных источников'
       DisplayName = 'UniLoggerService'
@@ -11,6 +12,7 @@ object UniLoggerDaemonMapper: TUniLoggerDaemonMapper
       WinBindings.IDTag = 0
       WinBindings.ServiceType = stWin32
       WinBindings.ErrorSeverity = esIgnore
+      OnCreateInstance = UniLoggerDaemonMapperDaemonDefs0CreateInstance
       LogStatusReport = True
     end>
   OnInstall = UniLoggerDaemonMapperInstall

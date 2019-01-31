@@ -66,7 +66,7 @@
 
 47 	белый
 
-Версия: 0.0.5.3
+Версия: 0.0.6.1
 
 ВНИМАНИЕ! Вывод сообщений под Linux проверять только в терминале.
 Только он выводит корректно сообщения.
@@ -83,6 +83,7 @@ uses
     { Для функций перекодировки UTF8ToWinCP }
     LazUTF8,
     DaemonApp,
+    crt,
     sysfunc;
 
 const
@@ -336,11 +337,31 @@ begin
     str_txt := EncodeUnicodeString(sTxt, GetDefaultEncoding());
     // Для Windows систем цветовая раскраска отключена
     if sysfunc.IsOSLinux() then
-        // Добавление цветовой раскраски для Linux систем
-        str_txt := sColor + str_txt + NORMAL_COLOR_TEXT;
+      // Добавление цветовой раскраски для Linux систем
+      str_txt := sColor + str_txt + NORMAL_COLOR_TEXT
+    else if sysfunc.IsOSWindows() then
+      if sColor = RED_COLOR_TEXT then
+        crt.TextColor(crt.Red)
+      else if sColor = GREEN_COLOR_TEXT then
+        crt.TextColor(crt.Green)
+      else if sColor = YELLOW_COLOR_TEXT then
+        crt.TextColor(crt.Yellow)
+      else if sColor = BLUE_COLOR_TEXT then
+        crt.TextColor(crt.Blue)
+      else if sColor = PURPLE_COLOR_TEXT then
+        crt.TextColor(crt.Magenta)
+      else if sColor = CYAN_COLOR_TEXT then
+        crt.TextColor(crt.Cyan)
+      else if sColor = WHITE_COLOR_TEXT then
+        crt.TextColor(crt.White)
+      else if sColor = NORMAL_COLOR_TEXT then
+        crt.TextColor(crt.Mono);
 
     // Если журналирование переведено в SysLog, то ничего не делать
     WriteLn(str_txt);
+
+    if sysfunc.IsOSWindows() then
+      crt.TextColor(crt.Mono);
 end;
 
 {
