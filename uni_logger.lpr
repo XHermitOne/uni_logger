@@ -139,7 +139,7 @@ begin
      { Указываем режим журналирования в log файл }
      EventLog.LogType := ltFile;
      EventLog.DefaultEventType := etDebug;
-     EventLog.AppendContent := true;
+     EventLog.AppendContent := True;
      { Имя файла журнала }
      EventLog.FileName := ChangeFileExt(ParamStr(0), '.log');
 

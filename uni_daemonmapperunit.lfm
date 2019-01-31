@@ -12,10 +12,9 @@ object UniLoggerDaemonMapper: TUniLoggerDaemonMapper
       WinBindings.IDTag = 0
       WinBindings.ServiceType = stWin32
       WinBindings.ErrorSeverity = esIgnore
-      OnCreateInstance = UniLoggerDaemonMapperDaemonDefs0CreateInstance
       LogStatusReport = True
     end>
   OnInstall = UniLoggerDaemonMapperInstall
-  left = 444
-  top = 278
+  left = 483
+  top = 311
 end

@@ -18,14 +18,15 @@ unit uni_daemonunit;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, DaemonApp,
-  log, engine;
+  Classes, SysUtils, FileUtil, DaemonApp, crt,
+  log, engine, ExtCtrls;
 
 type
 
   { TUniLoggerDaemon -   непосредственно экземпляр сервиса.
   Именно этот объект реализует сам сервис (его мы видим в Windows в «Управление компьютерами/Сервисы»).}
   TUniLoggerDaemon = class(TDaemon)
+    TickTimer: TTimer;
     { Обработчик после инсталяции }
     procedure DataModuleAfterInstall(Sender: TCustomDaemon);
     { Обработчик после деинсталяции }
@@ -34,6 +35,7 @@ type
     procedure DataModuleStart(Sender: TCustomDaemon; var OK: Boolean);
     { Обработчик останова демона/службы }
     procedure DataModuleStop(Sender: TCustomDaemon; var OK: Boolean);
+    procedure TickTimerTimer(Sender: TObject);
   private
 
   public
@@ -56,29 +58,42 @@ end;
 
 procedure TUniLoggerDaemon.DataModuleAfterInstall(Sender: TCustomDaemon);
 begin
-  // WriteLn('The ' + Name + ' service is installing');
-  log.InfoMsg('Служба ' + Name + ' проинсталирована');
+  log.InfoMsgFmt('Служба %s проинсталирована', [Definition.DisplayName], True);
 end;
 
 procedure TUniLoggerDaemon.DataModuleAfterUnInstall(Sender: TCustomDaemon);
 begin
-  // WriteLn('The ' + Name + ' service is deinstalling');
-  log.InfoMsg('Служба ' + Name + ' деинсталирована');
+  log.InfoMsgFmt('Служба %s деинсталирована', [Definition.DisplayName], True);
 end;
 
 procedure TUniLoggerDaemon.DataModuleStart(Sender: TCustomDaemon;
   var OK: Boolean);
 begin
+  // Инициализируем объект движка и всех его внутренних объектов
   engine.LOGGER_ENGINE := TICLogger.Create(nil);
   engine.LOGGER_ENGINE.Start;
+
+  // Запускаем таймер отсчета тиков
+  TickTimer.Enabled := True;
 end;
 
 procedure TUniLoggerDaemon.DataModuleStop(Sender: TCustomDaemon; var OK: Boolean
   );
 begin
+  // Останавливаем таймер отсчета тиков
+  TickTimer.Enabled := False;
+
+  // Корректно завершаем работу движка
   engine.LOGGER_ENGINE.Stop;
   engine.LOGGER_ENGINE.Free;
   engine.LOGGER_ENGINE := nil;
+end;
+
+{ Обработчик одного тика таймера }
+procedure TUniLoggerDaemon.TickTimerTimer(Sender: TObject);
+begin
+  // Выполнить обработчик одного тика
+  engine.LOGGER_ENGINE.Tick;
 end;
 
 

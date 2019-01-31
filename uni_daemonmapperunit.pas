@@ -18,7 +18,7 @@ unit uni_daemonmapperunit;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, DaemonApp,
+  Classes, SysUtils, FileUtil, ExtCtrls, DaemonApp,
   log;
 
 type
@@ -26,7 +26,6 @@ type
   { TUniLoggerDaemonMapper - это компонент, отвечающий за управление работой сервисов.
   Особенно актуален он в случае включения в один исполняемый модуль нескольких сервисов.}
   TUniLoggerDaemonMapper = class(TDaemonMapper)
-    procedure UniLoggerDaemonMapperDaemonDefs0CreateInstance(Sender: TObject);
     {
     Обработчик выполнения инсталяции демона/службы
     }
@@ -51,17 +50,17 @@ end;
 
 { TUniLoggerDaemonMapper }
 
-procedure TUniLoggerDaemonMapper.UniLoggerDaemonMapperDaemonDefs0CreateInstance(
-  Sender: TObject);
+procedure TUniLoggerDaemonMapper.UniLoggerDaemonMapperInstall(Sender: TObject);
 var
   i: Integer;
 begin
-  for i:=0 to DaemonDefs.Count do
-    DaemonDefs[i].Description := log.EncodeUnicodeString(DaemonDefs[i].Description, 'cp866');
-end;
+  // Перекодируем описания из utf-8 в кодовую страницу Windows
+  // для корректного отображения в списке служб
+  for i := 0 to DaemonDefs.Count - 1 do
+  begin
+    DaemonDefs[i].Description := log.EncodeUnicodeString(DaemonDefs[i].Description, 'cp1251');
+  end;
 
-procedure TUniLoggerDaemonMapper.UniLoggerDaemonMapperInstall(Sender: TObject);
-begin
   { ВНИМАНИЕ! Здесь добавляем ключи для запуска прослушки не стандартного порта
   Прослушиваемый порт указывается при инсталляции службы:
   uni_logger.exe --port=8081 --install
@@ -69,7 +68,7 @@ begin
   uni_logger.exe --run --port=8081}
   //if engine.XML_RPC_PORT <> DEFAULT_XML_RPC_PORT then
   //  DaemonDefs[0].RunArguments := Format('--port=%d', [engine.XML_RPC_PORT]);
-  log.DebugMsgFmt('Run arguments <%s>', [DaemonDefs[0].RunArguments]);
+  log.DebugMsgFmt('Параметры командной строки <%s>', [DaemonDefs[0].RunArguments]);
 end;
 
 

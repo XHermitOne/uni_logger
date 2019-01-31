@@ -11,6 +11,7 @@ interface
 
 uses
     Classes, SysUtils, Crt,
+    DaemonApp,
     //XmlRpcServer, XmlRpcTypes,
     dictionary, settings, obj_proto;
 
@@ -124,6 +125,8 @@ type
       procedure Start;
       { Останов движка }
       procedure Stop;
+      { Обработчик одного тика таймера }
+      procedure Tick;
 
       //{ --- Используемые процедуры удаленного вызова --- }
       //{ Тестовая функция для проверки удаленного вызова процедур }
@@ -459,49 +462,65 @@ begin
     ctrl_obj.Free;
 end;
 
-{ Инициализировать методы удаленного вызова }
+{ Запустить движок }
 procedure TICLogger.Start;
-var
-  i: Integer;
-  source: TICObjectProto;
-  destination: TICObjectProto;
-  keys: TStringList;
-  key: AnsiString;
-
 begin
-  log.InfoMsg('Запуск');
-
-  // Создаем объекты
-  CreateSources();
-  CreateDestinations();
-  FRunning := True;
-
-  while FRunning do
-  begin
-    // Сначала читаем значения источников данных
-    keys := FSources.GetKeys();
-    for i := 0 to keys.Count - 1 do
-    begin
-      key := keys.Names[i];
-      source := FSources.GetByName(key) As TICObjectProto;
-      source.ReadAll();
-    end;
-
-    // Затем производим запись данных в объекты получатели данных
-    keys := FDestinations.GetKeys();
-    for i := 0 to keys.Count - 1 do
-    begin
-      key := keys.Names[i];
-      destination := FDestinations.GetByName(key) As TICObjectProto;
-      destination.WriteAll();
-    end;
-  end;
+  // log.InfoMsg('Запуск');
 end;
+
+
+//{ Запустить движок }
+//procedure TICLogger._Start;
+//var
+//  i: Integer;
+//  source: TICObjectProto;
+//  destination: TICObjectProto;
+//  keys: TStringList;
+//  key: AnsiString;
+//
+//begin
+//  log.InfoMsg('Запуск');
+//
+//  // Создаем объекты
+//  CreateSources();
+//  CreateDestinations();
+//  FRunning := True;
+//
+//  while FRunning do
+//  begin
+//    // Сначала читаем значения источников данных
+//    keys := FSources.GetKeys();
+//    for i := 0 to keys.Count - 1 do
+//    begin
+//      key := keys.Names[i];
+//      source := FSources.GetByName(key) As TICObjectProto;
+//      source.ReadAll();
+//    end;
+//
+//    // Затем производим запись данных в объекты получатели данных
+//    keys := FDestinations.GetKeys();
+//    for i := 0 to keys.Count - 1 do
+//    begin
+//      key := keys.Names[i];
+//      destination := FDestinations.GetByName(key) As TICObjectProto;
+//      destination.WriteAll();
+//    end;
+//  end;
+//end;
 
 procedure TICLogger.Stop;
 begin
-  FRunning := False;
-  log.InfoMsg('Останов');
+  // log.InfoMsg('Останов');
+end;
+
+{ Запустить движок в режиме тестирования }
+procedure TICLogger.Tick;
+begin
+  // log.InfoMsg('Запуск тестирования');
+
+  // log.DebugMsg('Запущен режим тестирования');
+  Application.Log(etDebug, log.EncodeUnicodeString('Запущен режим тестирования', log.GetDefaultEncoding()))
+  //  Sleep(5000); //Задержка в 5 сек
 end;
 
 //{ Тестовая функция для проверки удаленного вызова процедур }
