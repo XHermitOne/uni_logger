@@ -1,5 +1,10 @@
 {
 Модуль класса доступа к таблице PostgreSQL для записи значений тегов.
+
+ВНИМАНИЕ! При описании полей использовать следующий формат:
+          'ИМЯ_ИСТОЧНИКА_ДАННЫХ.имя_тега:Тип_поля_в_PostgreSQL'.
+          Например: 'SOURCE_FIRST.tag_mode:Varchar(20)'
+Версия: 0.0.1.2
 }
 unit postgresql_tab_wide;
 
@@ -9,11 +14,16 @@ interface
 
 uses
     Classes, SysUtils,
+    SQLdb, pqconnection,
     obj_proto, dictionary, strfunc,
     tag_list;
 
 const
-  RESERV_PROPERTIES: Array [1..8] Of String = ('type', 'name', 'description', 'db_name', 'db_port', 'db_username', 'db_password', 'table_name');
+  POSTGRESQL_TAB_WIDE_TYPE: AnsiString = 'POSTGRESQL_TAB_WIDE';
+
+  RESERV_PROPERTIES: Array [1..9] Of String = ('type', 'name', 'description', 'db_name', 'db_port', 'db_username', 'db_password', 'table_name', 'fields');
+
+  DATETIME_FIELD_NAME: AnsiString = 'dt_log';
 
 type
   {
@@ -29,18 +39,29 @@ type
     {
     Настроить параметры соединения с БД
     @param aDBHost Сервер БД
+    @param aDBPort Порт
     @param aDBName Имя БД
     @param aDBUserName Имя пользователя БД
     @param aDBPassword Пароль пользователя БД
     @return True - успешно / False - ошибка
     }
-    function Connect(aDBHost: AnsiString; aDBName: AnsiString; aDBUserName: AnsiString; aDBPassword: AnsiString): Boolean;
+    function Connect(aDBHost: AnsiString; aDBPort: Integer; aDBName: AnsiString; aDBUserName: AnsiString; aDBPassword: AnsiString): Boolean;
+    {
+    Закрыть соединение
+    }
+    function Disconnect(): Boolean;
     {
     Выполнить SQL выражение
     @param aSQL Текст SQL выражения
     @return True - успешно / False - ошибка
     }
     function ExecuteSQL(aSQL: AnsiString): Boolean;
+
+    { Проверка на существование таблицы с указанными именем в БД }
+    function ExistsTable(aTableName: AnsiString): Boolean;
+
+    { Создать таблицу в БД с указанными именем и заданной структуры }
+    function CreateTable(aTableName: AnsiString; aFields: TStringList): Boolean;
 
   public
     constructor Create;
@@ -54,6 +75,8 @@ type
     { Фунция записи данных }
     function Write(aValues: TStringList): Boolean; override;
 
+    { Запись всех внутренних данных }
+    function WriteAll(): Boolean; override;
 
 end;
 
@@ -82,9 +105,9 @@ begin
 end;
 
 { Настроить параметры соединения с БД }
-function TICPostgreSQLTableWide.Connect(aDBHost: AnsiString; aDBName: AnsiString; aDBUserName: AnsiString; aDBPassword: AnsiString): Boolean;
+function TICPostgreSQLTableWide.Connect(aDBHost: AnsiString; aDBPort: Integer;
+  aDBName: AnsiString; aDBUserName: AnsiString; aDBPassword: AnsiString): Boolean;
 begin
-  Result := True;
   {подключение к SQL}
   try
     FPQConnection.HostName := aDBHost;
@@ -97,8 +120,37 @@ begin
     FSQLQuery.Transaction := FSQLTransaction;
     FSQLTransaction.DataBase := FPQConnection;
     FPQConnection.Transaction := FSQLTransaction;
+
+    Result := FPQConnection.Connected;
+
+    if not Result then
+      log.WarningMsgFmt('Ошибка соединения с БД PostgreSQL <%s : %s : %s>', [aDBHost, aDBName, aDBUserName])
+    else
+      log.InfoMsgFmt('Соединение с БД PostgreSQL <%s : %s : %s>', [aDBHost, aDBName, aDBUserName]);
   except
     log.FatalMsg('Ошибка настройки параметров подключения к БД PostgreSQL');
+    Result := False
+  end;
+end;
+
+{
+Закрыть соединение
+}
+function TICPostgreSQLTableWide.Disconnect(): Boolean;
+begin
+  try
+    FPQConnection.Close;
+    Result := not FPQConnection.Connected;
+    if not Result then
+      log.WarningMsgFmt('Ошибка разрыва соединения с БД PostgreSQL <%s : %s : %s>', [FPQConnection.HostName,
+                                                                                     FPQConnection.DatabaseName,
+                                                                                     FPQConnection.UserName])
+    else
+      log.InfoMsgFmt('Разрыв соединения с БД PostgreSQL <%s : %s : %s>', [FPQConnection.HostName,
+                                                                          FPQConnection.DatabaseName,
+                                                                          FPQConnection.UserName]);
+  except
+    log.FatalMsg('Ошибка закрытия соединения с БД PostgreSQL');
     Result := False
   end;
 end;
@@ -107,7 +159,7 @@ end;
 function TICPostgreSQLTableWide.ExecuteSQL(aSQL: AnsiString): Boolean;
 begin
   Result := True;
-  try:
+  try
     FPQConnection.Connected := True;
   except
     log.FatalMsg('Ошибка соединения с сервером PostgreSQL');
@@ -149,6 +201,36 @@ begin
   Result := False;
 end;
 
+{ Запись всех внутренних данных }
+function TICPostgreSQLTableWide.WriteAll(): Boolean;
+begin
+  Result := True;
+  properties := GetProperties();
+  // Соединяемся с БД
+  if not Connect(properties.GetStrValue('db_host'),
+                 StrToInt(properties.GetStrValue('db_port')),
+                 properties.GetStrValue('db_name'),
+                 properties.GetStrValue('db_username'),
+                 properties.GetStrValue('db_password')) then
+  begin
+    Result := False;
+    Exit;
+  end;
+
+  // Если таблицы не существует, то создать ее
+  if not ExistsTable(properties.GetStrValue('table_name')) then
+  begin
+
+  end;
+
+  // Закрываем соединение
+  if not Disconnect() then
+  begin
+    Result := False;
+    Exit;
+  end;
+end;
+
 { Выбрать описания тегов из свойств }
 function TICPostgreSQLTableWide.CreateTags(): TStrDictionary;
 var
@@ -168,6 +250,27 @@ begin
     end;
   end;
   Result := tags;
+end;
+
+{ Проверка на существование таблицы с указанными именем в БД }
+function TICPostgreSQLTableWide.ExistsTable(aTableName: AnsiString): Boolean;
+var
+  table_names: TStringList;
+begin
+  Result := False;
+  table_names := TStringList.Create;
+  try
+    FPQConnection.GetTableNames(table_names, False);
+    Result := table_names.IndexOf(aTableName) >= 0;
+  finally
+    table_names.Free;
+  end;
+end;
+
+{ Создать таблицу в БД с указанными именем и заданной структуры }
+function TICPostgreSQLTableWide.CreateTable(aTableName: AnsiString; aFields: TStringList): Boolean;
+begin
+
 end;
 
 end.

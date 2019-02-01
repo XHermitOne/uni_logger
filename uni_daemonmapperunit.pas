@@ -19,7 +19,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, ExtCtrls, DaemonApp,
-  log;
+  engine, log;
 
 type
 
@@ -28,6 +28,15 @@ type
   TUniLoggerDaemonMapper = class(TDaemonMapper)
     {
     Обработчик выполнения инсталяции демона/службы
+
+    ВНИМАНИЕ! Здесь добавляем дополнительные ключи
+    Дополнительные ключи укаазываются при инсталляции службы:
+
+    uni_logger.exe --test --install
+
+    с помощью RunArguments этот ключ переносится в комманду запуска службы:
+
+    uni_logger.exe --run --test
     }
     procedure UniLoggerDaemonMapperInstall(Sender: TObject);
   private
@@ -61,13 +70,15 @@ begin
     DaemonDefs[i].Description := log.EncodeUnicodeString(DaemonDefs[i].Description, 'cp1251');
   end;
 
-  { ВНИМАНИЕ! Здесь добавляем ключи для запуска прослушки не стандартного порта
-  Прослушиваемый порт указывается при инсталляции службы:
-  uni_logger.exe --port=8081 --install
+  { ВНИМАНИЕ! Здесь добавляем дополнительные ключи
+  Дополнительные ключи укаазываются при инсталляции службы:
+  uni_logger.exe --test --install
   с помощью RunArguments этот ключ переносится в комманду запуска службы:
-  uni_logger.exe --run --port=8081}
-  //if engine.XML_RPC_PORT <> DEFAULT_XML_RPC_PORT then
-  //  DaemonDefs[0].RunArguments := Format('--port=%d', [engine.XML_RPC_PORT]);
+  uni_logger.exe --run --test}
+  if engine.TEST_SERVICE_MODE then
+    DaemonDefs[0].RunArguments := '--test';
+  if engine.TIMER_TICK <> engine.DEFAULT_TIMER_TICK then
+    DaemonDefs[0].RunArguments := DaemonDefs[0].RunArguments + ' ' + Format('--tick=%d', [engine.TIMER_TICK]);
   log.DebugMsgFmt('Параметры командной строки <%s>', [DaemonDefs[0].RunArguments]);
 end;
 

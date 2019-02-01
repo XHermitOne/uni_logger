@@ -1,5 +1,7 @@
 {
 Модуль абстрактного объекта системы
+
+Версия: 0.0.1.3
 }
 unit obj_proto;
 
@@ -51,7 +53,7 @@ type
     { Получить словарь свойств объекта }
     function GetProperties(): TStrDictionary;
     { Установить свойства объекта в виде словаря }
-    procedure SetProperties(dProperties: TStrDictionary);
+    procedure SetProperties(dProperties: TStrDictionary); virtual;
 
     { Установить свойства в виде списка параметров }
     procedure SetPropertiesArray(aArgs: Array Of Const); virtual;
@@ -84,16 +86,16 @@ end;
 implementation
 
 uses
-    log;
+  log;
 
 constructor TICObjectProto.Create;
 begin
-     inherited Create;
-     FParent := nil;
-     FName := 'Unknown';
-     FDescription := '';
-     FReadValues := TStringList.Create;
-     FState := TStrDictionary.Create;
+  inherited Create;
+  FParent := nil;
+  FName := 'Unknown';
+  FDescription := '';
+  FReadValues := TStringList.Create;
+  FState := TStrDictionary.Create;
 end;
 
 destructor TICObjectProto.Destroy;
@@ -139,12 +141,12 @@ end;
 
 procedure TICObjectProto.SetParent(oParent: TObject);
 begin
-     FParent := oParent;
+  FParent := oParent;
 end;
 
 function TICObjectProto.GetProperties(): TStrDictionary;
 begin
-  result := FProperties;
+  Result := FProperties;
 end;
 
 procedure TICObjectProto.SetProperties(dProperties: TStrDictionary);
@@ -152,8 +154,8 @@ begin
   FProperties := dProperties;
   if FProperties.HasKey('name') then
     SetName(FProperties.GetStrValue('name'))
-  //else
-  //  WarningMsg(Format('Не определено имя объекта в свойствах. Класс <%s>', [ClassName]));
+  else
+    log.WarningMsgFmt('Не определено имя объекта в свойствах. Класс <%s>', [ClassName]);
 end;
 
 {
@@ -161,7 +163,7 @@ end;
 }
 function TICObjectProto.IsUnknown(): Boolean;
 begin
-     result := FName = 'Unknown';
+  Result := FName = 'Unknown';
 end;
 
 {
@@ -186,12 +188,14 @@ end;
 }
 function TICObjectProto.Read(aValues: TStringList): TStringList;
 begin
+  log.WarningMsgFmt('Вызов не определенного метода Read объекта <%s>', [FName]);
   Result := nil;
 end;
 
 { Чтение всех внутренних данных }
 function TICObjectProto.ReadAll(): TStringList;
 begin
+  log.WarningMsgFmt('Вызов не определенного метода ReadAll объекта <%s>', [FName]);
   Result := nil;
 end;
 
@@ -205,12 +209,14 @@ end;
 }
 function TICObjectProto.Write(aValues: TStringList): Boolean;
 begin
+  log.WarningMsgFmt('Вызов не определенного метода Write объекта <%s>', [FName]);
   Result := False;
 end;
 
 { Запись всех внутренних данных }
 function TICObjectProto.WriteAll(): Boolean;
 begin
+  log.WarningMsgFmt('Вызов не определенного метода WriteAll объекта <%s>', [FName]);
   Result := False;
 end;
 

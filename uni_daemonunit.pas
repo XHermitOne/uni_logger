@@ -74,6 +74,8 @@ begin
   engine.LOGGER_ENGINE.Start;
 
   // Запускаем таймер отсчета тиков
+  TickTimer.Interval := engine.TIMER_TICK;
+  log.InfoMsgFmt('Установлен временной интервал таймера обработки <%d> миллисекунд', [TickTimer.Interval]);
   TickTimer.Enabled := True;
 end;
 

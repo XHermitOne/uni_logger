@@ -9,6 +9,8 @@
 Изменить умолчания... -> Добавить -> Поиск -> <Все> и <АНОНИМНЫЙ ВХОД> -> OK ->
 Выставить галки <Удаленный доступ>, <Удаленный запуск>, <Локальная активация>, <Удаленная активация> ->
 OK
+
+Версия: 0.0.1.2
 }
 
 unit opc_server_node;
@@ -23,7 +25,9 @@ uses
     opc_client, tag_list;
 
 const
-  RESERV_PROPERTIES: Array [1..4] Of String = ('type', 'name', 'description', 'opc_server');
+  OPC_SERVER_NODE_TYPE: AnsiString = 'OPC_DA';
+
+  RESERV_PROPERTIES: Array [1..5] Of String = ('type', 'name', 'description', 'opc_server', 'topic');
 
   UNKNOWN_GROUP_NAME: AnsiString = 'UNKNOWN_GROUP';
 
@@ -85,26 +89,29 @@ type
     { Установить свойства в виде списка параметров }
     procedure SetPropertiesArray(aArgs: Array Of Const); override;
 
+    { Установить свойства объекта в виде словаря }
+    procedure SetProperties(dProperties: TStrDictionary); override;
+
 end;
 
 implementation
 
 uses
-    LCLIntf, // Для вычисления времени выполнения
-    log;
+  LCLIntf, // Для вычисления времени выполнения
+  log;
 
 constructor TICOPCServerNode.Create;
 begin
-     inherited Create;
-     FOPCClient := nil;
+  inherited Create;
+  FOPCClient := nil;
 end;
 
 destructor TICOPCServerNode.Destroy;
 begin
   if FOPCClient <> nil then
   begin
-     FOPCClient.Destroy;
-     FOPCClient := nil;
+    FOPCClient.Destroy;
+    FOPCClient := nil;
   end;
   inherited Destroy;
 end;
@@ -129,7 +136,7 @@ begin
       SetOPCServerName(AnsiString(aArgs[0].vAnsiString));
 
     except
-      log.FatalMsgFmt('Set propertirs array in <%s>', [ClassName]);
+      log.FatalMsgFmt('Ошибка установки массива спойств в <%s>', [ClassName]);
     end;
   end;
 end;
@@ -158,12 +165,12 @@ begin
 
     tags := CreateTags;
 
-    // log.DebugMsg(Format('Создание группы <%s>', [GetName()]));
+    log.DebugMsgFmt('Создание группы <%s>', [GetName()]);
 
     grp := TGroup.Create(group_name, 500, 0);
     for i := 0 to tags.Count - 1 do
     begin
-      // log.ServiceMsg(Format('Добавление тега в OPC клиент <%s> : <%s>', [tags.GetKey(i), tags.GetStrValue(tags.GetKey(i))]));
+      log.ServiceMsgFmt('Добавление тега в OPC клиент <%s> : <%s>', [tags.GetKey(i), tags.GetStrValue(tags.GetKey(i))]);
       tag_item := TTagItem.Create(tags.GetKey(i), tags.GetStrValue(tags.GetKey(i)), VT_BSTR, acRead);
       grp.AddTag(tag_item);
     end;
@@ -183,7 +190,7 @@ begin
   except
     FOPCClient.Disconnect;
     tags.Destroy;
-    log.FatalMsgFmt('Read in <%s>', [ClassName]);
+    log.FatalMsgFmt('Ошибка чтения в <%s>', [ClassName]);
   end;
 end;
 
@@ -197,14 +204,16 @@ var
   value: AnsiString;
 
 begin
+  log.DebugMsg('Чтение всех внутренних данных');
   // Кроме чтения данных обновляем
   // внутреннее состояние источника данных
   State := CreateTags;
   Result := Read(nil);
   for i := 0 to State.Count - 1 do
   begin
-    name := State.Names[i];
+    name := State[i];
     value := Result[i];
+    log.DebugMsgFmt('Значение состояния <%s : %s>', [name, value]);
     State.SetStrValue(name, value);
   end;
 end;
@@ -277,7 +286,7 @@ begin
       Result.Free;
       Result := nil;
     end;
-    log.FatalMsgFmt('Read addresses value in <%s> %s', [ClassName, log_tags]);
+    log.FatalMsgFmt('Ошибка чтения значений адресов в <%s> %s', [ClassName, log_tags]);
   end;
 end;
 
@@ -303,6 +312,7 @@ var
   tags: TStrDictionary;
 
 begin
+  // log.DebugMsg('Создание тегов');
   tags := TStrDictionary.Create;
   for i := 0 to Properties.Count - 1 do
   begin
@@ -310,10 +320,19 @@ begin
     if not IsStrInList(key, RESERV_PROPERTIES) then
     begin
       value := Properties.GetStrValue(key);
+      // log.DebugMsgFmt('Тег <%s : %s>', [key, value]);
       tags.AddStrValue(key, value);
     end;
   end;
   Result := tags;
+end;
+
+procedure TICOPCServerNode.SetProperties(dProperties: TStrDictionary);
+begin
+  inherited SetProperties(dProperties);
+
+  if Properties.HasKey('opc_server') then
+    SetOPCServerName(Properties.GetStrValue('opc_server'))
 end;
 
 end.

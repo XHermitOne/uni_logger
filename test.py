@@ -9,6 +9,7 @@ import unittest
 import os
 import os.path
 import sqlalchemy
+import time
 
 
 LOG_FILENAME = os.path.join(os.getcwd(), 'uni_logger.log')
@@ -43,7 +44,7 @@ class UniLoggerTest(unittest.TestCase):
             os.remove(LOG_FILENAME)                
     
         # Производим инсталляцию службы
-        cmd = 'uni_logger.exe --install'
+        cmd = 'uni_logger.exe --tick=2000 --install'
         print(u'Запуск комманды: %s' % cmd)
         os.system(cmd)
 
@@ -89,11 +90,11 @@ class UniLoggerTest(unittest.TestCase):
     # ВНИМАНИЕ! 
     # Индекс в имени метода теста ставим для определения порядка выполнения тестов
     #          v 
-    def test_0001_echo(self):
+    def test_0001_run(self):
         """
         Простой тест проверки связи со службой.
         """
-        pass
+        time.sleep(10)
 
 
 if __name__ == '__main__':

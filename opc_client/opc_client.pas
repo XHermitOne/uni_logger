@@ -58,7 +58,7 @@ uses
   LazUtf8;
 
 resourcestring
-  msgNoOPCServer  = 'Имя OPC сервера незадано!';
+  msgNoOPCServer  = 'Имя OPC сервера не задано!';
   msgNoConnectOPC = 'Невозможно соединиться с OPC сервером <%s>!';
   msgNoListTag    = 'Нет списка OPC-тэгов!';
   msgNoListTag1   = 'Список OPC-тэгов пустой!';

@@ -1,5 +1,7 @@
 {
 Функции регистрации объектов источников данных
+
+Версия: 0.0.1.2
 }
 unit reg_data_ctrl;
 
@@ -8,7 +10,7 @@ unit reg_data_ctrl;
 interface
 
 uses
-    Classes, SysUtils, obj_proto, dictionary;
+  Classes, SysUtils, obj_proto, dictionary;
 
 {
 Функция создания объекта контроллера данных по имени типа
@@ -37,7 +39,7 @@ function CreateRegDataCtrlArgs(oParent: TObject; sTypeName: AnsiString; const aA
 implementation
 
 uses
-    log, remoute_opc_node, opc_server_node;
+  log, remoute_opc_node, opc_server_node, postgresql_tab_wide;
 {
 Функция создания объекта контроллера данных по имени типа.
 
@@ -47,25 +49,34 @@ uses
 }
 function CreateRegDataCtrl(oParent: TObject; sTypeName: AnsiString; Properties: TStrDictionary): TICObjectProto;
 begin
-  if sTypeName = 'OPC_DA' then
+  if sTypeName = opc_server_node.OPC_SERVER_NODE_TYPE then
+  begin
+    { Создание и инициализация OPC DA сервера }
+    Result := TICOPCServerNode.Create;
+  end
+  else if sTypeName = remoute_opc_node.REMOUTE_OPC_NODE_TYPE then
   begin
     { Создание и инициализация OPC DA сервера }
     Result := TICRemouteOPCNode.Create;
-    if oParent <> nil then
-        Result.SetParent(oParent);
-    if Properties <> nil then
-        Result.SetProperties(Properties);
-    Exit;
   end
-  else if sTypeName = 'POSTGRESQL_TAB_WIDE' then
+  else if sTypeName = postgresql_tab_wide.POSTGRESQL_TAB_WIDE_TYPE then
   begin
     { Создание и инициализация журнала таблицы PostgreSQL широкого формата }
+    Result := TICPostgreSQLTableWide.Create;
+  end
+  else
+  begin
+    log.WarningMsgFmt('Не поддерживаемый тип объекта контроллера данных <%s>', [sTypeName]);
     Result := nil;
-    Exit;
   end;
 
-  WarningMsg(Format('Не поддерживаемый тип объекта контроллера данных <%s>', [sTypeName]));
-  Result := nil;
+  if Result <> nil then
+  begin
+    if oParent <> nil then
+      Result.SetParent(oParent);
+    if Properties <> nil then
+      Result.SetProperties(Properties);
+  end;
 end;
 
 {
@@ -84,7 +95,7 @@ begin
     if oParent <> nil then
         Result.SetParent(oParent);
     Result.SetPropertiesArray(aArgs);
-    exit;
+    Exit;
   end
   else if sTypeName = 'POSTGRESQL_TAB_WIDE' then
   begin
@@ -93,8 +104,8 @@ begin
     Exit;
   end;
 
-  WarningMsg(Format('Не поддерживаемый тип объекта контроллера данных <%s>', [sTypeName]));
-  result := nil;
+  log.WarningMsgFmt('Не поддерживаемый тип объекта контроллера данных <%s>', [sTypeName]);
+  Result := nil;
 end;
 
 end.

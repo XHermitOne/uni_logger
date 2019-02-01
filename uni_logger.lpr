@@ -113,20 +113,22 @@ Uses
               то необходимо в секцию uses необходимо добавить модуль Interfaces
   }
   DaemonApp, EventLog, SysUtils, Interfaces,
-  lazdaemonapp, uni_daemonmapperunit, uni_daemonunit
+  lazdaemonapp, uni_daemonmapperunit, uni_daemonunit,
+  engine, log
   { add your units here };
 
 begin
-  //Application.Title:='Daemon application';
-  //Application.Title:='UniLoggerService Daemon';
   { Чтение параметров коммандной строки }
-  //if Application.HasOption('p', 'port') then
-  //  try
-  //    { Если указан не  стандартный порт, то запоминаем его в переменной }
-  //    engine.XML_RPC_PORT := StrToInt(Application.GetOptionValue('p', 'port'));
-  //  except
-  //    log.FatalMsg('Ошибка параметра коммандной строки. Порт XML RPC');
-  //  end;
+  if Application.HasOption('T', 'test') then
+    { Если указан режим тестирования, то запоминаем его в переменной }
+    engine.TEST_SERVICE_MODE := True;
+  if Application.HasOption('t', 'tick') then
+    try
+      { Если указан временной интервал обработки, то запоминаем его в переменной }
+      engine.TIMER_TICK := StrToInt(Application.GetOptionValue('t', 'tick'));
+    except
+      log.FatalMsg('Ошибка параметра коммандной строки. Время интервала обработки');
+    end;
 
   // Запуск по умолчанию
   // vvvvvvvvvvvvvvvvvvvvvvv

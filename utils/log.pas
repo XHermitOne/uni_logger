@@ -66,10 +66,14 @@
 
 47 	белый
 
-Версия: 0.0.6.3
+Версия: 0.0.6.5
 
 ВНИМАНИЕ! Вывод сообщений под Linux проверять только в терминале.
 Только он выводит корректно сообщения.
+
+ВНИМАНИЕ! Для служб Windows необходимо отключать режим DEBUG_MODE.
+Иначе работа служб будет не корректна, т.к. переопределяются потоки входа/выхода.
+Отладку необходимо производить в таком случае через LOG_MODE.
 }
 
 unit log;
@@ -278,7 +282,10 @@ begin
     Result := False; // config.ENVIRONMENT.HasKey('DEBUG_MODE');
 
   if not Result then
-    PrintColorTxt('Режим отладки отключен', YELLOW_COLOR_TEXT);
+    if not DEFAULT_APP_LOG_MODE then
+    //  Application.Log(etWarning, EncodeUnicodeString('Режим отладки отключен', GetDefaultEncoding()))
+    //else
+      PrintColorTxt('Режим отладки отключен', YELLOW_COLOR_TEXT);
 end;
 
 {
@@ -286,13 +293,18 @@ end;
 }
 function GetLogMode(): Boolean;
 begin
-  if DEFAULT_LOG_MODE then
+  if DEFAULT_APP_LOG_MODE then
+    Result := True
+  else if DEFAULT_LOG_MODE then
     Result := IS_OPEN_LOG_FILE
   else
     Result := False; // config.ENVIRONMENT.HasKey('LOG_MODE') and IS_OPEN_LOG_FILE;
 
-  if not Result and not DEFAULT_APP_LOG_MODE then
-    PrintColorTxt('Режим журналирования отключен', YELLOW_COLOR_TEXT);
+  if not Result then
+    //if not DEFAULT_APP_LOG_MODE then
+    //  Application.Log(etWarning, EncodeUnicodeString('Режим журналирования отключен', GetDefaultEncoding()))
+    //else
+      PrintColorTxt('Режим журналирования отключен', YELLOW_COLOR_TEXT);
 
 end;
 
@@ -323,7 +335,10 @@ begin
       result := LazUTF8.UTF8ToWinCP(sTxt);
     end
     else
-        WriteLn('Не поддерживаемая кодировка <%s>', sCodePage);
+      if DEFAULT_APP_LOG_MODE then
+        Application.Log(etWarning, EncodeUnicodeString(Format('Не поддерживаемая кодировка <%s>', [sCodePage]), GetDefaultEncoding()))
+      else
+        PrintColorTxt(Format('Не поддерживаемая кодировка <%s>', [sCodePage]), YELLOW_COLOR_TEXT);
 end;
 
 {
@@ -558,7 +573,7 @@ begin
       end;
     if (GetLogMode()) or (bForceLog) then
       if DEFAULT_APP_LOG_MODE then
-        Application.Log(etError, EncodeUnicodeString(msg + ' ' + except_msg, GetDefaultEncoding()))
+        Application.Log(etError, EncodeUnicodeString(msg + '\n' + except_msg, GetDefaultEncoding()))
       else
         begin
           LogMsg(msg);

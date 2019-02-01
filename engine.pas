@@ -1,5 +1,7 @@
 {
 Модуль классов движка
+
+Версия: 0.0.1.1
 }
 
 unit engine;
@@ -11,8 +13,6 @@ interface
 
 uses
     Classes, SysUtils, Crt,
-    DaemonApp,
-    //XmlRpcServer, XmlRpcTypes,
     dictionary, settings, obj_proto;
 
 { Режимы запуска движка }
@@ -20,6 +20,9 @@ const
   RUN_MODE_SINGLE: AnsiString = 'single';
   RUN_MODE_LOOP: AnsiString = 'loop';
   RUN_MODE_DIAGNOSTIC: AnsiString = 'diagnostic';
+
+  DEFAULT_TIMER_TICK: Integer = 1000;
+
 
 type
     {
@@ -128,23 +131,20 @@ type
       { Обработчик одного тика таймера }
       procedure Tick;
 
-      //{ --- Используемые процедуры удаленного вызова --- }
-      //{ Тестовая функция для проверки удаленного вызова процедур }
-      //procedure EchoTestRpcMethod(Thread: TRpcThread; const sMethodName: string;
-      //                            List: TList; Return: TRpcReturn);
-      //
-      //{ Функция чтения данных из источника удаленного вызова процедур }
-      //procedure ReadValueAsStringRpcMethod(Thread: TRpcThread; const sMethodName: string;
-      //                                     List: TList; Return: TRpcReturn);
-      //
-      //{ Функция чтения данных из источника удаленного вызова процедур }
-      //procedure ReadValuesAsStringsRpcMethod(Thread: TRpcThread; const sMethodName: string;
-      //                                       List: TList; Return: TRpcReturn);
+      { Обработчик одного тика таймера. Режим стандартной работы службы }
+      procedure WorkTick;
+
+      { Обработчик одного тика таймера. Режим тестирования службы }
+      procedure Test;
+
     end;
 
 var
-  //{ Порт по умолчанию для обработки XML RPC }
-  //XML_RPC_PORT: Integer = 8080;
+  { Режим тестирования службы }
+  TEST_SERVICE_MODE: Boolean = False;
+
+  { Интервал таймера обработки в миллисекундах }
+  TIMER_TICK: Integer = 1000;
 
   {
   Объявление глобального объекта движка
@@ -179,8 +179,6 @@ end;
 
 destructor TICLoggerProto.Destroy;
 begin
-  //Free;
-  //FRpcServer.Free;
   inherited Destroy;
 end;
 
@@ -200,13 +198,15 @@ function TICLoggerProto.InitSettings():Boolean;
 var
   ini_filename: AnsiString;
 begin
-  if not ENVIRONMENT.HasKey('SETTINGS_FILENAME') then
+  log.InfoMsg('Настройка...');
+
+  if not config.ENVIRONMENT.HasKey('SETTINGS_FILENAME') then
   begin
     ini_filename := FSettingsManager.GenIniFileName();
-    ENVIRONMENT.AddStrValue('SETTINGS_FILENAME', ini_filename);
+    config.ENVIRONMENT.AddStrValue('SETTINGS_FILENAME', ini_filename);
   end
   else
-    ini_filename := ENVIRONMENT.GetStrValue('SETTINGS_FILENAME');
+    ini_filename := config.ENVIRONMENT.GetStrValue('SETTINGS_FILENAME');
 
   log.DebugMsgFmt('INI Файл <%s>', [ini_filename]);
   if (ini_filename <> '') and (not FileExists(ini_filename)) then
@@ -296,6 +296,8 @@ begin
   if Properties.HasKey('type') then
   begin
     type_name := Properties.GetStrValue('type');
+    name := Properties.GetStrValue('name');
+    log.InfoMsgFmt('Создание объекта <%s> : <%s>', [name, type_name]);
     ctrl_obj := CreateRegDataCtrl(self, type_name, Properties);
     if ctrl_obj <> nil then
       begin
@@ -306,7 +308,7 @@ begin
   else
   begin
     name := Properties.GetStrValue('name');
-    log.ErrorMsgFmt('Ошибка создания объекта источника данных. Не определен тип <%s>', [name]);
+    log.ErrorMsgFmt('Ошибка создания объекта источника данных. Не определен тип объекта <%s>', [name]);
   end;
   Result := nil;
 end;
@@ -465,139 +467,84 @@ end;
 { Запустить движок }
 procedure TICLogger.Start;
 begin
-  // log.InfoMsg('Запуск');
+  log.InfoMsg('Запуск');
+
+  // Загрузить данные из настроечного файла
+  if InitSettings() then
+  begin
+    // Создаем объекты
+    CreateSources();
+    CreateDestinations();
+
+    FRunning := True;
+  end
+  else
+    log.ErrorMsg('Ошибка загрузки данных настройки');
+
 end;
-
-
-//{ Запустить движок }
-//procedure TICLogger._Start;
-//var
-//  i: Integer;
-//  source: TICObjectProto;
-//  destination: TICObjectProto;
-//  keys: TStringList;
-//  key: AnsiString;
-//
-//begin
-//  log.InfoMsg('Запуск');
-//
-//  // Создаем объекты
-//  CreateSources();
-//  CreateDestinations();
-//  FRunning := True;
-//
-//  while FRunning do
-//  begin
-//    // Сначала читаем значения источников данных
-//    keys := FSources.GetKeys();
-//    for i := 0 to keys.Count - 1 do
-//    begin
-//      key := keys.Names[i];
-//      source := FSources.GetByName(key) As TICObjectProto;
-//      source.ReadAll();
-//    end;
-//
-//    // Затем производим запись данных в объекты получатели данных
-//    keys := FDestinations.GetKeys();
-//    for i := 0 to keys.Count - 1 do
-//    begin
-//      key := keys.Names[i];
-//      destination := FDestinations.GetByName(key) As TICObjectProto;
-//      destination.WriteAll();
-//    end;
-//  end;
-//end;
 
 procedure TICLogger.Stop;
 begin
-  // log.InfoMsg('Останов');
+  FRunning := False;
+  log.InfoMsg('Останов');
 end;
 
 { Запустить движок в режиме тестирования }
-procedure TICLogger.Tick;
+procedure TICLogger.Test;
 begin
-  // log.InfoMsg('Запуск тестирования');
-
-  // log.DebugMsg('Запущен режим тестирования');
-  Application.Log(etDebug, log.EncodeUnicodeString('Запущен режим тестирования', log.GetDefaultEncoding()))
-  //  Sleep(5000); //Задержка в 5 сек
+  log.InfoMsg('Режим тестирования службы')
 end;
 
-//{ Тестовая функция для проверки удаленного вызова процедур }
-//procedure TICLogger.EchoTestRpcMethod(Thread: TRpcThread; const sMethodName: string;
-//                                      List: TList; Return: TRpcReturn);
-//var
-//  Msg: string;
-//
-//begin
-//  {The parameter list is sent to your method as a TList of parameters
-//   this must be casted to a parameter to be accessed. If a error occurs
-//   during the execution of your method the server will fall back to a global
-//   handler and try to recover in which case the stack error will be sent to
-//   the client}
-//
-//  {grab the sent string}
-//  Msg := TRpcParameter(List[0]).AsString;
-//
-//  log.DebugMsgFmt('Test echo. You just sent: <%s>', [Msg]);
-//
-//  {return a message showing what was sent}
-//  Return.AddItem('You just sent: ' + Msg);
-//end;
-//
-//{ Функция чтения данных из источника удаленного вызова процедур }
-//procedure TICLogger.ReadValueAsStringRpcMethod(Thread: TRpcThread; const sMethodName: string;
-//                                               List: TList; Return: TRpcReturn);
-//var
-//  src_type_name: AnsiString;
-//  opc_server_name: AnsiString;
-//  address: AnsiString;
-//  opc_result: AnsiString;
-//
-//begin
-//  src_type_name := TRpcParameter(List[0]).AsString;
-//  opc_server_name := TRpcParameter(List[1]).AsString;
-//  address := TRpcParameter(List[2]).AsString;
-//
-//  opc_result := ReadValueAsString(src_type_name, [opc_server_name], address);
-//
-//  {return a message showing what was sent}
-//  Return.AddItem(opc_result);
-//end;
-//
-//{ Функция чтения данных из источника удаленного вызова процедур }
-//procedure TICLogger.ReadValuesAsStringsRpcMethod(Thread: TRpcThread; const sMethodName: string;
-//                                                 List: TList; Return: TRpcReturn);
-//var
-//  src_type_name: AnsiString;
-//  opc_server_name: AnsiString;
-//  addresses: Array of String;
-//  opc_result: TStringList;
-//  i: Integer;
-//
-//begin
-//  src_type_name := TRpcParameter(List[0]).AsString;
-//  opc_server_name := TRpcParameter(List[1]).AsString;
-//
-//  SetLength(addresses, List.Count - 2);
-//  for i := 0 to List.Count - 3 do
-//  begin
-//    addresses[i] := TRpcParameter(List[i + 2]).AsString;
-//    log.DebugMsgFmt('Чтение тега <tag%d>. Адрес <%s>', [i, addresses[i]]);
-//  end;
-//
-//  opc_result := ReadValuesAsStrings(src_type_name, [opc_server_name], addresses);
-//  addresses := nil;
-//
-//  {return a message showing what was sent}
-//  if opc_result <> nil then
-//  begin
-//    for i := 0 to opc_result.Count - 1 do
-//      Return.AddItem(opc_result.Strings[i]);
-//    opc_result.Free;
-//    opc_result := nil;
-//  end;
-//end;
+procedure TICLogger.WorkTick;
+var
+  i: Integer;
+  source: TICObjectProto;
+  destination: TICObjectProto;
+  keys: TStringList;
+  key: AnsiString;
+begin
+  log.InfoMsg('Начало блока чтения/записи');
+
+  // Сначала читаем значения источников данных
+  try
+    keys := FSources.GetKeys();
+    // log.DebugMsgFmt('Всего источников данных <%d>', [keys.Count]);
+    for i := 0 to keys.Count - 1 do
+    begin
+      key := FSources.GetKey(i);
+      // log.DebugMsgFmt('Чтение данных из источника <%s>', [key]);
+      source := FSources.GetByName(key) As TICObjectProto;
+      // log.DebugMsg('Чтение всех данных');
+      source.ReadAll();
+    end;
+  except
+    log.FatalMsg('Ошибка чтения из источников данных');
+  end;
+
+  // Затем производим запись данных в объекты получатели данных
+  try
+    keys := FDestinations.GetKeys();
+    log.DebugMsgFmt('Всего приемников данных <%d>', [keys.Count]);
+    for i := 0 to keys.Count - 1 do
+    begin
+      key := FDestinations.GetKey(i);
+      destination := FDestinations.GetByName(key) As TICObjectProto;
+      destination.WriteAll();
+    end;
+  except
+    log.FatalMsg('Ошибка записи данных в объекты-получатели');
+  end;
+
+  log.InfoMsg('Окончание блока чтения/записи');
+end;
+
+procedure TICLogger.Tick;
+begin
+  if TEST_SERVICE_MODE then
+     Test
+  else
+     WorkTick;
+end;
 
 end.
 
