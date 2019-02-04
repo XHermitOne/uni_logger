@@ -5,6 +5,9 @@
       взаимное использование модулей и выполнение программы сваливается
       в <Segmentation fault>.
 
+Чтобы исключить утечку памяти необходимо создавать объект ENVIRONMENT
+в конструкторе движка и удалять в деструкторе.
+
 Версия: 0.0.1.1
 }
 unit config;
@@ -38,6 +41,6 @@ var
 implementation
 
 begin
-  ENVIRONMENT := TICEnvironment.Create;
+  ENVIRONMENT := nil;
 end.
 

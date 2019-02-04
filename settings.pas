@@ -1,7 +1,7 @@
 {
 Модуль поддержки настроек программы
 
-Версия: 0.0.1.4
+Версия: 0.0.1.5
 }
 unit settings;
 
@@ -184,7 +184,13 @@ begin
     FContent.LoadIniFile(sIniFileName);
     if not FContent.IsEmpty then
       // Прописать настройки в окружении
-      Result := config.ENVIRONMENT.SetObject('SETTINGS', self)
+      if config.ENVIRONMENT <> nil then
+        Result := config.ENVIRONMENT.SetObject('SETTINGS', self)
+      else
+      begin
+        log.ErrorMsg('Не определен объект окружения для установки значений');
+        Result := False;
+      end
     else
       log.WarningMsgFmt('Не определены настройки в INI файле <%s>' , [sIniFileName]);
   end;

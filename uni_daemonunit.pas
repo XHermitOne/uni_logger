@@ -95,7 +95,7 @@ end;
 procedure TUniLoggerDaemon.TickTimerTimer(Sender: TObject);
 begin
   // Выполнить обработчик одного тика
-  if not engine.LOGGER_ENGINE.IsTick then
+  if (engine.LOGGER_ENGINE <> nil) and (not engine.LOGGER_ENGINE.IsTick) then
     engine.LOGGER_ENGINE.Tick
   else
     log.WarningMsgFmt('Пропущена обработка тика в %s', [FormatDateTime('c', Now())]);

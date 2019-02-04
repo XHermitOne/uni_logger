@@ -66,7 +66,7 @@
 
 47 	белый
 
-Версия: 0.0.6.5
+Версия: 0.0.6.6
 
 ВНИМАНИЕ! Вывод сообщений под Linux проверять только в терминале.
 Только он выводит корректно сообщения.
@@ -279,7 +279,7 @@ begin
   if DEFAULT_DEBUG_MODE then
     Result := True
   else
-    Result := False; // config.ENVIRONMENT.HasKey('DEBUG_MODE');
+    Result := False;
 
   if not Result then
     if not DEFAULT_APP_LOG_MODE then
@@ -298,7 +298,7 @@ begin
   else if DEFAULT_LOG_MODE then
     Result := IS_OPEN_LOG_FILE
   else
-    Result := False; // config.ENVIRONMENT.HasKey('LOG_MODE') and IS_OPEN_LOG_FILE;
+    Result := False;
 
   if not Result then
     //if not DEFAULT_APP_LOG_MODE then
@@ -393,9 +393,6 @@ begin
     if DEFAULT_APP_LOG_MODE then
        Exit;
 
-    // Если имя файла не определено, то пробуем его взять из оружения системы
-    //if (sLogFileName = '') and config.ENVIRONMENT.HasKey('LOG_FILENAME') then
-    //   sLogFileName := (config.ENVIRONMENT.GetByName('LOG_FILENAME') As TObjString).Value;
     if sLogFileName = '' then
     begin
        WarningMsg('Не определено имя файла лога регистрации сообщений программы');

@@ -13,6 +13,7 @@ import time
 
 
 LOG_FILENAME = os.path.join(os.getcwd(), 'uni_logger.log')
+MEM_FILENAME = os.path.join(os.getcwd(), 'uni_logger.mem')
 
 # Параметры подключения к БД
 DB_HOST = '10.0.0.30'
@@ -42,6 +43,8 @@ class UniLoggerTest(unittest.TestCase):
         # Удаляем лог службы
         if os.path.exists(LOG_FILENAME):
             os.remove(LOG_FILENAME)                
+        if os.path.exists(MEM_FILENAME):
+            os.remove(MEM_FILENAME)                
     
         # Производим инсталляцию службы
         cmd = 'uni_logger.exe --tick=1000 --install'
