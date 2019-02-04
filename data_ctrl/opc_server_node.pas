@@ -200,21 +200,21 @@ end;
 function TICOPCServerNode.ReadAll(): TStringList;
 var
   i: Integer;
-  name: AnsiString;
-  value: AnsiString;
+  tag_name: AnsiString;
+  tag_value: AnsiString;
 
 begin
-  log.DebugMsg('Чтение всех внутренних данных');
+  log.DebugMsgFmt('Чтение всех внутренних данных. Объект <%s>', [Name]);
   // Кроме чтения данных обновляем
   // внутреннее состояние источника данных
   State := CreateTags;
   Result := Read(nil);
   for i := 0 to State.Count - 1 do
   begin
-    name := State[i];
-    value := Result[i];
-    log.DebugMsgFmt('Значение состояния <%s : %s>', [name, value]);
-    State.SetStrValue(name, value);
+    tag_name := State[i];
+    tag_value := Result[i];
+    log.DebugMsgFmt('Значение состояния <%s : %s>', [tag_name, tag_value]);
+    State.SetStrValue(tag_name, tag_value);
   end;
 end;
 

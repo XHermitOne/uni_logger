@@ -44,7 +44,7 @@ class UniLoggerTest(unittest.TestCase):
             os.remove(LOG_FILENAME)                
     
         # Производим инсталляцию службы
-        cmd = 'uni_logger.exe --tick=2000 --install'
+        cmd = 'uni_logger.exe --tick=1000 --install'
         print(u'Запуск комманды: %s' % cmd)
         os.system(cmd)
 
@@ -94,7 +94,7 @@ class UniLoggerTest(unittest.TestCase):
         """
         Простой тест проверки связи со службой.
         """
-        time.sleep(10)
+        time.sleep(20)
 
 
 if __name__ == '__main__':

@@ -1,5 +1,7 @@
 {
 Функции работы со строками
+
+Версия: 0.0.3.2
 }
 unit strfunc;
 
@@ -12,6 +14,7 @@ uses
     Windows,
     {$ENDIF}
     Classes, SysUtils, StrUtils,
+    // log,
     LConvEncoding;
 
 type
@@ -31,6 +34,7 @@ function SplitStr(sString: String; cDelim: Char): TArrayOfString;
 @return Объединенная строка
 }
 function JoinStr(StringArray : Array Of String; cDelim : Char): AnsiString;
+function JoinStr(StringArray: Array Of String; sDelim: AnsiString): AnsiString;
 
 {
 Удалить обрамление кавычками одинарными и двойными из строки
@@ -76,6 +80,21 @@ function ConvertStrListToString(StrList: TStringList): AnsiString;
 }
 function IsStrInList(sString: AnsiString; StringArray: Array of String): Boolean;
 
+{
+Проверка есть ли какая либо из указанных строк в строке
+@param sWord Проверяемое слово
+@param sString Строка, в которой производим поиск слова
+@param bCaseSensentive Поиск с учетом регистра?
+}
+function IsWordInStr(sWord: AnsiString; sString: AnsiString; bCaseSensentive: Boolean=True): Boolean;
+{
+Проверка есть ли какая либо из указанных строк в строке
+@param WordArray Массив искомых слов
+@param sString Строка, в которой производим поиск
+@param bCaseSensentive Поиск с учетом регистра?
+}
+function AnyWordInStr(WordArray: Array of String; sString: AnsiString; bCaseSensentive: Boolean=True): Boolean;
+
 { Перекодировка CP866 -> CP1251 и обратно }
 {$IFDEF windows}
 function StrOemToAnsi(const S: AnsiString): AnsiString;
@@ -97,38 +116,24 @@ implementation
 и возвращает массив частей.
 }
 function SplitStr(sString: String; cDelim: Char): TArrayOfString;
-var
-  iCounter, iBegin: Integer;
 begin
-     if Length(sString) > 0 then
-     begin
-          //Include(cDelim, #0);
-          iBegin := 1;
-          SetLength(result, 0);
-
-          for iCounter := 1 to Length(sString) + 1 do
-          begin
-               if (sString[iCounter] = cDelim) or (iCounter = Length(sString)) then
-               begin
-                    SetLength(result, Length(result) + 1);
-                    result[Length(result) - 1] := Copy(sString, iBegin, iCounter - iBegin + 1);
-                    iBegin := iCounter + 1;
-               end;
-          end;//for
-     end;//if
+  Result := sString.Split([cDelim]);
 end;
 
 {
 Объединение массива строк в одну строку.
 }
 function JoinStr(StringArray: Array Of String; cDelim: Char): AnsiString;
-var
-  i : Integer;
 begin
-  result := '';
-  for i := Low(StringArray) to High(StringArray) do
-    result := result + StringArray[i] + cDelim;
-  Delete(result, Length(result), 1);
+  Result := ''.Join(cDelim, StringArray);
+end;
+
+{
+Объединение массива строк в одну строку.
+}
+function JoinStr(StringArray: Array Of String; sDelim: AnsiString): AnsiString;
+begin
+  Result := ''.Join(sDelim, StringArray);
 end;
 
 {
@@ -136,14 +141,14 @@ end;
 }
 function StripStr(sString: AnsiString; sChar: Char): AnsiString;
 begin
-     result := sString;
-     if AnsiStartsStr(sChar, sString) then
-        result := Copy(sString, 2, Length(sString) - 1);
-     if AnsiEndsStr(sChar, sString) then
-        result := Copy(sString, 1, Length(sString) - 1);
+  Result := sString;
+  if AnsiStartsStr(sChar, sString) then
+    Result := Copy(sString, 2, Length(sString) - 1);
+  if AnsiEndsStr(sChar, sString) then
+    Result := Copy(sString, 1, Length(sString) - 1);
 
-     if AnsiStartsStr(sChar, sString) or AnsiEndsStr(sChar, sString) then
-        result := StripStr(result, sChar);
+  if AnsiStartsStr(sChar, sString) or AnsiEndsStr(sChar, sString) then
+    Result := StripStr(Result, sChar);
 end;
 
 {
@@ -156,18 +161,18 @@ var
   i: Integer;
   result_list: Array Of String;
 begin
-     if AnsiStartsStr('[', sString) then
-        sString := Copy(sString, 2, Length(sString) - 1);
-     if AnsiEndsStr(']', sString) then
-        sString := Copy(sString, 1, Length(sString) - 1);
-     result_list := SplitStr(sString, ',');
-     for i := 0 to Length(result_list) - 1 do
-     begin
-          result_list[i] := StripStr(result_list[i], ' ');
-          result_list[i] := StripStr(result_list[i], '''');
-          result_list[i] := StripStr(result_list[i], '"');
-     end;
-     result := result_list;
+  if AnsiStartsStr('[', sString) then
+    sString := Copy(sString, 2, Length(sString) - 1);
+  if AnsiEndsStr(']', sString) then
+    sString := Copy(sString, 1, Length(sString) - 1);
+  result_list := SplitStr(sString, ',');
+  for i := 0 to Length(result_list) - 1 do
+  begin
+    result_list[i] := StripStr(result_list[i], ' ');
+    result_list[i] := StripStr(result_list[i], #39);
+    result_list[i] := StripStr(result_list[i], '"');
+  end;
+  Result := result_list;
 end;
 
 {
@@ -175,7 +180,7 @@ end;
 }
 function IsParseStrList(sString: AnsiString): Boolean;
 begin
-     result := AnsiStartsStr('[', sString) and  AnsiEndsStr(']', sString);
+  Result := AnsiStartsStr('[', sString) and  AnsiEndsStr(']', sString);
 end;
 
 {
@@ -190,11 +195,11 @@ var
   i: Integer;
   str_list: TStringList;
 begin
-     str_list := TStringList.Create;
-     str_array := ParseStrArray(sString);
-     for i := 0 to Length(str_array) - 1 do
-         str_list.Add(str_array[i]);
-     result := str_list;
+  str_list := TStringList.Create;
+  str_array := ParseStrArray(sString);
+  for i := 0 to Length(str_array) - 1 do
+    str_list.Add(str_array[i]);
+  Result := str_list;
 end;
 
 {
@@ -204,7 +209,7 @@ end;
 function ConvertStrListToString(StrList: TStringList): AnsiString;
 begin
   // ExtractStrings([','], [' '], PChar(result), StrList);
-  result := '[' + Trim(StrList.Text) + ']';
+  Result := '[' + Trim(StrList.Text) + ']';
 end;
 
 { Проверка есть ли строка в списке строк }
@@ -212,13 +217,40 @@ function IsStrInList(sString: AnsiString; StringArray: Array of String): Boolean
 var
   i: Integer;
 begin
-  result := False;
+  Result := False;
   for i := 0 to Length(StringArray) - 1 do
     if StringArray[i] = sString then
     begin
-         result := True;
-         exit;
+      Result := True;
+      Exit;
     end;
+end;
+
+{ Проверка есть ли какая либо из указанных строк в строке }
+function IsWordInStr(sWord: AnsiString; sString: AnsiString; bCaseSensentive: Boolean): Boolean;
+begin
+  if bCaseSensentive then
+    Result := Pos(sWord, sString) >= 1
+  else
+    Result := Pos(LowerCase(sWord), LowerCase(sString)) >= 1;
+end;
+
+{ Проверка есть ли какая либо из указанных строк в строке }
+function AnyWordInStr(WordArray: Array of String; sString: AnsiString; bCaseSensentive: Boolean): Boolean;
+var
+  i: Integer;
+begin
+  Result := False;
+  for i := 0 to Length(WordArray) - 1 do
+  begin
+    //log.DebugMsgFmt('Сравнение строк <%s> <%s> : %s', [WordArray[i], sString,
+    //                BoolToStr(IsWordInStr(WordArray[i], sString, bCaseSensentive), '+', '-')]);
+    if IsWordInStr(WordArray[i], sString, bCaseSensentive) then
+    begin
+      Result := True;
+      Exit;
+    end;
+  end;
 end;
 
 {$IFDEF windows}

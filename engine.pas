@@ -93,6 +93,15 @@ type
       }
       function CreateDestinations(ObjectNames: TStringList=nil): TList;
 
+      {
+      Получить состояние тега источника данных в виде строки
+      @param aSourceName Наименование источника данных
+      @param aTag Наименование тега-поля источника данных
+      @return Значение тега-поля источника данных в виде строки или пустая строка,
+              если не найдено
+      }
+      function GetSourceStateAsString(aSourceName, aTag: AnsiString): AnsiString;
+
     end;
 
     {
@@ -100,7 +109,8 @@ type
     }
     TICLogger = class(TICLoggerProto)
     private
-
+      { Признак запущеной обработки тика }
+      FIsTick: Boolean;
     public
       { Конструктор }
       constructor Create(TheOwner: TComponent);
@@ -136,6 +146,9 @@ type
 
       { Обработчик одного тика таймера. Режим тестирования службы }
       procedure Test;
+
+    published
+      property IsTick: Boolean read FIsTick;
 
     end;
 
@@ -298,7 +311,7 @@ begin
     type_name := Properties.GetStrValue('type');
     name := Properties.GetStrValue('name');
     log.InfoMsgFmt('Создание объекта <%s> : <%s>', [name, type_name]);
-    ctrl_obj := CreateRegDataCtrl(self, type_name, Properties);
+    ctrl_obj := reg_data_ctrl.CreateRegDataCtrl(self, type_name, Properties);
     if ctrl_obj <> nil then
       begin
         Result := ctrl_obj;
@@ -401,10 +414,22 @@ begin
   Result := ctrl_objects;
 end;
 
+{ Получить состояние тега источника данных в виде строки }
+function TICLoggerProto.GetSourceStateAsString(aSourceName, aTag: AnsiString): AnsiString;
+var
+  src: TICObjectProto;
+begin
+  src := FindSource(aSourceName);
+  if src <> nil then
+    Result := src.State.GetStrValue(aTag)
+  else
+    Result := '';
+end;
 
 constructor TICLogger.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  FIsTick := False;
 end;
 
 destructor TICLogger.Destroy;
@@ -540,10 +565,16 @@ end;
 
 procedure TICLogger.Tick;
 begin
+  // Выставить флаг запущенного тика
+  FIsTick := True;
+
   if TEST_SERVICE_MODE then
      Test
   else
      WorkTick;
+
+  // Сбросить флаг запущенного тика
+  FIsTick := False;
 end;
 
 end.

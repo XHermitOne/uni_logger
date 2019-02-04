@@ -6,7 +6,7 @@ object UniLoggerDaemon: TUniLoggerDaemon
   AfterUnInstall = DataModuleAfterUnInstall
   Height = 188
   HorizontalOffset = 517
-  VerticalOffset = 166
+  VerticalOffset = 169
   Width = 424
   PPI = 120
   object TickTimer: TTimer

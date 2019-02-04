@@ -16,5 +16,5 @@ object UniLoggerDaemonMapper: TUniLoggerDaemonMapper
     end>
   OnInstall = UniLoggerDaemonMapperInstall
   left = 483
-  top = 311
+  top = 314
 end
