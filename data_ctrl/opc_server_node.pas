@@ -165,12 +165,12 @@ begin
 
     tags := CreateTags;
 
-    // log.DebugMsgFmt('Создание группы <%s>', [GetName()]);
+    log.DebugMsgFmt('Создание группы <%s>', [GetName()]);
 
     grp := TGroup.Create(group_name, 500, 0);
     for i := 0 to tags.Count - 1 do
     begin
-      // log.ServiceMsgFmt('Добавление тега в OPC клиент <%s> : <%s>', [tags.GetKey(i), tags.GetStrValue(tags.GetKey(i))]);
+      log.ServiceMsgFmt('Добавление тега в OPC клиент <%s> : <%s>', [tags.GetKey(i), tags.GetStrValue(tags.GetKey(i))]);
       tag_item := TTagItem.Create(tags.GetKey(i), tags.GetStrValue(tags.GetKey(i)), VT_BSTR, acRead);
       grp.AddTag(tag_item);
     end;
@@ -204,7 +204,7 @@ var
   tag_value: AnsiString;
 
 begin
-  // log.DebugMsgFmt('Чтение всех внутренних данных. Объект <%s>', [Name]);
+  log.DebugMsgFmt('Чтение всех внутренних данных. Объект <%s>', [Name]);
   // Кроме чтения данных обновляем
   // внутреннее состояние источника данных
   State := CreateTags;
@@ -213,7 +213,7 @@ begin
   begin
     tag_name := State[i];
     tag_value := Result[i];
-    // log.DebugMsgFmt('Значение состояния <%s : %s>', [tag_name, tag_value]);
+    log.DebugMsgFmt('Значение состояния <%s : %s>', [tag_name, tag_value]);
     State.SetStrValue(tag_name, tag_value);
   end;
 end;
@@ -312,7 +312,7 @@ var
   tags: TStrDictionary;
 
 begin
-  // log.DebugMsg('Создание тегов');
+  log.DebugMsg('Создание тегов');
   tags := TStrDictionary.Create;
   for i := 0 to Properties.Count - 1 do
   begin
@@ -320,7 +320,7 @@ begin
     if not IsStrInList(key, RESERV_PROPERTIES) then
     begin
       value := Properties.GetStrValue(key);
-      // log.DebugMsgFmt('Тег <%s : %s>', [key, value]);
+      log.DebugMsgFmt('Тег <%s : %s>', [key, value]);
       tags.AddStrValue(key, value);
     end;
   end;
