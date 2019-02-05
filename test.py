@@ -47,7 +47,7 @@ class UniLoggerTest(unittest.TestCase):
             os.remove(MEM_FILENAME)                
     
         # Производим инсталляцию службы
-        cmd = 'uni_logger.exe --tick=1000 --install'
+        cmd = 'uni_logger.exe --tick=5000 --install'
         print(u'Запуск комманды: %s' % cmd)
         os.system(cmd)
 
