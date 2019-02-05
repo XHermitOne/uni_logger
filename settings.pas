@@ -181,18 +181,12 @@ begin
   Result := False;
   if FileExists(sINIFileName) then
   begin
-    FContent.LoadIniFile(sIniFileName);
-    if not FContent.IsEmpty then
-      // Прописать настройки в окружении
-      if config.ENVIRONMENT <> nil then
-        Result := config.ENVIRONMENT.SetObject('SETTINGS', self)
-      else
-      begin
-        log.ErrorMsg('Не определен объект окружения для установки значений');
-        Result := False;
-      end
-    else
+    Result := FContent.LoadIniFile(sIniFileName);
+    if FContent.IsEmpty then
+    begin
+      Result := False;
       log.WarningMsgFmt('Не определены настройки в INI файле <%s>' , [sIniFileName]);
+    end;
   end;
 end;
 

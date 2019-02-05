@@ -39,9 +39,8 @@
       <Unit3>
         <Filename Value="engine.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
-        <TopLine Value="199"/>
-        <CursorPos Y="219"/>
+        <TopLine Value="247"/>
+        <CursorPos X="31" Y="263"/>
         <UsageCount Value="77"/>
         <Loaded Value="True"/>
       </Unit3>
@@ -57,8 +56,10 @@
       <Unit5>
         <Filename Value="settings.pas"/>
         <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
-        <CursorPos X="13" Y="14"/>
+        <TopLine Value="171"/>
+        <CursorPos X="7" Y="188"/>
         <UsageCount Value="77"/>
         <Loaded Value="True"/>
       </Unit5>
@@ -197,9 +198,6 @@
         <Filename Value="utils\inifunc.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
-        <WindowIndex Value="-1"/>
-        <TopLine Value="-1"/>
-        <CursorPos X="-1" Y="-1"/>
         <UsageCount Value="77"/>
       </Unit21>
       <Unit22>
@@ -274,7 +272,7 @@
         <UsageCount Value="8"/>
       </Unit30>
     </Units>
-    <JumpHistory Count="29" HistoryIndex="28">
+    <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
         <Filename Value="obj_proto.pas"/>
         <Caret Line="81" TopLine="49"/>
@@ -391,6 +389,10 @@
         <Filename Value="engine.pas"/>
         <Caret Line="227" Column="15" TopLine="194"/>
       </Position29>
+      <Position30>
+        <Filename Value="settings.pas"/>
+        <Caret Line="14" Column="13"/>
+      </Position30>
     </JumpHistory>
   </ProjectSession>
 </CONFIG>
