@@ -1,5 +1,7 @@
 {
 Классы работы с INI файлами
+
+Версия: 0.0.1.2
 }
 unit inifunc;
 
@@ -42,28 +44,28 @@ type
 implementation
 
 uses
-    log;
+  log;
 
 constructor TIniDictionary.Create();
 begin
-     inherited Create;
+  inherited Create;
 end;
 
 constructor TIniDictionary.Create(sINIFileName: AnsiString);
 begin
-     inherited Create;
-     LoadIniFile(sINIFileName);
+  inherited Create;
+  LoadIniFile(sINIFileName);
 end;
 
 destructor TIniDictionary.Destroy;
 begin
-     // Free;
-     inherited Destroy;
+  // Free;
+  inherited Destroy;
 end;
 
 procedure TIniDictionary.Free;
 begin
-     inherited Free;
+  inherited Free;
 end;
 
 {
@@ -71,22 +73,22 @@ end;
 }
 function TIniDictionary.LoadIniFile(sINIFileName: AnsiString): Boolean;
 var
-   i_section, i_option, idx: Integer;
-   ini_file: TIniFile;
-   sections, options: TStringList;
-   section_name, option, option_name, option_value: AnsiString;
-   section_dict: TStrDictionary;
+  i_section, i_option, idx: Integer;
+  ini_file: TIniFile;
+  sections, options: TStringList;
+  section_name, option, option_name, option_value: AnsiString;
+  section_dict: TStrDictionary;
 begin
-  result := False;
+  Result := False;
   if sIniFileName = '' then
   begin
-     WarningMsg('Не определен INI файл для загрузки данных');
-     exit;
+    log.WarningMsg('Не определен INI файл для загрузки данных');
+    Exit;
   end;
   if not FileExists(sIniFileName) then
   begin
-     WarningMsg(Format('Файл INI <%s> не найден', [sIniFileName]));
-     exit;
+    log.WarningMsgFmt('Файл INI <%s> не найден', [sIniFileName]);
+    Exit;
   end;
 
   ini_file := TIniFile.Create(sIniFileName);
@@ -96,33 +98,34 @@ begin
   sections := TStringList.Create;
   options := TStringList.Create;
   try
-     try
-        ini_file.ReadSections(sections);
-        for i_section :=0 to sections.Count - 1 do
-        begin
-             section_name := sections[i_section];
-             section_dict := TStrDictionary.Create;
+    try
+      ini_file.ReadSections(sections);
+      for i_section :=0 to sections.Count - 1 do
+      begin
+        section_name := sections[i_section];
+        section_dict := TStrDictionary.Create;
 
-             options.Clear;
-             ini_file.ReadSectionValues(section_name, options);
-             for i_option :=0 to options.Count - 1 do
-             begin
-                  option := Trim(options[i_option]);
-                  if AnsiStartsStr(';', option) then
-                     // Это коментарий обрабатывать не надо
-                     continue;
-                  idx := Pos('=', option);
-                  option_name := Copy(option, 0, idx - 1);
-                  option_value := Copy(option, idx + 1, Length(option)-idx);
-                  section_dict.AddStrValue(option_name, option_value);
-             end;
-             AddObject(section_name, section_dict);
-          end;
-      finally
-          ini_file.Free;
+        options.Clear;
+        ini_file.ReadSectionValues(section_name, options);
+        for i_option :=0 to options.Count - 1 do
+        begin
+          option := Trim(options[i_option]);
+          if AnsiStartsStr(';', option) then
+            // Это коментарий обрабатывать не надо
+            continue;
+          idx := Pos('=', option);
+          option_name := Copy(option, 0, idx - 1);
+          option_value := Copy(option, idx + 1, Length(option)-idx);
+          section_dict.AddStrValue(option_name, option_value);
+        end;
+        AddObject(section_name, section_dict);
       end;
+      Result := True;
+    finally
+      ini_file.Free;
+    end;
   except
-        FatalMsg('Ошибка печати настроек программы');
+    log.FatalMsg('Ошибка загрузки настроек программы');
   end;
   // ВНИМАНИЕ! В конце обязательно освободить память
   options.Free;
@@ -134,15 +137,15 @@ end;
 }
 function TIniDictionary.GetOptionValue(sSectionName: AnsiString; sOptionName: AnsiString): AnsiString;
 var
-   section: TStrDictionary;
+  section: TStrDictionary;
 begin
-     result := '';
-     if HasKey(sSectionName) then
-     begin
-          section := GetByName(sSectionName) As TStrDictionary;
-          if section <> nil then
-             result := section.GetStrValue(sOptionName);
-     end;
+  Result := '';
+  if HasKey(sSectionName) then
+  begin
+    section := GetByName(sSectionName) As TStrDictionary;
+    if section <> nil then
+      Result := section.GetStrValue(sOptionName);
+  end;
 end;
 
 end.
