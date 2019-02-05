@@ -178,9 +178,6 @@ constructor TICLoggerProto.Create(TheOwner: TComponent);
 begin
   inherited Create;
 
-  // Создать объект окружения
-  //config.ENVIRONMENT := TICEnvironment.Create;
-
   // Менеджер настроек
   FSettingsManager := TICSettingsManager.Create;
 
@@ -204,11 +201,7 @@ begin
   FDestinations.Free;
   FSettingsManager.Free;
 
-  // Удалить объект окружения
-  //config.ENVIRONMENT.Free;
-  //config.ENVIRONMENT := nil;
-
-  inherited Free;
+   Free;
 end;
 
 {
@@ -222,14 +215,6 @@ begin
   log.InfoMsg('Настройка...');
 
   ini_filename := FSettingsManager.GenIniFileName();
-
-  //if not config.ENVIRONMENT.HasKey('SETTINGS_FILENAME') then
-  //begin
-  //  ini_filename := FSettingsManager.GenIniFileName();
-  //  config.ENVIRONMENT.AddStrValue('SETTINGS_FILENAME', ini_filename);
-  //end
-  //else
-  //  ini_filename := config.ENVIRONMENT.GetStrValue('SETTINGS_FILENAME');
 
   log.DebugMsgFmt('INI Файл <%s>', [ini_filename]);
   if (ini_filename <> '') and (not FileExists(ini_filename)) then
