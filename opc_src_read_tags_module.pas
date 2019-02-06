@@ -17,12 +17,20 @@ type
   { TProgForm }
 
   TProgForm = class(TForm)
+    ToEncodingComboBox: TComboBox;
+    FromEncodingComboBox: TComboBox;
+    Label1: TLabel;
+    Label2: TLabel;
     StartButton: TButton;
     TagStringGrid: TStringGrid;
     procedure FormCreate(Sender: TObject);
 
     { Заполнение грида тегами }
-    function RefreshTagList(aSettingsManager: settings.TICSettingsManager): Boolean;
+    function RefreshTagList(aSettingsManager: settings.TICSettingsManager; aFromEncoding, aToEncoding: AnsiString): Boolean;
+
+    procedure RefreshAll();
+
+    procedure StartButtonClick(Sender: TObject);
   private
 
   public
@@ -42,23 +50,12 @@ uses
 { TProgForm }
 
 procedure TProgForm.FormCreate(Sender: TObject);
-var
-  settings_manager: settings.TICSettingsManager;
 begin
-  // Чтение списка читаемых тегов из INI файла
-  settings_manager := settings.TICSettingsManager.Create;
-
-  if settings_manager.LoadSettings(INI_FILENAME) then
-  begin
-    // Заполняем грид данными тегов
-    RefreshTagList(settings_manager);
-  end;
-
-  settings_manager.Destroy();
+  RefreshAll();
 end;
 
 { Заполнение грида тегами }
-function TProgForm.RefreshTagList(aSettingsManager: settings.TICSettingsManager): Boolean;
+function TProgForm.RefreshTagList(aSettingsManager: settings.TICSettingsManager; aFromEncoding, aToEncoding: AnsiString): Boolean;
 var
   i: Integer;
   tag_names: TStringList;
@@ -80,12 +77,35 @@ begin
   begin
     TagStringGrid.Cells[1, i] := tag_names[i];
     address := aSettingsManager.GetOptionValue('SPT_961', tag_names[i]);
+    address := strfunc.EncodeString(address, aFromEncoding, aToEncoding);
     TagStringGrid.Cells[2, i] := address;
     TagStringGrid.Cells[3, i] := opc.ReadAddress(address);
   end;
 
   opc.Free;
   tag_names.Free;
+end;
+
+procedure TProgForm.RefreshAll();
+var
+  settings_manager: settings.TICSettingsManager;
+begin
+  // Чтение списка читаемых тегов из INI файла
+  settings_manager := settings.TICSettingsManager.Create;
+
+  if settings_manager.LoadSettings(INI_FILENAME) then
+  begin
+    // Заполняем грид данными тегов
+    RefreshTagList(settings_manager, FromEncodingComboBox.SelText, ToEncodingComboBox.SelText);
+  end;
+
+  settings_manager.Destroy();
+end;
+
+
+procedure TProgForm.StartButtonClick(Sender: TObject);
+begin
+  RefreshAll();
 end;
 
 end.

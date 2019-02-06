@@ -1,7 +1,7 @@
 {
 Функции работы со строками
 
-Версия: 0.0.3.2
+Версия: 0.0.4.1
 }
 unit strfunc;
 
@@ -108,6 +108,16 @@ function StrAnsiToOem(const S: AnsiString): AnsiString;
 @return Преобразованная строка в UTF8
 }
 function ToUTF8(var sStr: AnsiString): AnsiString;
+
+{
+Перекодирование AnsiString строки в AnsiString другой кодировки.
+@param sTxt Текст в AnsiString
+@param sFromEncoding Исходная кодировка
+@param sToEncoding Результирующая кодировка.
+@param sCodePage Указание кодировки
+@return Перекодированный текст
+}
+function EncodeString(sTxt: AnsiString; sFromEncoding: AnsiString; sToEncoding: AnsiString): AnsiString;
 
 implementation
 
@@ -288,6 +298,37 @@ var
 begin
   from := GuessEncoding(sStr);
   Result := ConvertEncoding(sStr, from, EncodingUTF8);
+end;
+
+{
+Перекодирование AnsiString строки в AnsiString другой кодировки.
+@param sTxt Текст в AnsiString
+@param sFromEncoding Исходная кодировка
+@param sToEncoding Результирующая кодировка.
+@param sCodePage Указание кодировки
+@return Перекодированный текст
+}
+function EncodeString(sTxt: AnsiString; sFromEncoding: AnsiString; sToEncoding: AnsiString): AnsiString;
+begin
+  Result := '';
+
+  // Приведем кодировки к нижнему регистру для использования
+  sFromEncoding := LowerCase(sFromEncoding);
+  if sFromEncoding = 'utf-8' then
+    sFromEncoding := 'utf8';
+  sToEncoding := LowerCase(sToEncoding);
+  if sToEncoding = 'utf-8' then
+    sToEncoding := 'utf8';
+
+  if sFromEncoding = sToEncoding then
+    // Если кодировки совпадают, то перекодировать не надо
+    Result := sTxt
+  //else if (sFromEncoding = 'utf8') and (sToEncoding = 'cp866') then
+  //  Result := LConvEncoding.UTF8ToCP866(sTxt);
+  //else if (sFromEncoding = 'utf8') and (sToEncoding = 'cp1251') then
+  //  Result := LConvEncoding.UTF8ToCP1251(sTxt);
+  else
+    Result := LConvEncoding.ConvertEncoding(sTxt, sFromEncoding, sToEncoding);
 end;
 
 end.
