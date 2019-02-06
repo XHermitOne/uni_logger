@@ -1,7 +1,7 @@
 {
 Функции работы со строками
 
-Версия: 0.0.4.1
+Версия: 0.0.4.2
 }
 unit strfunc;
 
@@ -323,10 +323,18 @@ begin
   if sFromEncoding = sToEncoding then
     // Если кодировки совпадают, то перекодировать не надо
     Result := sTxt
-  //else if (sFromEncoding = 'utf8') and (sToEncoding = 'cp866') then
-  //  Result := LConvEncoding.UTF8ToCP866(sTxt);
-  //else if (sFromEncoding = 'utf8') and (sToEncoding = 'cp1251') then
-  //  Result := LConvEncoding.UTF8ToCP1251(sTxt);
+  else if (sFromEncoding = 'utf8') and (sToEncoding = 'cp866') then
+    Result := LConvEncoding.UTF8ToCP866(sTxt)
+  else if (sFromEncoding = 'utf8') and (sToEncoding = 'cp1251') then
+    Result := LConvEncoding.UTF8ToCP1251(sTxt)
+  else if (sFromEncoding = 'cp1251') and (sToEncoding = 'utf8') then
+    Result := LConvEncoding.CP1251ToUTF8(sTxt)
+  else if (sFromEncoding = 'cp1251') and (sToEncoding = 'cp866') then
+    Result := LConvEncoding.UTF8ToCP866(LConvEncoding.CP1251ToUTF8(sTxt))
+  else if (sFromEncoding = 'cp866') and (sToEncoding = 'utf8') then
+    Result := LConvEncoding.CP866ToUTF8(sTxt)
+  else if (sFromEncoding = 'cp866') and (sToEncoding = 'cp1251') then
+    Result := LConvEncoding.UTF8ToCP1251(LConvEncoding.CP866ToUTF8(sTxt))
   else
     Result := LConvEncoding.ConvertEncoding(sTxt, sFromEncoding, sToEncoding);
 end;

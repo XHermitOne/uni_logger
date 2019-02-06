@@ -61,25 +61,27 @@ var
   tag_names: TStringList;
   opc: opc_server_node.TICOPCServerNode;
   address: AnsiString;
+  option_name: AnsiString;
 begin
   tag_names := aSettingsManager.GetOptionNameList('SPT_961');
   opc := opc_server_node.TICOPCServerNode.Create;
 
   for i := tag_names.Count - 1 downto 0  do
-    if strfunc.IsStrInList(tag_names[i], ['description', 'opc_server']) then
+    if strfunc.IsStrInList(tag_names[i], ['description', 'opc_server', 'type']) then
       tag_names.Delete(i)
     else if tag_names[i] = 'opc_server' then
       opc.SetOPCServerName(tag_names[i]);
 
-  TagStringGrid.RowCount := tag_names.Count;
+  TagStringGrid.RowCount := tag_names.Count + 1;
 
   for i := 0 to tag_names.Count - 1 do
   begin
-    TagStringGrid.Cells[1, i] := tag_names[i];
-    address := aSettingsManager.GetOptionValue('SPT_961', tag_names[i]);
+    option_name := tag_names[i];
+    TagStringGrid.Cells[1, i+1] := option_name;
+    address := aSettingsManager.GetOptionValue('SPT_961', option_name);
     address := strfunc.EncodeString(address, aFromEncoding, aToEncoding);
-    TagStringGrid.Cells[2, i] := address;
-    TagStringGrid.Cells[3, i] := opc.ReadAddress(address);
+    TagStringGrid.Cells[2, i+1] := address;
+    TagStringGrid.Cells[3, i+1] := opc.ReadAddress(address);
   end;
 
   opc.Free;
@@ -96,7 +98,7 @@ begin
   if settings_manager.LoadSettings(INI_FILENAME) then
   begin
     // Заполняем грид данными тегов
-    RefreshTagList(settings_manager, FromEncodingComboBox.SelText, ToEncodingComboBox.SelText);
+    RefreshTagList(settings_manager, FromEncodingComboBox.Text, ToEncodingComboBox.Text);
   end;
 
   settings_manager.Destroy();
