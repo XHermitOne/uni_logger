@@ -67,10 +67,13 @@ begin
   opc := opc_server_node.TICOPCServerNode.Create;
 
   for i := tag_names.Count - 1 downto 0  do
-    if strfunc.IsStrInList(tag_names[i], ['description', 'opc_server', 'type']) then
-      tag_names.Delete(i)
-    else if tag_names[i] = 'opc_server' then
-      opc.SetOPCServerName(tag_names[i]);
+  begin
+    option_name := tag_names[i];
+    if option_name = 'opc_server' then
+      opc.SetOPCServerName(aSettingsManager.GetOptionValue('SPT_961', option_name));
+    if strfunc.IsStrInList(option_name, ['description', 'opc_server', 'type']) then
+      tag_names.Delete(i);
+  end;
 
   TagStringGrid.RowCount := tag_names.Count + 1;
 

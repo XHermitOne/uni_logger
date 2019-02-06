@@ -1,7 +1,7 @@
 {
 Модуль поддержки настроек программы
 
-Версия: 0.0.2.1
+Версия: 0.0.2.2
 }
 unit settings;
 
@@ -98,7 +98,7 @@ var
 implementation
 
 uses
-  filefunc, log, config;
+  filefunc, log;
 
 constructor TICSettingsManager.Create;
 begin

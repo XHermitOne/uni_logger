@@ -10,7 +10,7 @@
 Выставить галки <Удаленный доступ>, <Удаленный запуск>, <Локальная активация>, <Удаленная активация> ->
 OK
 
-Версия: 0.0.2.1
+Версия: 0.0.2.2
 }
 
 unit opc_server_node;
@@ -233,7 +233,7 @@ var
   tags: TStrDictionary;
   grp: TGroup;
   tag_item: TTagItem;
-  value: AnsiString;
+  value, address: AnsiString;
 
 begin
   Result := TStringList.Create;
@@ -266,7 +266,8 @@ begin
     grp := TGroup.Create(group_name, 500, 0);
     for i := 0 to tags.Count - 1 do
     begin
-      tag_item := TTagItem.Create(tags.GetKey(i), tags.GetStrValue(tags.GetKey(i)), VT_BSTR, acRead);
+      address := tags.GetStrValue(tags.GetKey(i));
+      tag_item := TTagItem.Create(tags.GetKey(i), address, VT_BSTR, acRead);
       grp.AddTag(tag_item);
     end;
     FOPCClient.TagList.AddGroup(grp);

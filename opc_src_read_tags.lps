@@ -4,13 +4,13 @@
     <PathDelim Value="\"/>
     <Version Value="10"/>
     <BuildModes Active="Default"/>
-    <Units Count="9">
+    <Units Count="11">
       <Unit0>
         <Filename Value="opc_src_read_tags.lpr"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <CursorPos Y="20"/>
-        <UsageCount Value="60"/>
+        <UsageCount Value="65"/>
       </Unit0>
       <Unit1>
         <Filename Value="opc_src_read_tags_module.pas"/>
@@ -19,9 +19,9 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="74"/>
-        <CursorPos Y="83"/>
-        <UsageCount Value="60"/>
+        <TopLine Value="56"/>
+        <CursorPos X="55" Y="78"/>
+        <UsageCount Value="65"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit1>
@@ -30,53 +30,53 @@
         <IsPartOfProject Value="True"/>
         <TopLine Value="305"/>
         <CursorPos Y="343"/>
-        <UsageCount Value="60"/>
+        <UsageCount Value="65"/>
         <Loaded Value="True"/>
       </Unit2>
       <Unit3>
         <Filename Value="settings.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="4"/>
-        <TopLine Value="350"/>
-        <CursorPos Y="390"/>
-        <UsageCount Value="60"/>
+        <EditorIndex Value="7"/>
+        <CursorPos X="16" Y="4"/>
+        <UsageCount Value="65"/>
         <Loaded Value="True"/>
       </Unit3>
       <Unit4>
+        <Filename Value="utils\strfunc.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="6"/>
+        <TopLine Value="309"/>
+        <CursorPos X="38" Y="325"/>
+        <UsageCount Value="33"/>
+        <Loaded Value="True"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="data_ctrl\opc_server_node.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="252"/>
+        <CursorPos Y="270"/>
+        <UsageCount Value="32"/>
+        <Loaded Value="True"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="opc_client\opc_client.pas"/>
+        <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="4"/>
+        <TopLine Value="237"/>
+        <CursorPos X="39" Y="330"/>
+        <UsageCount Value="27"/>
+        <Loaded Value="True"/>
+      </Unit6>
+      <Unit7>
         <Filename Value="settings.ini"/>
         <EditorIndex Value="-1"/>
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="16"/>
+        <UsageCount Value="15"/>
         <DefaultSyntaxHighlighter Value="Ini"/>
-      </Unit4>
-      <Unit5>
-        <Filename Value="utils\strfunc.pas"/>
-        <IsPartOfProject Value="True"/>
-        <EditorIndex Value="3"/>
-        <CursorPos X="16" Y="4"/>
-        <UsageCount Value="28"/>
-        <Loaded Value="True"/>
-      </Unit5>
-      <Unit6>
-        <Filename Value="data_ctrl\opc_server_node.pas"/>
-        <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="2"/>
-        <TopLine Value="257"/>
-        <CursorPos X="70" Y="299"/>
-        <UsageCount Value="27"/>
-        <Loaded Value="True"/>
-      </Unit6>
-      <Unit7>
-        <Filename Value="opc_client\opc_client.pas"/>
-        <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <WindowIndex Value="-1"/>
-        <TopLine Value="-1"/>
-        <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="22"/>
       </Unit7>
       <Unit8>
         <Filename Value="C:\lazarus\components\lazutils\lconvencoding.pas"/>
@@ -84,130 +84,157 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="33"/>
         <CursorPos X="25" Y="73"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit8>
+      <Unit9>
+        <Filename Value="utils\dictionary.pas"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="308"/>
+        <CursorPos Y="326"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="opc_client\tag_list.pas"/>
+        <EditorIndex Value="5"/>
+        <TopLine Value="37"/>
+        <CursorPos X="13" Y="54"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+      </Unit10>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="opc_src_read_tags_module.pas"/>
-        <Caret Line="49" TopLine="18"/>
+        <Filename Value="opc_client\tag_list.pas"/>
+        <Caret Line="195" TopLine="178"/>
       </Position1>
       <Position2>
-        <Filename Value="opc_src_read_tags_module.pas"/>
-        <Caret Line="45" Column="69" TopLine="19"/>
+        <Filename Value="data_ctrl\opc_server_node.pas"/>
+        <Caret Line="286" TopLine="253"/>
       </Position2>
       <Position3>
-        <Filename Value="settings.pas"/>
-        <Caret Line="327" Column="14" TopLine="294"/>
+        <Filename Value="opc_client\tag_list.pas"/>
+        <Caret Line="131" Column="55" TopLine="169"/>
       </Position3>
       <Position4>
-        <Filename Value="opc_src_read_tags_module.pas"/>
-        <Caret Line="13" Column="11"/>
+        <Filename Value="opc_client\tag_list.pas"/>
+        <Caret Line="190" Column="11" TopLine="169"/>
       </Position4>
       <Position5>
-        <Filename Value="settings.pas"/>
-        <Caret Line="317" TopLine="294"/>
+        <Filename Value="opc_client\tag_list.pas"/>
+        <Caret Line="198" Column="11" TopLine="170"/>
       </Position5>
       <Position6>
-        <Filename Value="settings.pas"/>
-        <Caret Line="15" Column="31"/>
+        <Filename Value="opc_client\tag_list.pas"/>
+        <Caret Line="208" Column="13" TopLine="180"/>
       </Position6>
       <Position7>
-        <Filename Value="settings.pas"/>
-        <Caret Line="89" TopLine="69"/>
+        <Filename Value="opc_client\tag_list.pas"/>
+        <Caret Line="219" Column="13" TopLine="191"/>
       </Position7>
       <Position8>
-        <Filename Value="settings.pas"/>
-        <Caret Line="326" Column="3" TopLine="293"/>
+        <Filename Value="opc_client\tag_list.pas"/>
+        <Caret Line="54" Column="13" TopLine="37"/>
       </Position8>
       <Position9>
-        <Filename Value="settings.pas"/>
-        <Caret Line="327" Column="28" TopLine="295"/>
+        <Filename Value="opc_client\tag_list.pas"/>
+        <Caret Line="69" Column="42" TopLine="41"/>
       </Position9>
       <Position10>
-        <Filename Value="opc_src_read_tags_module.pas"/>
-        <Caret Line="72" Column="42" TopLine="37"/>
+        <Filename Value="opc_client\tag_list.pas"/>
+        <Caret Line="190" Column="11" TopLine="162"/>
       </Position10>
       <Position11>
-        <Filename Value="opc_src_read_tags_module.pas"/>
-        <Caret Line="74" TopLine="40"/>
+        <Filename Value="opc_client\tag_list.pas"/>
+        <Caret Line="198" Column="11" TopLine="170"/>
       </Position11>
       <Position12>
-        <Filename Value="opc_src_read_tags_module.pas"/>
-        <Caret Line="67" Column="39" TopLine="40"/>
+        <Filename Value="opc_client\tag_list.pas"/>
+        <Caret Line="208" Column="13" TopLine="180"/>
       </Position12>
       <Position13>
-        <Filename Value="opc_src_read_tags_module.pas"/>
-        <Caret Line="71" Column="44" TopLine="40"/>
+        <Filename Value="opc_client\tag_list.pas"/>
+        <Caret Line="219" Column="13" TopLine="191"/>
       </Position13>
       <Position14>
-        <Filename Value="opc_src_read_tags_module.pas"/>
-        <Caret Line="68" Column="35" TopLine="39"/>
+        <Filename Value="opc_client\opc_client.pas"/>
+        <Caret Line="533" Column="34" TopLine="519"/>
       </Position14>
       <Position15>
-        <Filename Value="opc_src_read_tags_module.pas"/>
-        <Caret Line="77" Column="5" TopLine="40"/>
+        <Filename Value="opc_client\opc_client.pas"/>
+        <Caret Line="403" TopLine="386"/>
       </Position15>
       <Position16>
-        <Filename Value="opc_src_read_tags_module.pas"/>
-        <Caret Line="85" Column="5" TopLine="49"/>
+        <Filename Value="data_ctrl\opc_server_node.pas"/>
+        <Caret Line="270" TopLine="252"/>
       </Position16>
       <Position17>
-        <Filename Value="opc_src_read_tags_module.pas"/>
-        <Caret Line="86" Column="5" TopLine="86"/>
+        <Filename Value="opc_client\opc_client.pas"/>
+        <Caret Line="403" TopLine="386"/>
       </Position17>
       <Position18>
-        <Filename Value="opc_src_read_tags_module.pas"/>
-        <Caret Line="87" Column="5" TopLine="87"/>
+        <Filename Value="opc_client\opc_client.pas"/>
+        <Caret Line="404" TopLine="386"/>
       </Position18>
       <Position19>
-        <Filename Value="opc_src_read_tags_module.pas"/>
-        <Caret Line="88" Column="5" TopLine="88"/>
+        <Filename Value="opc_client\opc_client.pas"/>
+        <Caret Line="405" TopLine="386"/>
       </Position19>
       <Position20>
-        <Filename Value="opc_src_read_tags_module.pas"/>
-        <Caret Line="90" Column="5" TopLine="90"/>
+        <Filename Value="opc_client\opc_client.pas"/>
+        <Caret Line="406" TopLine="386"/>
       </Position20>
       <Position21>
-        <Filename Value="opc_src_read_tags_module.pas"/>
-        <Caret Line="99" Column="70" TopLine="72"/>
+        <Filename Value="opc_client\opc_client.pas"/>
+        <Caret Line="407" TopLine="386"/>
       </Position21>
       <Position22>
-        <Filename Value="utils\strfunc.pas"/>
-        <Caret Line="325" Column="19" TopLine="295"/>
+        <Filename Value="opc_client\opc_client.pas"/>
+        <Caret Line="409" TopLine="386"/>
       </Position22>
       <Position23>
-        <Filename Value="utils\strfunc.pas"/>
-        <Caret Line="4" Column="22"/>
+        <Filename Value="opc_client\opc_client.pas"/>
+        <Caret Line="410" TopLine="386"/>
       </Position23>
       <Position24>
-        <Filename Value="data_ctrl\opc_server_node.pas"/>
-        <Caret Line="32" Column="70" TopLine="5"/>
+        <Filename Value="opc_client\opc_client.pas"/>
+        <Caret Line="411" TopLine="386"/>
       </Position24>
       <Position25>
-        <Filename Value="utils\strfunc.pas"/>
-        <Caret Line="330" TopLine="295"/>
+        <Filename Value="opc_client\opc_client.pas"/>
+        <Caret Line="412" TopLine="386"/>
       </Position25>
       <Position26>
-        <Filename Value="utils\strfunc.pas"/>
-        <Caret Line="335" Column="5" TopLine="295"/>
+        <Filename Value="opc_client\opc_client.pas"/>
+        <Caret Line="413" TopLine="386"/>
       </Position26>
       <Position27>
-        <Filename Value="utils\strfunc.pas"/>
-        <Caret Line="337" Column="41" TopLine="298"/>
+        <Filename Value="opc_client\opc_client.pas"/>
+        <Caret Line="414" TopLine="386"/>
       </Position27>
       <Position28>
-        <Filename Value="opc_src_read_tags_module.pas"/>
-        <Caret Line="82" Column="43" TopLine="57"/>
+        <Filename Value="opc_client\opc_client.pas"/>
+        <Caret Line="415" TopLine="387"/>
       </Position28>
       <Position29>
-        <Filename Value="opc_src_read_tags_module.pas"/>
-        <Caret Line="75" Column="48" TopLine="57"/>
+        <Filename Value="opc_client\opc_client.pas"/>
+        <Caret Line="416" TopLine="389"/>
       </Position29>
       <Position30>
-        <Filename Value="opc_src_read_tags_module.pas"/>
-        <Caret Line="101" TopLine="74"/>
+        <Filename Value="opc_client\opc_client.pas"/>
+        <Caret Line="418" TopLine="390"/>
       </Position30>
     </JumpHistory>
   </ProjectSession>
+  <Debugging>
+    <BreakPoints Count="1">
+      <Item1>
+        <Kind Value="bpkSource"/>
+        <WatchScope Value="wpsLocal"/>
+        <WatchKind Value="wpkWrite"/>
+        <Source Value="data_ctrl\opc_server_node.pas"/>
+        <Line Value="270"/>
+      </Item1>
+    </BreakPoints>
+  </Debugging>
 </CONFIG>
