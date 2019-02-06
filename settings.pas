@@ -1,7 +1,7 @@
 {
 Модуль поддержки настроек программы
 
-Версия: 0.0.1.5
+Версия: 0.0.2.1
 }
 unit settings;
 
@@ -12,7 +12,7 @@ interface
 uses
   {INIFiles - модуль который содержит класс для работы с INI-файлами}
   Classes, SysUtils, INIFiles, StrUtils,
-  inifunc, dictionary;
+  inifunc, dictionary, strfunc;
 
 const DEFAULT_SETTINGS_INI_FILENAME: AnsiString = 'settings.ini';
 
@@ -54,7 +54,7 @@ type
     @param sSectionName Наименование секции
     @return Словарь описания
     }
-    function BuildSection(sSectionName: Ansistring): TStrDictionary;
+    function BuildSection(sSectionName: AnsiString): TStrDictionary;
 
     {
     Получить значение опции
@@ -62,7 +62,33 @@ type
     @param sOptionName Наименование параметра
     @return Значение параметра в виде строки
     }
-    function GetOptionValue(sSectionName: Ansistring; sOptionName: Ansistring): AnsiString;
+    function GetOptionValue(sSectionName: AnsiString; sOptionName: AnsiString): AnsiString;
+
+    {
+    Получить список имен опций одной секции
+    @param sSectionName Наименование секции
+    @return Список имен параметров указанной секции
+    }
+    function GetOptionNameList(sSectionName: AnsiString): TStringList;
+
+    {
+    Получить список имен секций
+    @return Список имен секций
+    }
+    function GetSectionNameList(): TStringList;
+    {
+    Получить список имен опций одной секции
+    @param sSectionName Наименование секции
+    @return Список имен параметров указанной секции
+    }
+    function GetOptionNames(sSectionName: AnsiString): TArrayOfString;
+
+    {
+    Получить список имен секций
+    @return Список имен секций
+    }
+    function GetSectionNames(): TArrayOfString;
+
   end;
 
 var
@@ -72,7 +98,7 @@ var
 implementation
 
 uses
-  filefunc, log, config, strfunc;
+  filefunc, log, config;
 
 constructor TICSettingsManager.Create;
 begin
@@ -286,6 +312,81 @@ end;
 function TICSettingsManager.GetOptionValue(sSectionName: Ansistring; sOptionName: Ansistring): AnsiString;
 begin
   Result := FContent.GetOptionValue(sSectionName, sOptionName);
+end;
+
+{
+Получить список имен опций одной секции
+@param sSectionName Наименование секции
+@return Список имен параметров указанной секции
+}
+function TICSettingsManager.GetOptionNameList(sSectionName: AnsiString): TStringList;
+var
+  section: TStrDictionary;
+begin
+  if FContent.HasKey(sSectionName) then
+  begin
+    section := FContent.GetByName(sSectionName) As TStrDictionary;
+    if section <> nil then
+    begin
+      Result := section.GetKeys();
+    end;
+  end;
+end;
+
+{
+Получить список имен секций
+@return Список имен секций
+}
+function TICSettingsManager.GetSectionNameList(): TStringList;
+begin
+  Result := FContent.GetKeys();
+end;
+
+{
+Получить список имен опций одной секции
+@param sSectionName Наименование секции
+@return Список имен параметров указанной секции
+}
+function TICSettingsManager.GetOptionNames(sSectionName: AnsiString): TArrayOfString;
+var
+  i: Integer;
+  option_names: TStringList;
+  section: TStrDictionary;
+begin
+
+  if FContent.HasKey(sSectionName) then
+  begin
+    section := FContent.GetByName(sSectionName) As TStrDictionary;
+    if section <> nil then
+    begin
+      // Result := section.GetStrValue(sOptionName);
+      option_names := section.GetKeys();
+
+      SetLength(Result, option_names.Count);
+      for i := 0 to option_names.Count - 1 do
+        Result[i] := option_names[i];
+
+      option_names.Free;
+    end;
+  end;
+end;
+
+{
+Получить список имен секций
+@return Список имен секций
+}
+function TICSettingsManager.GetSectionNames(): TArrayOfString;
+var
+  i: Integer;
+  section_names: TStringList;
+begin
+  section_names := FContent.GetKeys();
+
+  SetLength(Result, section_names.Count);
+  for i := 0 to section_names.Count - 1 do
+    Result[i] := section_names[i];
+
+  section_names.Free;
 end;
 
 end.

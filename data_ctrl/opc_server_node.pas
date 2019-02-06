@@ -10,7 +10,7 @@
 Выставить галки <Удаленный доступ>, <Удаленный запуск>, <Локальная активация>, <Удаленная активация> ->
 OK
 
-Версия: 0.0.1.2
+Версия: 0.0.2.1
 }
 
 unit opc_server_node;
@@ -59,7 +59,7 @@ type
 
     {
     Фунция чтения данных
-    @param sValues Список строк адресов читаемых значений
+    @param aValues Список строк адресов читаемых значений
     @param Список строк прочитанных значений
     }
     function Read(aValues: TStringList): TStringList; override;
@@ -70,10 +70,16 @@ type
     function ReadAll(): TStringList; override;
     {
     Функция чтения данных по адресам
-    @param sValues Массив адресов читаемых значений
+    @param aValues Массив адресов читаемых значений
     @param Список строк прочитанных значений
     }
     function ReadAddresses(aValues: Array Of String): TStringList; override;
+    {
+    Функция чтения значения тега по адресу
+    @param aAddress Адрес читаемого значения тега
+    @param Прочитанное значение в виде строки
+    }
+    function ReadAddress(aAddress: AnsiString): AnsiString;
     {
     Фунция записи данных
     @param aValues Список записываемых значений
@@ -288,6 +294,27 @@ begin
     end;
     log.FatalMsgFmt('Ошибка чтения значений адресов в <%s> %s', [ClassName, log_tags]);
   end;
+end;
+
+{
+Функция чтения значения тега по адресу
+@param aAddress Адрес читаемого значения тега
+@param Прочитанное значение в виде строки
+}
+function TICOPCServerNode.ReadAddress(aAddress: AnsiString): AnsiString;
+var
+  addresses: Array Of String;
+  values: TStringList;
+begin
+  Result := '';
+  SetLength(addresses, 1);
+  addresses[0] := aAddress;
+
+  values := ReadAddresses(addresses);
+  if values.Count and values.Count = 1 then
+    Result := values[0];
+
+  values.Free;
 end;
 
 {

@@ -1,0 +1,55 @@
+object ProgForm: TProgForm
+  Left = 516
+  Height = 544
+  Top = 231
+  Width = 843
+  Caption = 'ProgForm'
+  ClientHeight = 544
+  ClientWidth = 843
+  DesignTimePPI = 120
+  OnCreate = FormCreate
+  LCLVersion = '1.8.0.6'
+  object TagStringGrid: TStringGrid
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = StartButton
+    Left = 6
+    Height = 484
+    Top = 6
+    Width = 831
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    ColCount = 4
+    Columns = <    
+      item
+        Title.Caption = 'Тег'
+        Width = 100
+      end    
+      item
+        Title.Caption = 'Адрес'
+        Width = 350
+      end    
+      item
+        Title.Caption = 'Значение'
+        Width = 300
+      end>
+    DefaultColWidth = 20
+    TabOrder = 0
+  end
+  object StartButton: TButton
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 736
+    Height = 42
+    Top = 496
+    Width = 101
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    Caption = 'Запуск'
+    TabOrder = 1
+  end
+end

@@ -91,7 +91,7 @@ uses
     sysfunc;
 
 const
-  DEFAULT_LOG_FILENAME: AnsiString = 'uni_reader.log';
+  DEFAULT_LOG_FILENAME: AnsiString = 'uni_logger.log';
 
   { Цвета в консоли Linux }
   RED_COLOR_TEXT: AnsiString = Chr($1b) + '[31;1m';       // red
