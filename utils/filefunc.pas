@@ -1,7 +1,7 @@
 {
 Функции работы с файлами.
 
-Версия: 0.0.1.2
+Версия: 0.0.2.1
 }
 unit filefunc;
 
@@ -39,6 +39,9 @@ function CreateEmptyFileIfNotExists(sPath: AnsiString): Boolean;
 
 { Нормализовать путь до файла }
 function NormalPathFileName(sPath: AnsiString): AnsiString;
+
+{ Преобразование Даты-времени }
+function DateTimeToFileTime(dtFileTime: TDateTime): TFileTime;
 
 implementation
 
@@ -175,6 +178,22 @@ begin
   // Замена двойных слешей
   sPath := StringReplace(sPath, PathDelim + PathDelim, PathDelim, [rfReplaceAll]);
   Result := ExpandFileName(sPath);
+end;
+
+{
+Преобразование Даты-времени
+}
+function DateTimeToFileTime(dtFileTime: TDateTime): TFileTime;
+var
+  LocalFileTime, Ft: TFileTime;
+  SystemTime: TSystemTime;
+begin
+  Result.dwLowDateTime  := 0;
+  Result.dwHighDateTime := 0;
+  DateTimeToSystemTime(dtFileTime, SystemTime);
+  SystemTimeToFileTime(SystemTime, LocalFileTime);
+  LocalFileTimeToFileTime(LocalFileTime, Ft);
+  Result := Ft;
 end;
 
 end.
