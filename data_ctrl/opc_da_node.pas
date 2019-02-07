@@ -65,35 +65,35 @@ type
 
     {
     Фунция чтения данных
-    @param aAddresses Список адресов для чтения
-    @param aTime: Время актуальности за которое необходимо получить данные.
+    @param sAddresses Список адресов для чтения
+    @param dtTime: Время актуальности за которое необходимо получить данные.
                   Если не определено, то берется текущее системное время.
     @return Список прочитанных значений.
     }
-    function Read(aAddresses: TStringList; aTime: TDateTime = 0): TStringList; override;
+    function Read(sAddresses: TStringList; dtTime: TDateTime = 0): TStringList; override;
     {
     Чтение значений по адресам
-    @param aAddresses Массив адресов для чтения
-    @param aTime: Время актуальности за которое необходимо получить данные.
+    @param sAddresses Массив адресов для чтения
+    @param dtTime: Время актуальности за которое необходимо получить данные.
                   Если не определено, то берется текущее системное время.
     @return Список прочитанных значений.
     }
-    function ReadAddresses(aAddresses: Array Of String; aTime: TDateTime = 0): TStringList; override;
+    function ReadAddresses(sAddresses: Array Of String; dtTime: TDateTime = 0): TStringList; override;
     {
     Чтение значения по адресу
-    @param aAddress Строка адреса для чтения
-    @param aTime: Время актуальности за которое необходимо получить данные.
+    @param sAddress Строка адреса для чтения
+    @param dtTime: Время актуальности за которое необходимо получить данные.
                   Если не определено, то берется текущее системное время.
     @return Прочитанное значение в виде строки.
     }
-    function ReadAddress(aAddress: AnsiString; aTime: TDateTime = 0): AnsiString; override;
+    function ReadAddress(sAddress: AnsiString; dtTime: TDateTime = 0): AnsiString; override;
     {
     Чтение всех внутренних данных, описанных в свойствах.
-    @param aTime: Время актуальности за которое необходимо получить данные.
+    @param dtTime: Время актуальности за которое необходимо получить данные.
                   Если не определено, то берется текущее системное время.
     @return Список прочитанных значений.
     }
-    function ReadAll(aTime: TDateTime = 0): TStringList; override;
+    function ReadAll(dtTime: TDateTime = 0): TStringList; override;
 
 end;
 
@@ -146,12 +146,12 @@ end;
 
 {
 Фунция чтения данных
-@param aAddresses Список адресов для чтения
-@param aTime: Время актуальности за которое необходимо получить данные.
+@param sAddresses Список адресов для чтения
+@param dtTime: Время актуальности за которое необходимо получить данные.
               Если не определено, то берется текущее системное время.
 @return Список прочитанных значений.
 }
-function TICOPCDANode.Read(aAddresses: TStringList; aTime: TDateTime): TStringList;
+function TICOPCDANode.Read(sAddresses: TStringList; dtTime: TDateTime): TStringList;
 var
   i: Integer;
   tags: TStrDictionary;
@@ -203,11 +203,11 @@ end;
 
 {
 Чтение всех внутренних данных, описанных в свойствах.
-@param aTime: Время актуальности за которое необходимо получить данные.
+@param dtTime: Время актуальности за которое необходимо получить данные.
               Если не определено, то берется текущее системное время.
 @return Список прочитанных значений.
 }
-function TICOPCDANode.ReadAll(aTime: TDateTime): TStringList;
+function TICOPCDANode.ReadAll(dtTime: TDateTime): TStringList;
 var
   i: Integer;
   tag_name: AnsiString;
@@ -231,12 +231,12 @@ end;
 
 {
 Чтение значений по адресам
-@param aAddresses Массив адресов для чтения
-@param aTime: Время актуальности за которое необходимо получить данные.
+@param sAddresses Массив адресов для чтения
+@param dtTime: Время актуальности за которое необходимо получить данные.
               Если не определено, то берется текущее системное время.
 @return Список прочитанных значений.
 }
-function TICOPCDANode.ReadAddresses(aAddresses: Array Of String; aTime: TDateTime): TStringList;
+function TICOPCDANode.ReadAddresses(sAddresses: Array Of String; dtTime: TDateTime): TStringList;
 var
   i: Integer;
   log_tags: AnsiString;
@@ -259,13 +259,13 @@ begin
     else
       Properties := TStrDictionary.Create;
 
-    for i := 0 to Length(aAddresses) - 1 do
+    for i := 0 to Length(sAddresses) - 1 do
     begin
-      log_tags := log_tags + Format('tag%d', [i]) + ' = ' + AnsiString(aAddresses[i]) + LineEnding;
+      log_tags := log_tags + Format('tag%d', [i]) + ' = ' + AnsiString(sAddresses[i]) + LineEnding;
       // log.DebugMsg(Format('tag%d', [i]) + ' = ' + AnsiString(aValues[i]));
       Properties.AddStrValue(Format('tag%d', [i]),
                              { Преобразование элемента списка параметров в AnsiString:}
-                             AnsiString(aAddresses[i]));
+                             AnsiString(sAddresses[i]));
     end;
 
     // Сначала адреса указать в свойствах
@@ -310,19 +310,19 @@ end;
 
 {
 Чтение значения по адресу
-@param aAddress Строка адреса для чтения
-@param aTime: Время актуальности за которое необходимо получить данные.
+@param sAddress Строка адреса для чтения
+@param dtTime: Время актуальности за которое необходимо получить данные.
               Если не определено, то берется текущее системное время.
 @return Прочитанное значение в виде строки.
 }
-function TICOPCDANode.ReadAddress(aAddress: AnsiString; aTime: TDateTime): AnsiString;
+function TICOPCDANode.ReadAddress(sAddress: AnsiString; dtTime: TDateTime): AnsiString;
 var
   addresses: Array Of String;
   values: TStringList;
 begin
   Result := '';
   SetLength(addresses, 1);
-  addresses[0] := aAddress;
+  addresses[0] := sAddress;
 
   values := ReadAddresses(addresses);
   if values.Count and values.Count = 1 then

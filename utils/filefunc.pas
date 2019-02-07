@@ -49,6 +49,10 @@ function NormalPathFileName(sPath: AnsiString): AnsiString;
 function DateTimeToFileTime(dtFileTime: TDateTime): TFileTime;
 {$ENDIF}
 
+{$IFDEF windows}
+function FileTimeToDateTime(const ftFileTime: TFileTime): TDateTime;
+{$ENDIF}
+
 implementation
 
 uses
@@ -201,6 +205,17 @@ begin
   SystemTimeToFileTime(SystemTime, LocalFileTime);
   LocalFileTimeToFileTime(LocalFileTime, Ft);
   Result := Ft;
+end;
+{$ENDIF}
+
+{$IFDEF windows}
+function FileTimeToDateTime(const ftFileTime: TFileTime): TDateTime;
+const
+  FileTimeBase = -109205.0;
+  FileTimeStep: Extended = 24.0 * 60.0 * 60.0 * 1000.0 * 1000.0 * 10.0; // 100 nSek per Day
+begin
+  Result := Int64(ftFileTime) / FileTimeStep;
+  Result := Result + FileTimeBase;
 end;
 {$ENDIF}
 

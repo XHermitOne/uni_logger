@@ -42,7 +42,7 @@ implementation
 uses
   log,
   // Компоненты - источники данных
-  opc_da_node,
+  opc_da_node, opc_hda_node,
   // Компоненты - приемники данных
   postgresql_tab_wide;
 
@@ -59,6 +59,11 @@ begin
   begin
     { Создание и инициализация OPC DA сервера }
     Result := TICOPCDANode.Create;
+  end
+  else if sTypeName = opc_hda_node.OPC_HDA_NODE_TYPE then
+  begin
+    { Создание и инициализация OPC DA сервера }
+    Result := TICOPCHDANode.Create;
   end
   //else if sTypeName = remoute_opc_node.REMOUTE_OPC_NODE_TYPE then
   //begin

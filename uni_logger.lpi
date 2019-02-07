@@ -35,7 +35,7 @@
         <PackageName Value="FCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="28">
+    <Units Count="36">
       <Unit0>
         <Filename Value="uni_logger.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -153,6 +153,38 @@
         <Filename Value="data_ctrl\opc_da_node.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit27>
+      <Unit28>
+        <Filename Value="data_ctrl\opc_hda_node.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit28>
+      <Unit29>
+        <Filename Value="opcdelphi\OPC_AE.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit29>
+      <Unit30>
+        <Filename Value="opcdelphi\OPCCOMN.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit30>
+      <Unit31>
+        <Filename Value="opcdelphi\OPCDA.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit31>
+      <Unit32>
+        <Filename Value="opcdelphi\OPCerror.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit32>
+      <Unit33>
+        <Filename Value="opcdelphi\OPCHDA.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit33>
+      <Unit34>
+        <Filename Value="opcdelphi\OPCSEC.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit34>
+      <Unit35>
+        <Filename Value="opcdelphi\OPCtypes.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit35>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -163,7 +195,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="data_ctrl;opc_client;utils"/>
+      <OtherUnitFiles Value="data_ctrl;opc_client;utils;opcdelphi"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
