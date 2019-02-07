@@ -66,7 +66,7 @@
 
 47 	белый
 
-Версия: 0.0.6.6
+Версия: 0.0.7.1
 
 ВНИМАНИЕ! Вывод сообщений под Linux проверять только в терминале.
 Только он выводит корректно сообщения.
@@ -140,15 +140,25 @@ procedure PrintColorTxt(sTxt: AnsiString; sColor: AnsiString);
 Инициализация файла лога.
 @param sLogFileName Имя файла лога. Если имя файла не определено, то пробуем его взять из оружения системы: Ключ LOG_FILENAME
 }
-function OpenLog(sLogFileName: AnsiString = ''): boolean;
+function OpenLog(sLogFileName: AnsiString = ''): Boolean;
 { Закрыть файл лога. }
-function CloseLog(): boolean;
+function CloseLog(): Boolean;
 {
 Регистрация сообщения в файле лога.
 @param sMsg Регистрируемое сообщение
 @param bForceLog Признак принудительной регистрации
 }
-function LogMsg(sMsg: AnsiString = ''): boolean;
+function LogMsg(sMsg: AnsiString = ''): Boolean;
+
+{
+Регистрация сообщения в файле лога через механизм Application.Log
+(используется для служб Windows).
+@param aEventType: Тип регистрируемого событий.
+                   М.б. etDebug, etInfo, etWarning, etError, etCustom
+@param sMsg Регистрируемое сообщение
+@param bForceLog Признак принудительной регистрации
+}
+function AppLogMsg(aEventType: TEventType; sMsg: AnsiString = ''; bForceLog: Boolean=False): Boolean;
 
 {
 Вывести ОТЛАДОЧНУЮ информацию.
@@ -156,42 +166,42 @@ function LogMsg(sMsg: AnsiString = ''): boolean;
 @param bForcePrint Принудительно вывести на экран
 @param bForceLog Принудительно записать в журнале
 }
-procedure DebugMsg(sMsg: AnsiString; bForcePrint: boolean = False; bForceLog: boolean = False);
+procedure DebugMsg(sMsg: AnsiString; bForcePrint: Boolean = False; bForceLog: Boolean = False);
 {
 Вывести ТЕКСТОВУЮ информацию.
 @param sMsg Текстовое сообщение
 @param bForcePrint Принудительно вывести на экран
 @param bForceLog Принудительно записать в журнале
 }
-procedure InfoMsg(sMsg: AnsiString; bForcePrint: boolean = False; bForceLog: boolean = False);
+procedure InfoMsg(sMsg: AnsiString; bForcePrint: Boolean = False; bForceLog: Boolean = False);
 {
 Вывести информацию об ОШИБКЕ.
 @param sMsg Текстовое сообщение
 @param bForcePrint Принудительно вывести на экран
 @param bForceLog Принудительно записать в журнале
 }
-procedure ErrorMsg(sMsg: AnsiString; bForcePrint: boolean = False; bForceLog: boolean = False);
+procedure ErrorMsg(sMsg: AnsiString; bForcePrint: Boolean = False; bForceLog: Boolean = False);
 {
 Вывести ПРЕДУПРЕЖДЕНИЕ.
 @param sMsg Текстовое сообщение
 @param bForcePrint Принудительно вывести на экран
 @param bForceLog Принудительно записать в журнале
 }
-procedure WarningMsg(sMsg: AnsiString; bForcePrint: boolean = False; bForceLog: boolean = False);
+procedure WarningMsg(sMsg: AnsiString; bForcePrint: Boolean = False; bForceLog: Boolean = False);
 {
 Вывести СООБЩЕНИЕ об ИСКЛЮЧИТЕЛЬНОЙ СИТУАЦИИ.
 @param sMsg Текстовое сообщение
 @param bForcePrint Принудительно вывести на экран
 @param bForceLog Принудительно записать в журнале
 }
-procedure FatalMsg(sMsg: AnsiString; bForcePrint: boolean = False; bForceLog: boolean = False);
+procedure FatalMsg(sMsg: AnsiString; bForcePrint: Boolean = False; bForceLog: Boolean = False);
 {
 Вывести СЕРВИСНУЮ информацию.
 @param sMsg Текстовое сообщение
 @param bForcePrint Принудительно вывести на экран
 @param bForceLog Принудительно записать в журнале
 }
-procedure ServiceMsg(sMsg: AnsiString; bForcePrint: boolean = False; bForceLog: boolean = False);
+procedure ServiceMsg(sMsg: AnsiString; bForcePrint: Boolean = False; bForceLog: Boolean = False);
 
 {
 Вывести ОТЛАДОЧНУЮ информацию с форматированным текстовым сообщением.
@@ -283,7 +293,7 @@ begin
 
   if not Result then
     if not DEFAULT_APP_LOG_MODE then
-    //  Application.Log(etWarning, EncodeUnicodeString('Режим отладки отключен', GetDefaultEncoding()))
+    //  AppLogMsg(etWarning, 'Режим отладки отключен')
     //else
       PrintColorTxt('Режим отладки отключен', YELLOW_COLOR_TEXT);
 end;
@@ -302,7 +312,7 @@ begin
 
   if not Result then
     //if not DEFAULT_APP_LOG_MODE then
-    //  Application.Log(etWarning, EncodeUnicodeString('Режим журналирования отключен', GetDefaultEncoding()))
+    //  AppLogMsg(etWarning, 'Режим журналирования отключен')
     //else
       PrintColorTxt('Режим журналирования отключен', YELLOW_COLOR_TEXT);
 
@@ -336,7 +346,7 @@ begin
     end
     else
       if DEFAULT_APP_LOG_MODE then
-        Application.Log(etWarning, EncodeUnicodeString(Format('Не поддерживаемая кодировка <%s>', [sCodePage]), GetDefaultEncoding()))
+        AppLogMsg(etWarning, Format('Не поддерживаемая кодировка <%s>', [sCodePage]))
       else
         PrintColorTxt(Format('Не поддерживаемая кодировка <%s>', [sCodePage]), YELLOW_COLOR_TEXT);
 end;
@@ -476,6 +486,28 @@ begin
 end;
 
 {
+Регистрация сообщения в файле лога через механизм Application.Log
+(используется для служб Windows).
+@param aEventType: Тип регистрируемого событий.
+                   М.б. etDebug, etInfo, etWarning, etError, etCustom
+@param sMsg Регистрируемое сообщение
+@param bForceLog Признак принудительной регистрации
+}
+function AppLogMsg(aEventType: TEventType; sMsg: AnsiString = ''; bForceLog: Boolean=False): Boolean;
+begin
+  Result := False;
+  if DEFAULT_APP_LOG_MODE then
+  begin
+    try
+      Application.Log(aEventType, EncodeUnicodeString(sMsg, GetDefaultEncoding()));
+      Result := True;
+    except
+      Result := False;
+    end;
+  end;
+end;
+
+{
 Вывести ОТЛАДОЧНУЮ информацию.
 @param sMsg Текстовое сообщение
 @param bForcePrint Принудительно вывести на экран
@@ -488,7 +520,7 @@ begin
 
     if (GetLogMode()) or (bForceLog) then
       if DEFAULT_APP_LOG_MODE then
-        Application.Log(etDebug, EncodeUnicodeString(sMsg, GetDefaultEncoding()))
+        AppLogMsg(etDebug, sMsg)
       else
         LogMsg('DEBUG. ' + sMsg);
 end;
@@ -505,7 +537,7 @@ begin
       PrintColorTxt('INFO. ' + sMsg, GREEN_COLOR_TEXT);
     if (GetLogMode()) or (bForceLog) then
       if DEFAULT_APP_LOG_MODE then
-        Application.Log(etInfo, EncodeUnicodeString(sMsg, GetDefaultEncoding()))
+        AppLogMsg(etInfo, sMsg)
       else
         LogMsg('INFO. ' + sMsg);
 end;
@@ -522,7 +554,7 @@ begin
       PrintColorTxt('ERROR. ' + sMsg, RED_COLOR_TEXT);
     if (GetLogMode()) or (bForceLog) then
       if DEFAULT_APP_LOG_MODE then
-        Application.Log(etError, EncodeUnicodeString(sMsg, GetDefaultEncoding()))
+        AppLogMsg(etError, sMsg)
       else
         LogMsg('ERROR. ' + sMsg);
 end;
@@ -539,7 +571,7 @@ begin
       PrintColorTxt('WARNING. ' + sMsg, YELLOW_COLOR_TEXT);
     if (GetLogMode()) or (bForceLog) then
       if DEFAULT_APP_LOG_MODE then
-        Application.Log(etWarning, EncodeUnicodeString(sMsg, GetDefaultEncoding()))
+        AppLogMsg(etWarning, sMsg)
       else
         LogMsg('WARNING. ' + sMsg);
 end;
@@ -570,7 +602,7 @@ begin
       end;
     if (GetLogMode()) or (bForceLog) then
       if DEFAULT_APP_LOG_MODE then
-        Application.Log(etError, EncodeUnicodeString(msg + '\n' + except_msg, GetDefaultEncoding()))
+        AppLogMsg(etError, msg + '\n' + except_msg)
       else
         begin
           LogMsg(msg);
@@ -590,7 +622,7 @@ begin
       PrintColorTxt('SERVICE. ' + sMsg, CYAN_COLOR_TEXT);
     if (GetLogMode()) or (bForceLog) then
       if DEFAULT_APP_LOG_MODE then
-        Application.Log(etCustom, EncodeUnicodeString(sMsg, GetDefaultEncoding()))
+        AppLogMsg(etCustom, sMsg)
       else
         LogMsg('SERVICE. ' + sMsg);
 end;

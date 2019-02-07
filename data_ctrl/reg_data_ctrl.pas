@@ -1,7 +1,7 @@
 {
 Функции регистрации объектов источников данных
 
-Версия: 0.0.1.2
+Версия: 0.0.2.2
 }
 unit reg_data_ctrl;
 
@@ -10,7 +10,8 @@ unit reg_data_ctrl;
 interface
 
 uses
-  Classes, SysUtils, obj_proto, dictionary;
+  Classes, SysUtils,
+  obj_proto, dictionary;
 
 {
 Функция создания объекта контроллера данных по имени типа
@@ -39,7 +40,12 @@ function CreateRegDataCtrlArgs(oParent: TObject; sTypeName: AnsiString; const aA
 implementation
 
 uses
-  log, remoute_opc_node, opc_server_node, postgresql_tab_wide;
+  log,
+  // Компоненты - источники данных
+  opc_da_node,
+  // Компоненты - приемники данных
+  postgresql_tab_wide;
+
 {
 Функция создания объекта контроллера данных по имени типа.
 
@@ -49,16 +55,16 @@ uses
 }
 function CreateRegDataCtrl(oParent: TObject; sTypeName: AnsiString; Properties: TStrDictionary): TICObjectProto;
 begin
-  if sTypeName = opc_server_node.OPC_SERVER_NODE_TYPE then
+  if sTypeName = opc_da_node.OPC_DA_NODE_TYPE then
   begin
     { Создание и инициализация OPC DA сервера }
-    Result := TICOPCServerNode.Create;
+    Result := TICOPCDANode.Create;
   end
-  else if sTypeName = remoute_opc_node.REMOUTE_OPC_NODE_TYPE then
-  begin
-    { Создание и инициализация OPC DA сервера }
-    Result := TICRemouteOPCNode.Create;
-  end
+  //else if sTypeName = remoute_opc_node.REMOUTE_OPC_NODE_TYPE then
+  //begin
+  //  { Создание и инициализация OPC DA сервера }
+  //  Result := TICRemouteOPCNode.Create;
+  //end
   else if sTypeName = postgresql_tab_wide.POSTGRESQL_TAB_WIDE_TYPE then
   begin
     { Создание и инициализация журнала таблицы PostgreSQL широкого формата }
@@ -88,10 +94,10 @@ end;
 }
 function CreateRegDataCtrlArgs(oParent: TObject; sTypeName: AnsiString; const aArgs: Array Of Const): TICObjectProto;
 begin
-  if sTypeName = 'OPC_DA' then
+  if sTypeName = opc_da_node.OPC_DA_NODE_TYPE then
   begin
     { Создание и инициализация OPC DA сервера }
-    Result := TICOPCServerNode.Create;
+    Result := opc_da_node.TICOPCDANode.Create;
     if oParent <> nil then
         Result.SetParent(oParent);
     Result.SetPropertiesArray(aArgs);

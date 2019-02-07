@@ -51,6 +51,8 @@ class UniLoggerTest(unittest.TestCase):
         print(u'Запуск комманды: %s' % cmd)
         os.system(cmd)
 
+        time.sleep(1);
+
         # Запуск службы
         cmd = 'net start UniLoggerService'
         print(u'Запуск комманды: %s' % cmd)
@@ -63,10 +65,14 @@ class UniLoggerTest(unittest.TestCase):
         Запускается после выполнения всех тестов класса,
         требует наличия декоратора @classmethod.
         """
+        time.sleep(1);
+
         # Останов службы
         cmd = 'net stop UniLoggerService'
         print(u'Запуск комманды: %s' % cmd)
         os.system(cmd)
+
+        time.sleep(1);
 
         # Производим деинсталляцию службы
         cmd = 'uni_logger.exe --uninstall'
@@ -79,16 +85,16 @@ class UniLoggerTest(unittest.TestCase):
         Как правило, используется для подготовки окружения  для теста.
         """
         # Проверяем связь с БД
-        self.db_connection = sqlalchemy.create_engine(DB_URL, echo=False)
-        self.assertIsNotNone(self.db_connection)
+        # self.db_connection = sqlalchemy.create_engine(DB_URL, echo=False)
+        # self.assertIsNotNone(self.db_connection)
 
     def tearDown(self):
         """
         Метод вызывается после завершения работы теста.
         Используется для 'приборки' за тестом.
         """
-        self.db_connection.dispose()
-        self.db_connection = None
+        # self.db_connection.dispose()
+        # self.db_connection = None
 
     # ВНИМАНИЕ! 
     # Индекс в имени метода теста ставим для определения порядка выполнения тестов

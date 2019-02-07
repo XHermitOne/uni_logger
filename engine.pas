@@ -1,7 +1,7 @@
 {
 Модуль классов движка
 
-Версия: 0.0.1.1
+Версия: 0.0.1.2
 }
 
 unit engine;
@@ -197,11 +197,11 @@ end;
 
 procedure TICLoggerProto.Free;
 begin
-  FSources.Free;
   FDestinations.Free;
+  FSources.Free;
   FSettingsManager.Free;
 
-   Free;
+  Free;
 end;
 
 {
@@ -560,6 +560,14 @@ end;
 
 procedure TICLogger.Tick;
 begin
+  // ВНИМАНИЕ! Проверяем если предыдущий тик еще не закончен,
+  // то новый не запускаем
+  if FIsTick then
+  begin
+    log.WarningMsgFmt('Пропущена обработка тика в %s', [FormatDateTime('c', Now())]);
+    Exit;
+  end;
+
   // Выставить флаг запущенного тика
   FIsTick := True;
 

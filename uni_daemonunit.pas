@@ -84,10 +84,20 @@ procedure TUniLoggerDaemon.DataModuleStop(Sender: TCustomDaemon; var OK: Boolean
 begin
   // Останавливаем таймер отсчета тиков
   TickTimer.Enabled := False;
+  // Необходимо подождать пока все не закончим
+  while engine.LOGGER_ENGINE.IsTick do
+  begin
+    log.WarningMsg('Ожидание завершения обработки');
+    // Ожидаем 1 секунду, потом опять сделаем проверку
+    Sleep(1000);
+  end;
 
   // Корректно завершаем работу движка
   engine.LOGGER_ENGINE.Stop;
-  engine.LOGGER_ENGINE.Free;
+  // ВНИМАНИЕ! Вместо Free я вызываю Destroy.
+  // Предположительно из-за этого на останавливается корректно служба
+  //engine.LOGGER_ENGINE.Free;
+  engine.LOGGER_ENGINE.Destroy;
   engine.LOGGER_ENGINE := nil;
 end;
 
@@ -95,10 +105,8 @@ end;
 procedure TUniLoggerDaemon.TickTimerTimer(Sender: TObject);
 begin
   // Выполнить обработчик одного тика
-  if (engine.LOGGER_ENGINE <> nil) and (not engine.LOGGER_ENGINE.IsTick) then
+  if (engine.LOGGER_ENGINE <> nil) then
     engine.LOGGER_ENGINE.Tick
-  else
-    log.WarningMsgFmt('Пропущена обработка тика в %s', [FormatDateTime('c', Now())]);
 end;
 
 

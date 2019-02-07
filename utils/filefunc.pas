@@ -10,7 +10,11 @@ unit filefunc;
 interface
 
 uses
-    Classes, SysUtils, sysfunc, strfunc;
+  {$IFDEF windows}
+  Windows,
+  {$ENDIF}
+  Classes, SysUtils,
+  sysfunc, strfunc;
 
 { Определить папку домашней директории }
 function GetHomeDir(): AnsiString;
@@ -41,7 +45,9 @@ function CreateEmptyFileIfNotExists(sPath: AnsiString): Boolean;
 function NormalPathFileName(sPath: AnsiString): AnsiString;
 
 { Преобразование Даты-времени }
+{$IFDEF windows}
 function DateTimeToFileTime(dtFileTime: TDateTime): TFileTime;
+{$ENDIF}
 
 implementation
 
@@ -180,6 +186,7 @@ begin
   Result := ExpandFileName(sPath);
 end;
 
+{$IFDEF windows}
 {
 Преобразование Даты-времени
 }
@@ -195,6 +202,7 @@ begin
   LocalFileTimeToFileTime(LocalFileTime, Ft);
   Result := Ft;
 end;
+{$ENDIF}
 
 end.
 

@@ -36,12 +36,6 @@ type
     { Выбрать описания тегов из свойств }
     function CreateTags(): TStrDictionary;
 
-    { Фунция чтения данных }
-    function Read(aValues: TStringList): TStringList; override;
-    { Фунция записи данных }
-    function Write(aValues: TStringList): Boolean; override;
-
-
 end;
 
 implementation
@@ -61,22 +55,6 @@ begin
   if FOPCClient <> nil then
     FOPCClient.Destroy;
   inherited Free;
-end;
-
-{
-Фунция чтения данных
-}
-function TICRemouteOPCNode.Read(aValues: TStringList): TStringList;
-begin
-  Result := nil;
-end;
-
-{
-Фунция записи данных
-}
-function TICRemouteOPCNode.Write(aValues: TStringList): Boolean;
-begin
-  Result := False;
 end;
 
 { Выбрать описания тегов из свойств }

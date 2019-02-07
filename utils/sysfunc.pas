@@ -1,5 +1,7 @@
 {
 Функции взаимодействия с операционной системой
+
+Версия: 0.0.2.2
 }
 unit sysfunc;
 
@@ -8,7 +10,10 @@ unit sysfunc;
 interface
 
 uses
-    Classes, SysUtils;
+  {$IFDEF windows}
+  Windows,
+  {$ENDIF}
+  Classes, SysUtils;
 
 {$IFDEF linux}
 { some linux-specific code }
@@ -29,6 +34,9 @@ function IsOSLinux(): Boolean;
 { Проверка является ли ОС Windows }
 function IsOSWindows(): Boolean;
 
+{ Наименование компьютера }
+function GetNetComputerName(): AnsiString;
+
 implementation
 
 {
@@ -36,19 +44,37 @@ implementation
 }
 function GetOSType(): AnsiString;
 begin
-  result := OS;
+  Result := OS;
 end;
 
 { Проверка является ли ОС Linux }
 function IsOSLinux(): Boolean;
 begin
-  result := OS = 'linux';
+  Result := OS = 'linux';
 end;
 
 { Проверка является ли ОС Windows }
 function IsOSWindows(): Boolean;
 begin
-  result := OS = 'windows';
+  Result := OS = 'windows';
+end;
+
+{ Наименование компьютера }
+function GetNetComputerName(): AnsiString;
+{$IFDEF windows}
+var
+  buffer: Array[0..255] Of char;
+  size: dword;
+{$ENDIF}
+
+begin
+  Result := '';
+
+  {$IFDEF windows}
+  size := 256;
+  if GetComputerName(buffer, size) then
+    Result := buffer;
+  {$ENDIF}
 end;
 
 end.

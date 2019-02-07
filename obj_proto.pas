@@ -1,7 +1,7 @@
 {
 Модуль абстрактного объекта системы
 
-Версия: 0.0.1.3
+Версия: 0.0.2.2
 }
 unit obj_proto;
 
@@ -60,17 +60,74 @@ type
 
     { Проверка на то что объект не именованный }
     function IsUnknown(): Boolean;
-    { Фунция чтения данных }
-    function Read(aValues: TStringList): TStringList; virtual;
-    { Чтение значений по адресам }
-    function ReadAddresses(aValues: Array Of String): TStringList; virtual;
-    { Чтение всех внутренних данных }
-    function ReadAll(): TStringList; virtual;
 
-    { Фунция записи данных }
-    function Write(aValues: TStringList): Boolean; virtual;
-    { Запись всех внутренних данных }
-    function WriteAll(): Boolean; virtual;
+    { 
+    Фунция чтения данных 
+    @param aAddresses Список адресов для чтения
+    @param aTime: Время актуальности за которое необходимо получить данные. 
+                  Если не определено, то берется текущее системное время.
+    @return Список прочитанных значений.
+    }
+    function Read(aAddresses: TStringList; aTime: TDateTime = 0): TStringList; virtual;
+    { 
+    Чтение значений по адресам 
+    @param aAddresses Массив адресов для чтения
+    @param aTime: Время актуальности за которое необходимо получить данные. 
+                  Если не определено, то берется текущее системное время.
+    @return Список прочитанных значений.
+    }
+    function ReadAddresses(aAddresses: Array Of String; aTime: TDateTime = 0): TStringList; virtual;
+    { 
+    Чтение значения по адресу 
+    @param aAddress Строка адреса для чтения
+    @param aTime: Время актуальности за которое необходимо получить данные. 
+                  Если не определено, то берется текущее системное время.
+    @return Прочитанное значение в виде строки.
+    }
+    function ReadAddress(aAddress: AnsiString; aTime: TDateTime = 0): AnsiString; virtual;
+    { 
+    Чтение всех внутренних данных, описанных в свойствах.
+    @param aTime: Время актуальности за которое необходимо получить данные. 
+                  Если не определено, то берется текущее системное время.
+    @return Список прочитанных значений.
+    }
+    function ReadAll(aTime: TDateTime = 0): TStringList; virtual;
+
+    { 
+    Фунция записи данных 
+    @param aAddresses Список адресов для записи
+    @param aValues Список значений для записи
+    @param aTime: Время актуальности данных. 
+                  Если не определено, то берется текущее системное время.
+    @return Результат записи - True - запись прошла успешно False - ошибка
+    }
+    function Write(aAddresses, aValues: TStringList; aTime: TDateTime = 0): Boolean; virtual;
+    { 
+    Запись значений по адресам 
+    @param aAddresses Массив адресов для записи
+    @param aValues Массив значений для записи
+    @param aTime: Время актуальности данных. 
+                  Если не определено, то берется текущее системное время.
+    @return Результат записи - True - запись прошла успешно False - ошибка
+    }
+    function WriteAddresses(aAddresses,aValues: Array Of String; aTime: TDateTime = 0): Boolean; virtual;
+    { 
+    Запись значения по адресу 
+    @param aAddress Значение адреса для записи
+    @param aValue Значение для записи в строковом представлении
+    @param aTime: Время актуальности данных. 
+                  Если не определено, то берется текущее системное время.
+    @return Результат записи - True - запись прошла успешно False - ошибка
+    }
+    function WriteAddress(aAddress, aValue: AnsiString; aTime: TDateTime = 0): Boolean; virtual;
+    { 
+    Запись всех внутренних данных 
+    @param aTime: Время актуальности данных. 
+                  Если не определено, то берется текущее системное время.
+    @return Результат записи - True - запись прошла успешно False - ошибка
+    }
+    function WriteAll(aTime: TDateTime = 0): Boolean; virtual;
+
     { Зарегистрировать значения переменных в словаре внутренного состояния }
     function RegState(aValues: TStrDictionary): Boolean;
     { Получить имена записываемых значений в контроллер данных }
@@ -185,48 +242,116 @@ begin
 end;
 
 {
-Фунция чтения данных
-}
-function TICObjectProto.Read(aValues: TStringList): TStringList;
-begin
-  log.WarningMsgFmt('Вызов не определенного метода Read объекта <%s>', [FName]);
-  Result := nil;
-end;
-
-{ Чтение всех внутренних данных }
-function TICObjectProto.ReadAll(): TStringList;
-begin
-  log.WarningMsgFmt('Вызов не определенного метода ReadAll объекта <%s>', [FName]);
-  Result := nil;
-end;
-
-function TICObjectProto.ReadAddresses(aValues: Array of String): TStringList;
-begin
-  Result := nil;
-end;
-
-{
-Фунция записи данных
-}
-function TICObjectProto.Write(aValues: TStringList): Boolean;
-begin
-  log.WarningMsgFmt('Вызов не определенного метода Write объекта <%s>', [FName]);
-  Result := False;
-end;
-
-{ Запись всех внутренних данных }
-function TICObjectProto.WriteAll(): Boolean;
-begin
-  log.WarningMsgFmt('Вызов не определенного метода WriteAll объекта <%s>', [FName]);
-  Result := False;
-end;
-
-{
 Установить свойства в виде списка параметров
 }
 procedure TICObjectProto.SetPropertiesArray(aArgs: Array Of Const);
 begin
 
+end;
+
+{ 
+Фунция чтения данных 
+@param aAddresses Список адресов для чтения
+@param aTime: Время актуальности за которое необходимо получить данные. 
+              Если не определено, то берется текущее системное время.
+@return Список прочитанных значений.
+}
+function TICObjectProto.Read(aAddresses: TStringList; aTime: TDateTime): TStringList;
+begin
+  log.WarningMsgFmt('Вызов не определенного метода Read объекта <%s>', [FName]);
+  Result := nil;
+end;
+
+{ 
+Чтение значений по адресам 
+@param aAddresses Массив адресов для чтения
+@param aTime: Время актуальности за которое необходимо получить данные. 
+              Если не определено, то берется текущее системное время.
+@return Список прочитанных значений.
+}
+function TICObjectProto.ReadAddresses(aAddresses: Array Of String; aTime: TDateTime): TStringList;
+begin
+  log.WarningMsgFmt('Вызов не определенного метода ReadAddresses объекта <%s>', [FName]);
+  Result := nil;
+end;
+
+{ 
+Чтение значения по адресу 
+@param aAddress Строка адреса для чтения
+@param aTime: Время актуальности за которое необходимо получить данные. 
+              Если не определено, то берется текущее системное время.
+@return Прочитанное значение в виде строки.
+}
+function TICObjectProto.ReadAddress(aAddress: AnsiString; aTime: TDateTime): AnsiString;
+begin
+  log.WarningMsgFmt('Вызов не определенного метода ReadAddress объекта <%s>', [FName]);
+  Result := '';
+end;
+
+{ 
+Чтение всех внутренних данных, описанных в свойствах.
+@param aTime: Время актуальности за которое необходимо получить данные. 
+              Если не определено, то берется текущее системное время.
+@return Список прочитанных значений.
+}
+function TICObjectProto.ReadAll(aTime: TDateTime): TStringList;
+begin
+  log.WarningMsgFmt('Вызов не определенного метода ReadAll объекта <%s>', [FName]);
+  Result := nil;
+end;
+
+{ 
+Фунция записи данных 
+@param aAddresses Список адресов для записи
+@param aValues Список значений для записи
+@param aTime: Время актуальности данных. 
+              Если не определено, то берется текущее системное время.
+@return Результат записи - True - запись прошла успешно False - ошибка
+}
+function TICObjectProto.Write(aAddresses, aValues: TStringList; aTime: TDateTime): Boolean;
+begin
+  log.WarningMsgFmt('Вызов не определенного метода Write объекта <%s>', [FName]);
+  Result := False;
+end;
+
+{ 
+Запись значений по адресам 
+@param aAddresses Массив адресов для записи
+@param aValues Массив значений для записи
+@param aTime: Время актуальности данных. 
+              Если не определено, то берется текущее системное время.
+@return Результат записи - True - запись прошла успешно False - ошибка
+}
+function TICObjectProto.WriteAddresses(aAddresses,aValues: Array Of String; aTime: TDateTime): Boolean;
+begin
+  log.WarningMsgFmt('Вызов не определенного метода WriteAddresses объекта <%s>', [FName]);
+  Result := False;
+end;
+
+{ 
+Запись значения по адресу 
+@param aAddress Значение адреса для записи
+@param aValue Значение для записи в строковом представлении
+@param aTime: Время актуальности данных. 
+              Если не определено, то берется текущее системное время.
+@return Результат записи - True - запись прошла успешно False - ошибка
+}
+function TICObjectProto.WriteAddress(aAddress, aValue: AnsiString; aTime: TDateTime): Boolean;
+begin
+  log.WarningMsgFmt('Вызов не определенного метода WriteAddress объекта <%s>', [FName]);
+  Result := False;
+end;
+
+{ 
+Запись всех внутренних данных 
+@param aTime: Время актуальности данных. 
+              Если не определено, то берется текущее системное время.
+@return Результат записи - True - запись прошла успешно False - ошибка
+}
+function TICObjectProto.WriteAll(aTime: TDateTime): Boolean;
+begin
+  log.WarningMsgFmt('Вызов не определенного метода WriteAll объекта <%s>', [FName]);
+  Result := False;
 end;
 
 end.

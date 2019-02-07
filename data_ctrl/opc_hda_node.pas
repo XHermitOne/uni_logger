@@ -12,6 +12,7 @@ interface
 
 uses
     Classes, SysUtils, ActiveX,
+    OPCHDA,
     obj_proto, dictionary, strfunc;
 
 const
@@ -20,6 +21,9 @@ const
   RESERV_PROPERTIES: Array [1..5] Of String = ('type', 'name', 'description', 'opc_server', 'topic');
 
   UNKNOWN_GROUP_NAME: AnsiString = 'UNKNOWN_GROUP';
+
+  DEFAULT_COMPUTER_NAME: AnsiString = 'localhost';
+
 
 type
   {
@@ -34,6 +38,57 @@ type
     { Наименование OPC сервера }
     FOPCServerName: AnsiString;
 
+    { Наименование компьютера сервера }
+    FComputerName: AnsiString;
+
+    { Получить хендл сервера  }
+    function GetItemServerHandle(aServerIf: IUnknown; sItem: String; iClient: DWORD; var iServer: DWORD): HRESULT;
+
+    { Внутренние переменные для работы с OPC HDA интерфейсами }
+    //HDAServerInterface:         IOPCHDA_Server;
+    FHDASyncRead:                IOPCHDA_SyncRead;
+    iServerH:                    DWORD;
+    //HResult:                    HRESULT;
+    //// чтение
+    //htStartTime:                OPCHDA_TIME;
+    //htEndTime:                  OPCHDA_TIME;
+    //dwNumValues:                DWORD;
+    //bBounds:                    BOOL;
+    //dwNumItems:                 DWORD;
+    //phServer:                   POPCHANDLEARRAY;
+    //arrServer:                  array [0..0] of DWORD;
+    //ppItemValues:               POPCHDA_ITEMARRAY;
+    //ppErrors:                   PResultList;
+    //ppItemValuesItem:           OPCHDA_ITEM;
+    //pvDataValues:               POleVariantArray;
+    //pftTimeStamps:              PFileTimeArray;
+    //haAggregate:                DWORD;
+    //dwCount:                    DWORD;
+    //
+    //NewDataArray:               TStrings;
+    //DataArray:                  TStrings;
+    //DateArray:                  TStrings;
+    //CountArray, List:           TStrings;
+    //AggregateArray:             TStrings;
+    //Computers, ListHDA:         TStringList;
+    //szNode:                     POleStr;
+    //pszItemID:                  PWideChar;
+    //pszName:                    PWideChar;
+    //pdwAttrID:                  PDWORDARRAY;
+    //pOperator:                  POPCHDA_OPERATORCODESARRAY;
+    //Ini:                        TIniFile;
+    //
+    //flTree, flIn:               bool;
+    //flDb, flAuto:               bool;
+    //Container:                  IConnectionPointContainer;
+    //ServerProgID:               POLeStr;
+    //ServerCLSID:                TCLSID;
+    //pdwCount:                   DWORD;
+    //ppdwAttrID:                 PDWORDARRAY;
+    //ppszAttrName:               POleStrList;
+    //ppszAttrDesc:               POleStrList;
+    //ppvtAttrDataType:           PVarTypeList;
+
   public
     constructor Create;
     destructor Destroy; override;
@@ -44,14 +99,18 @@ type
     }
     procedure SetOPCServerName(sName: AnsiString);
 
+    {
+    Установить наименование компьютера
+    @param sName Наменование компьютера
+    }
+    procedure SetComputerName(sName: AnsiString);
+
     {  Установить связь }
-    function Connect(sComputer: AnsiString; sOPCServerName: AnsiString): Boolean;
+    function Connect(sComputer: AnsiString = ''; sOPCServerName: AnsiString = ''): Boolean;
 
     { Разорвать связь }
     function Disconnect(): Boolean;
 
-    { Получить хендл сервера  }
-    function GetItemServerHandle(aServerIf: IUnknown; sItem: String; iClient: DWORD; var iServer: DWORD): HRESULT;
 
     { Выбрать описания тегов из свойств }
   //  function CreateTags(): TStrDictionary;
@@ -103,12 +162,14 @@ implementation
 
 uses
   LCLIntf, // Для вычисления времени выполнения
-  log;
+  log, filefunc;
 
 constructor TICOPCHDANode.Create;
 begin
   inherited Create;
   FOPCClient := nil;
+
+  FComputerName := DEFAULT_COMPUTER_NAME;
 end;
 
 destructor TICOPCHDANode.Destroy;
@@ -125,6 +186,12 @@ end;
 procedure TICOPCHDANode.SetOPCServerName(sName: AnsiString);
 begin
   FOPCServerName := sName;
+end;
+
+{ Установить наименование компьютера }
+procedure TICOPCHDANode.SetComputerName(sName: AnsiString);
+begin
+  FComputerName := sName;
 end;
 
 {
@@ -150,53 +217,7 @@ end;
 Фунция чтения данных
 }
 function TICOPCHDANode.Read(aValues: TStringList): TStringList;
-var
-  i: Integer;
-  tags: TStrDictionary;
-  grp: TGroup;
-  tag_item: TTagItem;
-  value: AnsiString;
-  group_name: AnsiString;
-
 begin
-  Result := TStringList.Create;
-
-  group_name := ClassName;
-
-  try
-    // Сначала адреса указать в свойствах
-    FOPCClient := TOPCClient.Create(nil);
-    FOPCClient.ServerName := FOPCServerName;
-
-    tags := CreateTags;
-
-    log.DebugMsgFmt('Создание группы <%s>', [GetName()]);
-
-    grp := TGroup.Create(group_name, 500, 0);
-    for i := 0 to tags.Count - 1 do
-    begin
-      log.ServiceMsgFmt('Добавление тега в OPC клиент <%s> : <%s>', [tags.GetKey(i), tags.GetStrValue(tags.GetKey(i))]);
-      tag_item := TTagItem.Create(tags.GetKey(i), tags.GetStrValue(tags.GetKey(i)), VT_BSTR, acRead);
-      grp.AddTag(tag_item);
-    end;
-    FOPCClient.TagList.AddGroup(grp);
-
-    FOPCClient.Connect;
-
-    for i := 0 to tags.Count - 1 do
-    begin
-      // Чтение значения тега
-      value := FOPCClient.GetTagString(FOPCClient.FindSGroupSTag(group_name, tags.GetKey(i)));
-      Result.Add(value);
-    end;
-    FOPCClient.Disconnect;
-
-    tags.Destroy;
-  except
-    FOPCClient.Disconnect;
-    tags.Destroy;
-    log.FatalMsgFmt('Ошибка чтения в <%s>', [ClassName]);
-  end;
 end;
 
 {
@@ -225,75 +246,7 @@ end;
 
 
 function TICOPCHDANode.ReadAddresses(aValues: Array Of String): TStringList;
-var
-  i: Integer;
-  log_tags: AnsiString;
-  group_name: AnsiString;
-  tags: TStrDictionary;
-  grp: TGroup;
-  tag_item: TTagItem;
-  value, address: AnsiString;
-
 begin
-  Result := TStringList.Create;
-
-  group_name := UNKNOWN_GROUP_NAME;
-
-  log_tags := LineEnding;
-  try
-    // Сначала добавить адреса в свойства
-    if Properties <> nil then
-      Properties.Clear
-    else
-      Properties := TStrDictionary.Create;
-
-    for i := 0 to Length(aValues) - 1 do
-    begin
-      log_tags := log_tags + Format('tag%d', [i]) + ' = ' + AnsiString(aValues[i]) + LineEnding;
-      // log.DebugMsg(Format('tag%d', [i]) + ' = ' + AnsiString(aValues[i]));
-      Properties.AddStrValue(Format('tag%d', [i]),
-                             { Преобразование элемента списка параметров в AnsiString:}
-                             AnsiString(aValues[i]));
-    end;
-
-    // Сначала адреса указать в свойствах
-    FOPCClient := TOPCClient.Create(nil);
-    FOPCClient.ServerName := FOPCServerName;
-
-    tags := CreateTags;
-
-    grp := TGroup.Create(group_name, 500, 0);
-    for i := 0 to tags.Count - 1 do
-    begin
-      address := tags.GetStrValue(tags.GetKey(i));
-      tag_item := TTagItem.Create(tags.GetKey(i), address, VT_BSTR, acRead);
-      grp.AddTag(tag_item);
-    end;
-    FOPCClient.TagList.AddGroup(grp);
-
-    FOPCClient.Connect;
-
-    for i := 0 to tags.Count - 1 do
-    begin
-      // Чтение значения тега
-      value := FOPCClient.GetTagString(FOPCClient.FindSGroupSTag(group_name, tags.GetKey(i)));
-      Result.Add(value);
-    end;
-    FOPCClient.Disconnect;
-
-    tags.Free;
-
-  except
-    FOPCClient.Disconnect;
-    tags.Free;
-
-    if Result <> nil then
-    begin
-      Result.Free;
-      Result := nil;
-    end;
-    log.FatalMsgFmt('Ошибка чтения значений адресов в <%s> %s', [ClassName, log_tags]);
-  end;
 end;
 
 {
@@ -303,18 +256,45 @@ end;
 }
 function TICOPCHDANode.ReadAddress(aAddress: AnsiString): AnsiString;
 var
-  addresses: Array Of String;
-  values: TStringList;
+  HResult: HRESULT;
+  htStartTime: OPCHDA_TIME;
+  htEndTime: OPCHDA_TIME;
+
 begin
-  Result := '';
-  SetLength(addresses, 1);
-  addresses[0] := aAddress;
+  Connect();
 
-  values := ReadAddresses(addresses);
-  if values.Count and values.Count = 1 then
-    Result := values[0];
+  HResult := GetItemServerHandle(FHDASyncRead , 'TagName', 1, iServerH);
 
-  values.Free;
+  htStartTime.bString := False;
+  htStartTime.ftTime := filefunc.DateTimeToFileTime(EncodeDateTime(CYear, CMonth, CDAy, 00, 00, 00, 000));
+
+  arrServer[0] := iServerH;
+  phServer := @arrServer;
+  HResult := FHDASyncRead.ReadRaw(htStartTime, htEndTime, 24, False, 1, phServer, ppItemValues, ppErrors);
+  if ppItemValues = nil then
+    ListBox1.Items.Add(TimeToStr(Now) + ' Error! ');
+  if Res=E_FAIL then
+    ShowMessage('fail');
+
+  DataArray.Clear;
+  DateArray.Clear;
+  NewDataArray.Clear;
+
+  ppItemValuesItem := ppItemValues^[0];
+  pvDataValues := ppItemValuesItem.pvDataValues;
+  pftTimeStamps := ppItemValuesItem.pftTimeStamps;
+  haAggregate := ppItemValuesItem.haAggregate;
+  dwCount := ppItemValuesItem.dwCount;
+  for i := 0 to vt do
+  begin
+    DataArray.Append(pvDataValues[i]);
+  end;
+  for i := 0 to vt-1 do
+  begin
+    DateArray.Append(DateTimeToStr(FileTimeToDateTime(pftTimeStamps[i])));
+  end;
+
+  Disconnect();
 end;
 
 {
@@ -364,62 +344,79 @@ end;
 
 {  Установить связь }
 function TICOPCHDANode.Connect(sComputer: AnsiString; sOPCServerName: AnsiString): Boolean;
+var
+  HResult: HRESULT;
+
 begin
+  if sComputer = '' then
+    sComputer := FComputerName;
+  if sOOPCServerName = '' then
+    sOOPCServerName := FOOPCServerName;
+
+  Result := False;
   if Trim(sOPCServerName) <> '' then
   begin
-    ServerProgID:=StringToOleStr(ServerName);
-    Res:=CLSIDFromProgID(ServerProgID,ServerCLSID);
+    ServerProgID := StringToOleStr(sOPCServerName);
+    HResult := CLSIDFromProgID(ServerProgID, ServerCLSID);
     try
-      HDASyncRead:=CreateRemoteComObject(ComputerName, ServerCLSID) as IOPCHDA_SyncRead;
+      FHDASyncRead := CreateRemoteComObject(sComputer, ServerCLSID) as IOPCHDA_SyncRead;
     except
-      HDASyncRead := nil;
-      ShowMessage('????? ?? ???????????????');
+      FHDASyncRead := nil;
+      log.FatalMsg('Класс не зарегистрирован');
       Exit;
     end;
-  HDASyncRead.QueryInterface(iid,Container);
-  Result := True;
-end;
+    FHDASyncRead.QueryInterface(iid, Container);
+    Result := True;
+  end;
 end;
 
 { Разорвать связь }
 function TICOPCHDANode.Disconnect(): Boolean;
+var
+  HResult: HRESULT;
+
 begin
- HDASyncRead._AddRef;
- Res := HDASyncRead._Release;
- HDASyncRead := nil;
+ FHDASyncRead._AddRef;
+ HResult := FHDASyncRead._Release;
+ FHDASyncRead := nil;
+ Result := True;
 end;
 
 { Получить хендл сервера  }
-function TICOPCHDANode.GetItemServerHandle(aServerIf: IUnknown; sItem: String; iClient: DWORD; var iServer: DWORD): HRESULT;
+function TICOPCHDANode.GetItemServerHandle(aServerInterface: IUnknown; sItem: String; iClient: DWORD; var iServer: DWORD): HRESULT;
 var
  sItemW: WideString;
  PsItemW: POleStr;
- arrPsItemW: array [0..0] of pointer;
- arrClient: array [0..0] of DWORD;
+ arrPsItemW: Array [0..0] Of pointer;
+ arrClient: Array [0..0] Of DWORD;
  phClient, pphServer: POPCHANDLEARRAY;
  Errors: PResultList;
- ServIf: IOPCHDA_Server;
+ ServerInterface: IOPCHDA_Server;
+ HResult: HRESULT;
+
 begin
  Result := E_FAIL;
- iServer:=0;
+ iServerH := 0;
  try
-   ServIf := ServerIf as IOPCHDA_Server;
+   ServerInterface := aServerInterface As IOPCHDA_Server;
  except
-   ServIf := nil;
+   ServerInterface := nil;
  end;
- if ServIf <> nil then
+
+ if ServerInterface <> nil then
  begin
-   sItemW:=sItem; PsItemW:=POleStr(sItemW);
-   arrPsItemW[0]:=PsItemW;
-   arrClient[0]:=iClient;
-   phClient:=@arrClient;
-   Result := ServIf.GetItemHandles(1,
-   @arrPsItemW, phClient, pphServer, Errors);
+   sItemW := sItem;
+   PsItemW := POleStr(sItemW);
+   arrPsItemW[0] := PsItemW;
+   arrClient[0] := iClient;
+   phClient := @arrClient;
+   Result := ServerInterface.GetItemHandles(1, @arrPsItemW, phClient, pphServer, Errors);
+
    if Succeeded(Result) then
    begin
      Result := Errors[0];
      CoTaskMemFree(Errors);
-     iServer:=pphServer^[0];
+     iServerH := pphServer^[0];
      CoTaskMemFree(pphServer);
    end;
  end;

@@ -4,15 +4,15 @@
     <PathDelim Value="\"/>
     <Version Value="10"/>
     <BuildModes Active="Default"/>
-    <Units Count="31">
+    <Units Count="32">
       <Unit0>
         <Filename Value="uni_logger.lpr"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="-1"/>
+        <EditorIndex Value="2"/>
         <TopLine Value="116"/>
-        <CursorPos X="30" Y="137"/>
-        <UsageCount Value="80"/>
+        <CursorPos X="29" Y="134"/>
+        <UsageCount Value="83"/>
+        <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="uni_daemonmapperunit.pas"/>
@@ -22,7 +22,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="14"/>
         <CursorPos Y="81"/>
-        <UsageCount Value="80"/>
+        <UsageCount Value="83"/>
       </Unit1>
       <Unit2>
         <Filename Value="uni_daemonunit.pas"/>
@@ -30,25 +30,29 @@
         <ComponentName Value="UniLoggerDaemon"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="DataModule"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="68"/>
-        <CursorPos X="73" Y="98"/>
-        <UsageCount Value="80"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="61"/>
+        <CursorPos X="3" Y="100"/>
+        <UsageCount Value="83"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit2>
       <Unit3>
         <Filename Value="engine.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="205"/>
-        <CursorPos X="34" Y="502"/>
-        <UsageCount Value="80"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="412"/>
+        <CursorPos X="142" Y="430"/>
+        <UsageCount Value="83"/>
+        <Loaded Value="True"/>
       </Unit3>
       <Unit4>
         <Filename Value="obj_proto.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
-        <CursorPos Y="5"/>
-        <UsageCount Value="80"/>
+        <TopLine Value="271"/>
+        <CursorPos X="39" Y="96"/>
+        <UsageCount Value="83"/>
       </Unit4>
       <Unit5>
         <Filename Value="settings.pas"/>
@@ -56,219 +60,274 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="171"/>
         <CursorPos X="54" Y="202"/>
-        <UsageCount Value="80"/>
+        <UsageCount Value="83"/>
       </Unit5>
       <Unit6>
-        <Filename Value="data_ctrl\opc_server_node.pas"/>
-        <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="146"/>
-        <CursorPos X="29" Y="173"/>
-        <UsageCount Value="80"/>
-      </Unit6>
-      <Unit7>
         <Filename Value="data_ctrl\reg_data_ctrl.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
-        <TopLine Value="72"/>
-        <CursorPos X="117" Y="89"/>
-        <UsageCount Value="80"/>
-      </Unit7>
-      <Unit8>
+        <TopLine Value="52"/>
+        <CursorPos X="27" Y="18"/>
+        <UsageCount Value="83"/>
+      </Unit6>
+      <Unit7>
         <Filename Value="data_ctrl\remoute_opc_node.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
-        <CursorPos Y="20"/>
-        <UsageCount Value="80"/>
-      </Unit8>
-      <Unit9>
+        <TopLine Value="21"/>
+        <CursorPos Y="39"/>
+        <UsageCount Value="83"/>
+      </Unit7>
+      <Unit8>
         <Filename Value="opc_client\OPC.res"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="80"/>
+        <UsageCount Value="83"/>
         <DefaultSyntaxHighlighter Value="None"/>
-      </Unit9>
-      <Unit10>
+      </Unit8>
+      <Unit9>
         <Filename Value="opc_client\opc_client.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="251"/>
         <CursorPos Y="271"/>
-        <UsageCount Value="80"/>
-      </Unit10>
-      <Unit11>
+        <UsageCount Value="83"/>
+      </Unit9>
+      <Unit10>
         <Filename Value="opc_client\OPCCallback.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="80"/>
-      </Unit11>
-      <Unit12>
+        <UsageCount Value="83"/>
+      </Unit10>
+      <Unit11>
         <Filename Value="opc_client\OPCCOMN.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="80"/>
-      </Unit12>
-      <Unit13>
+        <UsageCount Value="83"/>
+      </Unit11>
+      <Unit12>
         <Filename Value="opc_client\OPCDA.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="80"/>
-      </Unit13>
-      <Unit14>
+        <UsageCount Value="83"/>
+      </Unit12>
+      <Unit13>
         <Filename Value="opc_client\OPCError.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="80"/>
-      </Unit14>
-      <Unit15>
+        <UsageCount Value="83"/>
+      </Unit13>
+      <Unit14>
         <Filename Value="opc_client\OPCSEC.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="80"/>
-      </Unit15>
-      <Unit16>
+        <UsageCount Value="83"/>
+      </Unit14>
+      <Unit15>
         <Filename Value="opc_client\OPCTypes.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="80"/>
-      </Unit16>
-      <Unit17>
+        <UsageCount Value="83"/>
+      </Unit15>
+      <Unit16>
         <Filename Value="opc_client\tag_list.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="80"/>
-      </Unit17>
-      <Unit18>
+        <UsageCount Value="83"/>
+      </Unit16>
+      <Unit17>
         <Filename Value="opc_client\type_value.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="80"/>
-      </Unit18>
-      <Unit19>
+        <UsageCount Value="83"/>
+      </Unit17>
+      <Unit18>
         <Filename Value="utils\dictionary.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="80"/>
         <CursorPos Y="118"/>
-        <UsageCount Value="80"/>
-      </Unit19>
-      <Unit20>
+        <UsageCount Value="83"/>
+      </Unit18>
+      <Unit19>
         <Filename Value="utils\filefunc.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
-        <CursorPos X="4"/>
-        <UsageCount Value="80"/>
-      </Unit20>
-      <Unit21>
+        <TopLine Value="167"/>
+        <CursorPos Y="196"/>
+        <UsageCount Value="83"/>
+      </Unit19>
+      <Unit20>
         <Filename Value="utils\inifunc.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="58"/>
         <CursorPos X="23" Y="62"/>
-        <UsageCount Value="80"/>
-      </Unit21>
-      <Unit22>
+        <UsageCount Value="83"/>
+      </Unit20>
+      <Unit21>
         <Filename Value="utils\keyboardfunc.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="80"/>
-      </Unit22>
-      <Unit23>
+        <UsageCount Value="83"/>
+      </Unit21>
+      <Unit22>
         <Filename Value="utils\log.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
-        <TopLine Value="41"/>
-        <CursorPos X="16" Y="69"/>
-        <UsageCount Value="80"/>
-      </Unit23>
-      <Unit24>
+        <TopLine Value="460"/>
+        <CursorPos X="13" Y="480"/>
+        <UsageCount Value="83"/>
+      </Unit22>
+      <Unit23>
         <Filename Value="utils\memfunc.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="80"/>
-      </Unit24>
-      <Unit25>
+        <UsageCount Value="83"/>
+      </Unit23>
+      <Unit24>
         <Filename Value="utils\strfunc.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="16" Y="4"/>
-        <UsageCount Value="80"/>
-      </Unit25>
-      <Unit26>
+        <UsageCount Value="83"/>
+      </Unit24>
+      <Unit25>
         <Filename Value="utils\sysfunc.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
-        <WindowIndex Value="-1"/>
-        <TopLine Value="-1"/>
-        <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="80"/>
-      </Unit26>
-      <Unit27>
+        <TopLine Value="28"/>
+        <CursorPos Y="5"/>
+        <UsageCount Value="83"/>
+      </Unit25>
+      <Unit26>
         <Filename Value="data_ctrl\postgresql_tab_wide.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <WindowIndex Value="-1"/>
-        <TopLine Value="10"/>
-        <CursorPos X="30" Y="24"/>
-        <UsageCount Value="77"/>
+        <EditorIndex Value="4"/>
+        <TopLine Value="189"/>
+        <CursorPos X="35" Y="315"/>
+        <UsageCount Value="80"/>
+        <Loaded Value="True"/>
+      </Unit26>
+      <Unit27>
+        <Filename Value="data_ctrl\opc_da_node.pas"/>
+        <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
+        <TopLine Value="147"/>
+        <CursorPos X="43" Y="180"/>
+        <UsageCount Value="23"/>
+        <Loaded Value="True"/>
       </Unit27>
       <Unit28>
+        <Filename Value="data_ctrl\opc_server_node.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="146"/>
+        <CursorPos X="29" Y="173"/>
+        <UsageCount Value="80"/>
+      </Unit28>
+      <Unit29>
         <Filename Value="config.pas"/>
         <EditorIndex Value="-1"/>
         <CursorPos Y="10"/>
         <UsageCount Value="77"/>
-      </Unit28>
-      <Unit29>
+      </Unit29>
+      <Unit30>
         <Filename Value="C:\lazarus\fpc\3.0.4\source\packages\fcl-extra\src\daemonapp.pp"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="216"/>
         <CursorPos X="3" Y="36"/>
         <UsageCount Value="6"/>
-      </Unit29>
-      <Unit30>
+      </Unit30>
+      <Unit31>
         <Filename Value="C:\lazarus\fpc\3.0.4\source\packages\fcl-db\src\base\db.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="1948"/>
         <CursorPos X="15" Y="1973"/>
         <UsageCount Value="8"/>
-      </Unit30>
+      </Unit31>
     </Units>
-    <General>
-      <ActiveWindowIndexAtStart Value="-1"/>
-    </General>
-    <JumpHistory HistoryIndex="-1"/>
+    <JumpHistory Count="12" HistoryIndex="11">
+      <Position1>
+        <Filename Value="data_ctrl\opc_da_node.pas"/>
+        <Caret Line="96" Column="42" TopLine="61"/>
+      </Position1>
+      <Position2>
+        <Filename Value="data_ctrl\opc_da_node.pas"/>
+        <Caret Line="67" TopLine="50"/>
+      </Position2>
+      <Position3>
+        <Filename Value="data_ctrl\opc_da_node.pas"/>
+        <Caret Line="349" Column="54" TopLine="324"/>
+      </Position3>
+      <Position4>
+        <Filename Value="data_ctrl\opc_da_node.pas"/>
+        <Caret Line="89" TopLine="51"/>
+      </Position4>
+      <Position5>
+        <Filename Value="data_ctrl\opc_da_node.pas"/>
+        <Caret Line="154" Column="23" TopLine="135"/>
+      </Position5>
+      <Position6>
+        <Filename Value="data_ctrl\opc_da_node.pas"/>
+        <Caret Line="160" Column="51" TopLine="128"/>
+      </Position6>
+      <Position7>
+        <Filename Value="data_ctrl\postgresql_tab_wide.pas"/>
+        <Caret Line="101" Column="63" TopLine="76"/>
+      </Position7>
+      <Position8>
+        <Filename Value="data_ctrl\postgresql_tab_wide.pas"/>
+        <Caret Line="223" TopLine="210"/>
+      </Position8>
+      <Position9>
+        <Filename Value="engine.pas"/>
+        <Caret Line="4"/>
+      </Position9>
+      <Position10>
+        <Filename Value="uni_daemonunit.pas"/>
+        <Caret Line="98" Column="31" TopLine="61"/>
+      </Position10>
+      <Position11>
+        <Filename Value="data_ctrl\opc_da_node.pas"/>
+        <Caret Line="116" Column="18" TopLine="106"/>
+      </Position11>
+      <Position12>
+        <Filename Value="data_ctrl\opc_da_node.pas"/>
+        <Caret Line="180" Column="57" TopLine="147"/>
+      </Position12>
+    </JumpHistory>
   </ProjectSession>
 </CONFIG>

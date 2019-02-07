@@ -92,13 +92,13 @@ type
     { Выбрать описания тегов из свойств }
     function CreateTags(): TStrDictionary;
 
-    { Фунция чтения данных }
-    function Read(aValues: TStringList): TStringList; override;
-    { Фунция записи данных }
-    function Write(aValues: TStringList): Boolean; override;
-
-    { Запись всех внутренних данных }
-    function WriteAll(): Boolean; override;
+    {
+    Запись всех внутренних данных
+    @param aTime: Время актуальности данных.
+                  Если не определено, то берется текущее системное время.
+    @return Результат записи - True - запись прошла успешно False - ошибка
+    }
+    function WriteAll(aTime: TDateTime = 0): Boolean; override;
 
 end;
 
@@ -212,25 +212,15 @@ begin
 end;
 
 {
-Фунция чтения данных
+Запись всех внутренних данных
+@param aTime: Время актуальности данных.
+              Если не определено, то берется текущее системное время.
+@return Результат записи - True - запись прошла успешно False - ошибка
 }
-function TICPostgreSQLTableWide.Read(aValues: TStringList): TStringList;
-begin
-  Result := nil;
-end;
-
-{
-Фунция записи данных
-}
-function TICPostgreSQLTableWide.Write(aValues: TStringList): Boolean;
-begin
-  Result := False;
-end;
-
-{ Запись всех внутренних данных }
-function TICPostgreSQLTableWide.WriteAll(): Boolean;
+function TICPostgreSQLTableWide.WriteAll(aTime: TDateTime): Boolean;
 var
   values: Array Of String;
+
 begin
   log.DebugMsgFmt('Запись всех внутренних данных. Объект <%s>', [Name]);
 
@@ -411,7 +401,7 @@ begin
     param_names := ':' + strfunc.JoinStr(field_name_list, ', :');
     // log.DebugMsgFmt('Параметры строкой <%s>', [param_names]);
     sql := Format(INSERT_RECORD_SQL_FMT, [aTableName, field_names, param_names]);
-    // log.DebugMsgFmt('Добавление записи. SQL <%s>', [sql]);
+    //log.DebugMsgFmt('Добавление записи. SQL <%s>', [sql]);
 
     // FSQLQuery.Database := FPQConnection;
     FSQLQuery.SQL.Clear;
@@ -421,7 +411,7 @@ begin
     for i := 0 to Length(StringValues) - 1 do
     begin
       field_type := LowerCase(field_type_list[i]);
-      // log.DebugMsgFmt('Параметр <%s> : <%s>', [field_name_list[i], field_type]);
+      //log.DebugMsgFmt('Параметр <%s> : <%s>', [field_name_list[i], field_type]);
 
       if strfunc.IsStrInList(field_type, ['float']) then
         FSQLQuery.Params.ParamByName(field_name_list[i]).AsFloat := StrToFloat(StringValues[i])
@@ -458,7 +448,7 @@ begin
     free_tag_list := True;
   end;
 
-  // log.DebugMsgFmt('Запуск чтения состояний источников данных. Количество <%d>', [aSrcTagList.Count]);
+  //log.DebugMsgFmt('Запуск чтения состояний источников данных. Количество <%d>', [aSrcTagList.Count]);
 
   SetLength(Result, aSrcTagList.Count);
 
@@ -470,7 +460,7 @@ begin
       // Родительский менеджер обработки
       parent_engine := GetParent() As TICLogger;
       value := parent_engine.GetSourceStateAsString(src_name, tag);
-      // log.DebugMsgFmt('Чтение состояния источника данных <%s>. Тег <%s>. Значение <%s>', [src_name, tag, value]);
+      //log.DebugMsgFmt('Чтение состояния источника данных <%s>. Тег <%s>. Значение <%s>', [src_name, tag, value]);
       Result[i] := value;
     end;
   except
