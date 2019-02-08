@@ -221,43 +221,52 @@ begin
 
   Connect();
 
-  for i_tag := 0 to tags.Count - 1 do
-  begin
-    address := tags.GetStrValue(tags[i]);
-    HRes := GetItemServerHandle(FHDASyncRead , address, 1, iServerH);
-
-    htStartTime.bString := False;
-    htStartTime.ftTime := filefunc.DateTimeToFileTime(dtTime);
-
-    arrServer[0] := iServerH;
-    phServer := @arrServer;
-    HRes := FHDASyncRead.ReadRaw(htStartTime, htEndTime,
-                                 ValueTimeCount, False, 1,
-                                 phServer, ppItemValues, ppErrors);
-    if ppItemValues = nil then
-      log.WarningMsgFmt('Ошибка чтения значения по адресу <%s> из OPC HDA сервера <%s>', [address, FOPCServerName]);
-    if HRes = Windows.E_FAIL then
-      log.ErrorMsg('Ошибка чтения данных');
-
-    DataArray.Clear;
-    DateArray.Clear;
-    NewDataArray.Clear;
-
-    ppItemValuesItem := ppItemValues^[0];
-    pvDataValues := ppItemValuesItem.pvDataValues;
-    pftTimeStamps := ppItemValuesItem.pftTimeStamps;
-    haAggregate := ppItemValuesItem.haAggregate;
-    dwCount := ppItemValuesItem.dwCount;
-
-    for i := 0 to ValueTimeCount - 1 do
+  try
+    for i_tag := 0 to tags.Count - 1 do
     begin
-      DataArray.Append(pvDataValues^[i]);
-    end;
+      address := tags.GetStrValue(tags[i]);
+      log.DebugMsgFmt('Чтение данных тега <%s> по адресу <%s>', [tags[i], address]);
+      try
+        HRes := GetItemServerHandle(FHDASyncRead , address, 1, iServerH);
+      except
+        log.FatalMsgFmt('Ошибка полачения хендла сервера по адресу тега <%s>', [address]);
+      end;
 
-    for i := 0 to ValueTimeCount - 1 do
-    begin
-      DateArray.Append(DateTimeToStr(FileTimeToDateTime(pftTimeStamps^[i])));
+      htStartTime.bString := False;
+      htStartTime.ftTime := filefunc.DateTimeToFileTime(dtTime);
+
+      arrServer[0] := iServerH;
+      phServer := @arrServer;
+      HRes := FHDASyncRead.ReadRaw(htStartTime, htEndTime,
+                                   ValueTimeCount, False, 1,
+                                   phServer, ppItemValues, ppErrors);
+      if ppItemValues = nil then
+        log.WarningMsgFmt('Ошибка чтения значения по адресу <%s> из OPC HDA сервера <%s>', [address, FOPCServerName]);
+      if HRes = Windows.E_FAIL then
+        log.ErrorMsg('Ошибка чтения данных');
+
+      DataArray.Clear;
+      DateArray.Clear;
+      NewDataArray.Clear;
+
+      ppItemValuesItem := ppItemValues^[0];
+      pvDataValues := ppItemValuesItem.pvDataValues;
+      pftTimeStamps := ppItemValuesItem.pftTimeStamps;
+      haAggregate := ppItemValuesItem.haAggregate;
+      dwCount := ppItemValuesItem.dwCount;
+
+      for i := 0 to ValueTimeCount - 1 do
+      begin
+        DataArray.Append(pvDataValues^[i]);
+      end;
+
+      for i := 0 to ValueTimeCount - 1 do
+      begin
+        DateArray.Append(DateTimeToStr(FileTimeToDateTime(pftTimeStamps^[i])));
+      end;
     end;
+  except
+    log.FatalMsgFmt('Ошибка чтения всех данных из источника данных <%s>', [Name]);
   end;
   Disconnect();
 end;
@@ -387,7 +396,7 @@ begin
     HRes := CLSIDFromProgID(ServerProgID, ServerCLSID);
 
     { ВНИМАНИЕ! Необходимо производить CoInitialize и CoUnintialize
-    иначе будет возникать искличение:
+    иначе будет возникать исключение:
     <EOLESysError не был произведен вызов CoInitialize> }
     HRes := CoInitialize(nil);
     try
@@ -413,7 +422,7 @@ begin
  HRes := FHDASyncRead._Release;
 
  { ВНИМАНИЕ! Необходимо производить CoInitialize и CoUnintialize
- иначе будет возникать искличение:
+ иначе будет возникать исключение:
  <EOLESysError не был произведен вызов CoInitialize> }
  CoUninitialize;
 
@@ -458,7 +467,9 @@ begin
      iServerH := pphServer^[0];
      CoTaskMemFree(pphServer);
    end;
- end;
+ end
+ else
+   log.ErrorMsg('Не определен интерфейс OPC HDA сервера');
 end;
 
 { Выбрать описания тегов из свойств }

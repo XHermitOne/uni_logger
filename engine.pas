@@ -582,13 +582,13 @@ begin
   // Сначала читаем значения источников данных
   try
     keys := FSources.GetKeys();
-    // log.DebugMsgFmt('Всего источников данных <%d>', [keys.Count]);
+    log.DebugMsgFmt('Всего источников данных <%d>', [keys.Count]);
     for i := 0 to keys.Count - 1 do
     begin
       key := FSources.GetKey(i);
-      // log.DebugMsgFmt('Чтение данных из источника <%s>', [key]);
+      log.DebugMsgFmt('Чтение данных из источника <%s>', [key]);
       source := FSources.GetByName(key) As TICObjectProto;
-      // log.DebugMsg('Чтение всех данных');
+      log.DebugMsg('Чтение всех данных');
       source.ReadAll();
     end;
   except
