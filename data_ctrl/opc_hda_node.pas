@@ -468,12 +468,13 @@ begin
    arrClient[0] := iClient;
    phClient := @arrClient;
 
-   log.DebugMsg('Получение хендела OPC HDA сервера');
+   log.DebugMsgFmt('Получение хендела OPC HDA сервера по адресу <%s>', [sItem]);
    try
      Result := ServerInterface.GetItemHandles(1, @arrPsItemW, phClient, pphServer, Errors);
    except
      log.FatalMsg('Ошибка получения хендела OPC HDA сервера');
    end;
+   log.DebugMsgFmt('Результат выполнения <%d : %d>', [Result, E_FAIL]);
 
    if Succeeded(Result) then
    begin

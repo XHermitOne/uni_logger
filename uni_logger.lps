@@ -8,7 +8,7 @@
       <Unit0>
         <Filename Value="uni_logger.lpr"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="9"/>
+        <EditorIndex Value="10"/>
         <TopLine Value="116"/>
         <CursorPos X="29" Y="134"/>
         <UsageCount Value="131"/>
@@ -30,7 +30,7 @@
         <ComponentName Value="UniLoggerDaemon"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="DataModule"/>
-        <EditorIndex Value="8"/>
+        <EditorIndex Value="9"/>
         <CursorPos X="34" Y="26"/>
         <UsageCount Value="131"/>
         <Loaded Value="True"/>
@@ -39,7 +39,7 @@
       <Unit3>
         <Filename Value="engine.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="10"/>
+        <EditorIndex Value="11"/>
         <TopLine Value="568"/>
         <CursorPos X="7" Y="591"/>
         <UsageCount Value="131"/>
@@ -57,7 +57,7 @@
       <Unit5>
         <Filename Value="settings.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="5"/>
+        <EditorIndex Value="6"/>
         <TopLine Value="6"/>
         <CursorPos X="41" Y="15"/>
         <UsageCount Value="131"/>
@@ -66,7 +66,7 @@
       <Unit6>
         <Filename Value="data_ctrl\reg_data_ctrl.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="7"/>
+        <EditorIndex Value="8"/>
         <TopLine Value="31"/>
         <CursorPos X="36" Y="63"/>
         <UsageCount Value="131"/>
@@ -173,7 +173,7 @@
       <Unit18>
         <Filename Value="utils\dictionary.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="13"/>
+        <EditorIndex Value="14"/>
         <TopLine Value="40"/>
         <CursorPos X="51" Y="57"/>
         <UsageCount Value="131"/>
@@ -182,7 +182,7 @@
       <Unit19>
         <Filename Value="utils\filefunc.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="4"/>
+        <EditorIndex Value="5"/>
         <TopLine Value="4"/>
         <CursorPos X="29" Y="17"/>
         <UsageCount Value="131"/>
@@ -191,7 +191,7 @@
       <Unit20>
         <Filename Value="utils\inifunc.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="3"/>
+        <EditorIndex Value="4"/>
         <TopLine Value="13"/>
         <CursorPos X="3"/>
         <UsageCount Value="131"/>
@@ -226,7 +226,7 @@
       <Unit24>
         <Filename Value="utils\strfunc.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="11"/>
+        <EditorIndex Value="12"/>
         <CursorPos X="5" Y="16"/>
         <UsageCount Value="131"/>
         <Loaded Value="True"/>
@@ -234,7 +234,7 @@
       <Unit25>
         <Filename Value="utils\sysfunc.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="6"/>
+        <EditorIndex Value="7"/>
         <TopLine Value="8"/>
         <CursorPos Y="16"/>
         <UsageCount Value="131"/>
@@ -243,7 +243,7 @@
       <Unit26>
         <Filename Value="data_ctrl\postgresql_tab_wide.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="14"/>
+        <EditorIndex Value="15"/>
         <TopLine Value="539"/>
         <CursorPos X="2" Y="575"/>
         <UsageCount Value="128"/>
@@ -262,8 +262,8 @@
         <IsPartOfProject Value="True"/>
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="443"/>
-        <CursorPos Y="471"/>
+        <TopLine Value="450"/>
+        <CursorPos X="69" Y="477"/>
         <UsageCount Value="68"/>
         <Loaded Value="True"/>
       </Unit28>
@@ -306,11 +306,11 @@
       <Unit33>
         <Filename Value="opcdelphi\OPCHDA.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <WindowIndex Value="-1"/>
-        <TopLine Value="-1"/>
-        <CursorPos X="-1" Y="-1"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="295"/>
+        <CursorPos X="65" Y="315"/>
         <UsageCount Value="67"/>
+        <Loaded Value="True"/>
       </Unit33>
       <Unit34>
         <Filename Value="opcdelphi\OPCSEC.pas"/>
@@ -333,7 +333,7 @@
       <Unit36>
         <Filename Value="utils\exttypes.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="12"/>
+        <EditorIndex Value="13"/>
         <TopLine Value="16"/>
         <CursorPos Y="39"/>
         <UsageCount Value="33"/>
@@ -367,7 +367,7 @@
         <UsageCount Value="4"/>
       </Unit40>
     </Units>
-    <JumpHistory Count="29" HistoryIndex="28">
+    <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
         <Filename Value="data_ctrl\postgresql_tab_wide.pas"/>
         <Caret Line="542" TopLine="519"/>
@@ -484,6 +484,10 @@
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
         <Caret Line="228" Column="110" TopLine="210"/>
       </Position29>
+      <Position30>
+        <Filename Value="data_ctrl\opc_hda_node.pas"/>
+        <Caret Line="473" Column="31" TopLine="443"/>
+      </Position30>
     </JumpHistory>
   </ProjectSession>
   <Debugging>
