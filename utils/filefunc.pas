@@ -14,7 +14,7 @@ uses
   Windows,
   {$ENDIF}
   Classes, SysUtils,
-  sysfunc, strfunc;
+  sysfunc, strfunc, exttypes;
 
 { Определить папку домашней директории }
 function GetHomeDir(): AnsiString;

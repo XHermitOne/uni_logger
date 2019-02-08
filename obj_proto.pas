@@ -1,7 +1,7 @@
 {
 Модуль абстрактного объекта системы
 
-Версия: 0.0.2.2
+Версия: 0.0.3.1
 }
 unit obj_proto;
 
@@ -11,6 +11,9 @@ interface
 
 uses
     Classes, SysUtils, dictionary;
+
+const
+  DATETIME_TXT_FMT: AnsiString = 'yyyy-mm-dd hh:nn:ss';
 
 type
   {
@@ -31,6 +34,14 @@ type
      последующего доступа к ним объектов приемников данных
      Вот это словарь переменных }
     FState: TStrDictionary;
+    {
+    Буфер изменения состояний во времени
+    На верхнем уровне ключи представляют из себя время в виде строки:
+    yyyy-mm-dd hh:nn:ss
+    Некоторые источники данных могут предоставлять значения только порционно,
+    кадрами-буферами. Для таких случаев и используется этот буфер
+    }
+    FTimeStateBuffer: TStrDictionary;
 
     { Свойства контроллера данных. Прописаны в INI файле }
     FProperties: TStrDictionary;
@@ -137,6 +148,7 @@ type
     property Name: AnsiString read GetName write SetName;
     property Properties: TStrDictionary read GetProperties write SetProperties;
     property State: TStrDictionary read FState write FState;
+    property TimeState: TStrDictionary read FTimeStateBuffer;
 
 end;
 

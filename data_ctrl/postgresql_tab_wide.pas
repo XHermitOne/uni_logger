@@ -16,7 +16,7 @@ interface
 uses
     Classes, SysUtils,
     SQLdb, pqconnection,
-    obj_proto, dictionary, strfunc,
+    obj_proto, dictionary, strfunc, exttypes,
     tag_list;
 
 const
@@ -80,10 +80,16 @@ type
     function GetSrcTagList(aFields: TStringList = nil): TStringList;
 
     { Функция добавления записи }
-    function InsertRecord(aTableName: AnsiString; StringValues: Array Of String): Boolean;
+    function InsertRecord(aTableName: AnsiString; StringValues: Array Of String;  dtTime: TDateTime=0): Boolean;
 
     { Прочитать все значения состояния из источников }
     function ReadStateValues(aSrcTagList: TStringList = nil): TArrayOfString;
+
+    { Функция добавления записей }
+    function InsertRecords(aTableName: AnsiString; aRecordSet: TMemRecordSet): Boolean;
+
+    { Прочитать все значения состояния из временных буферов источников }
+    function ReadTimeStateValues(aSrcTagList: TStringList = nil): TMemRecordSet;
 
   public
     constructor Create;
@@ -220,6 +226,7 @@ end;
 function TICPostgreSQLTableWide.WriteAll(aTime: TDateTime): Boolean;
 var
   values: Array Of String;
+  time_values: TMemRecordSet;
 
 begin
   log.DebugMsgFmt('Запись всех внутренних данных. Объект <%s>', [Name]);
@@ -247,7 +254,12 @@ begin
 
   // Добавить запись
   values := ReadStateValues();
-  Result := InsertRecord(Properties.GetStrValue('table_name'), values);
+  if Length(values) > 0 then
+    Result := Result and InsertRecord(Properties.GetStrValue('table_name'), values);
+  // Добавить записи из временного буфера
+  time_values := ReadTimeStateValues();
+  if time_values.Count > 0 then
+    Result := Result and InsertRecords(Properties.GetStrValue('table_name'), time_values);
 
   // Закрываем соединение
   if not Disconnect() then
@@ -383,7 +395,7 @@ begin
 end;
 
 { Функция добавления записи }
-function TICPostgreSQLTableWide.InsertRecord(aTableName: AnsiString; StringValues: Array Of String): Boolean;
+function TICPostgreSQLTableWide.InsertRecord(aTableName: AnsiString; StringValues: Array Of String; dtTime: TDateTime): Boolean;
 var
   field_names, param_names: AnsiString;
   sql, field_type: AnsiString;
@@ -465,6 +477,96 @@ begin
     end;
   except
     log.FatalMsg('Ошибка чтения значений состояний источников данных');
+  end;
+
+  if free_tag_list then
+    aSrcTagList.Free;
+end;
+
+{ Функция добавления записей }
+function TICPostgreSQLTableWide.InsertRecords(aTableName: AnsiString; aRecordSet: TMemRecordSet): Boolean;
+var
+  i, i_rec: Integer;
+  rec: Array Of String;
+  dt_time: TDateTime;
+  dt_format : TFormatSettings;
+begin
+  log.DebugMsg('Добавление записей в БД');
+  Result := False;
+  dt_format.ShortDateFormat := DB_DATETIME_FMT;
+
+  if aRecordSet.Count > 0 then
+  begin
+    SetLength(rec, aRecordSet.Records[0].Count - 1);
+    for i_rec := 0 to aRecordSet.Count - 1 do
+    begin
+      dt_time := StrToDateTime(aRecordSet.Records[i_rec][0], dt_format);
+      for i := 1 to aRecordSet.Records[i_rec].Count - 1 do
+        rec[i - 1] := aRecordSet.Records[i_rec][i];
+      Result := Result and InsertRecord(aTableName, rec, dt_time);
+    end;
+  end;
+end;
+
+{ Прочитать все значения состояния из временных буферов источников }
+function TICPostgreSQLTableWide.ReadTimeStateValues(aSrcTagList: TStringList = nil): TMemRecordSet;
+var
+  src_name, tag, value, dt_str: AnsiString;
+  values: TMemVectorOfString;
+  i, i_value, i_rec: Integer;
+  parent_engine: TICLogger;
+  free_tag_list: Boolean;
+  is_find_dt: Boolean;
+  new_record: TMemRecord;
+begin
+  free_tag_list := False;
+  if aSrcTagList = nil then
+  begin
+    aSrcTagList := GetSrcTagList();
+    free_tag_list := True;
+  end;
+
+  log.DebugMsg('Запуск чтения буфера состояний источников данных');
+  Result := TMemRecordSet.Create;
+
+  try
+    for i := 0 to aSrcTagList.Count - 1 do
+    begin
+      src_name := strfunc.SplitStr(aSrcTagList[i], '.')[0];
+      tag := strfunc.SplitStr(aSrcTagList[i], '.')[1];
+      // Родительский менеджер обработки
+      parent_engine := GetParent() As TICLogger;
+      values := parent_engine.GetSourceTimeStateAsList(src_name, tag);
+      for i_value := 0 to values.Count - 1 do
+      begin
+        dt_str := values.Points[i_value].datetime;
+        value := values.Points[i_value].value;
+        // Поиск такой же временной метки
+        is_find_dt := False;
+        for i_rec := 0 to Result.Count - 1 do
+          if Result.Records[i_rec][0] = dt_str then
+          begin
+            // Нашли временную метку. Записываем
+            Result.Records[i + 1][i_rec] := value;
+            is_find_dt := True;
+            break;
+          end;
+
+        if not is_find_dt then
+        begin
+          // Не нашли такую временную метку. Необходимо добавить строку
+          new_record := TMemRecord.Create;
+          Result.Add(Addr(new_record));
+          // Ставим временную метку
+          i_rec := Result.Count - 1;
+          Result.Records[i_rec][0] := dt_str;
+          Result.Records[i_rec][i_rec] := value;
+        end;
+
+      end;
+    end;
+  except
+    log.FatalMsg('Ошибка чтения значений временного буфера состояний источников данных');
   end;
 
   if free_tag_list then

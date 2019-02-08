@@ -1,7 +1,7 @@
 {
 Функции работы со строками
 
-Версия: 0.0.4.2
+Версия: 0.0.4.3
 }
 unit strfunc;
 
@@ -14,11 +14,9 @@ uses
     Windows,
     {$ENDIF}
     Classes, SysUtils, StrUtils,
-    // log,
+    exttypes,
     LConvEncoding;
 
-type
-    TArrayOfString = Array Of String;
 {
 Разбивает строку с разделителями на части и возвращает массив частей
 @param sString Строка

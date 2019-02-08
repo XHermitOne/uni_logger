@@ -82,7 +82,7 @@ type
 
 
     { Выбрать описания тегов из свойств }
-  //  function CreateTags(): TStrDictionary;
+    function CreateTags(): TStrDictionary;
 
     { Установить свойства в виде списка параметров }
     procedure SetPropertiesArray(aArgs: Array Of Const); override;
@@ -115,13 +115,13 @@ type
     @return Прочитанное значение в виде строки.
     }
     function ReadAddress(sAddress: AnsiString; dtTime: TDateTime = 0): AnsiString; override;
-    //{
-    //Чтение всех внутренних данных, описанных в свойствах.
-    //@param dtTime: Время актуальности за которое необходимо получить данные.
-    //              Если не определено, то берется текущее системное время.
-    //@return Список прочитанных значений.
-    //}
-    //function ReadAll(dtTime: TDateTime = 0): TStringList; override;
+    {
+    Чтение всех внутренних данных, описанных в свойствах.
+    @param dtTime: Время актуальности за которое необходимо получить данные.
+                  Если не определено, то берется текущее системное время.
+    @return Список прочитанных значений.
+    }
+    function ReadAll(dtTime: TDateTime = 0): TStringList; override;
 
   published
     property ValueTimeCount: Integer read FValueTimeCount write FValueTimeCount;
@@ -189,27 +189,78 @@ end;
               Если не определено, то берется текущее системное время.
 @return Список прочитанных значений.
 }
-//function TICOPCHDANode.ReadAll(dtTime: TDateTime = 0): TStringList;
-//var
-//  i: Integer;
-//  tag_name: AnsiString;
-//  tag_value: AnsiString;
-//
-//begin
-//  log.DebugMsgFmt('Чтение всех внутренних данных. Объект <%s>', [Name]);
-//  // Кроме чтения данных обновляем
-//  // внутреннее состояние источника данных
-//  State := CreateTags;
-//  Result := Read(nil);
-//  for i := 0 to State.Count - 1 do
-//  begin
-//    tag_name := State[i];
-//    tag_value := Result[i];
-//    log.DebugMsgFmt('Значение состояния <%s : %s>', [tag_name, tag_value]);
-//    State.SetStrValue(tag_name, tag_value);
-//  end;
-//end;
+function TICOPCHDANode.ReadAll(dtTime: TDateTime = 0): TStringList;
+var
+  HRes: HRESULT;
+  htStartTime: OPCHDA_TIME;
+  htEndTime: OPCHDA_TIME;
+  arrServer: Array [0..0] of DWORD;
+  phServer: POPCHANDLEARRAY;
+  ppErrors: PResultList;
 
+  ppItemValues: POPCHDA_ITEMARRAY;
+  ppItemValuesItem: OPCHDA_ITEM;
+  pvDataValues: POleVariantArray;
+  pftTimeStamps: PFileTimeArray;
+  haAggregate: DWORD;
+  dwCount: DWORD;
+
+  NewDataArray: TStrings;
+  DataArray: TStrings;
+  DateArray: TStrings;
+
+  i, i_tag: Integer;
+  tags: TStrDictionary;
+  address: AnsiString;
+
+begin
+  Result := TStringList.Create;
+
+  // Список читаемых тегов
+  tags := CreateTags();
+
+  Connect();
+
+  for i_tag := 0 to tags.Count - 1 do
+  begin
+    address := tags.GetStrValue(tags[i]);
+    HRes := GetItemServerHandle(FHDASyncRead , address, 1, iServerH);
+
+    htStartTime.bString := False;
+    htStartTime.ftTime := filefunc.DateTimeToFileTime(dtTime);
+
+    arrServer[0] := iServerH;
+    phServer := @arrServer;
+    HRes := FHDASyncRead.ReadRaw(htStartTime, htEndTime,
+                                 ValueTimeCount, False, 1,
+                                 phServer, ppItemValues, ppErrors);
+    if ppItemValues = nil then
+      log.WarningMsgFmt('Ошибка чтения значения по адресу <%s> из OPC HDA сервера <%s>', [address, FOPCServerName]);
+    if HRes = Windows.E_FAIL then
+      log.ErrorMsg('Ошибка чтения данных');
+
+    DataArray.Clear;
+    DateArray.Clear;
+    NewDataArray.Clear;
+
+    ppItemValuesItem := ppItemValues^[0];
+    pvDataValues := ppItemValuesItem.pvDataValues;
+    pftTimeStamps := ppItemValuesItem.pftTimeStamps;
+    haAggregate := ppItemValuesItem.haAggregate;
+    dwCount := ppItemValuesItem.dwCount;
+
+    for i := 0 to ValueTimeCount - 1 do
+    begin
+      DataArray.Append(pvDataValues^[i]);
+    end;
+
+    for i := 0 to ValueTimeCount - 1 do
+    begin
+      DateArray.Append(DateTimeToStr(FileTimeToDateTime(pftTimeStamps^[i])));
+    end;
+  end;
+  Disconnect();
+end;
 
 {
 Чтение значения по адресу
@@ -394,6 +445,29 @@ begin
      CoTaskMemFree(pphServer);
    end;
  end;
+end;
+
+{ Выбрать описания тегов из свойств }
+function TICOPCHDANode.CreateTags(): TStrDictionary;
+var
+  i: Integer;
+  key, value: AnsiString;
+  tags: TStrDictionary;
+
+begin
+  //log.DebugMsg('Создание тегов');
+  tags := TStrDictionary.Create;
+  for i := 0 to Properties.Count - 1 do
+  begin
+    key := Properties.GetKey(i);
+    if not IsStrInList(key, RESERV_PROPERTIES) then
+    begin
+      value := Properties.GetStrValue(key);
+      //log.DebugMsgFmt('Тег <%s : %s>', [key, value]);
+      tags.AddStrValue(key, value);
+    end;
+  end;
+  Result := tags;
 end;
 
 end.

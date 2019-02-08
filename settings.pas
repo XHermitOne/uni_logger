@@ -12,7 +12,7 @@ interface
 uses
   {INIFiles - модуль который содержит класс для работы с INI-файлами}
   Classes, SysUtils, INIFiles, StrUtils,
-  inifunc, dictionary, strfunc;
+  inifunc, dictionary, strfunc, exttypes;
 
 const DEFAULT_SETTINGS_INI_FILENAME: AnsiString = 'settings.ini';
 

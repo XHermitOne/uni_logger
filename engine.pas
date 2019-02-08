@@ -1,7 +1,7 @@
 {
 Модуль классов движка
 
-Версия: 0.0.1.2
+Версия: 0.0.2.1
 }
 
 unit engine;
@@ -13,7 +13,7 @@ interface
 
 uses
     Classes, SysUtils, Crt,
-    dictionary, settings, obj_proto;
+    dictionary, settings, obj_proto, exttypes;
 
 { Режимы запуска движка }
 const
@@ -25,7 +25,7 @@ const
 
 
 type
-    {
+     {
     TICLoggerProto - абстрактный тип движка
     РАГИСТРАТОРА ДАННЫХ из различных источников в таблице журнала БД.
     }
@@ -101,6 +101,17 @@ type
               если не найдено
       }
       function GetSourceStateAsString(aSourceName, aTag: AnsiString): AnsiString;
+
+      {
+      Получить список состояний тега источника данных в виде массива строк
+      @param aSourceName Наименование источника данных
+      @param aTag Наименование тега-поля источника данных
+      @return Значения тега-поля источника данных в виде списка строк
+              или пустой список, если данных нет.
+              Список составляется следующим способом:
+              ['дата-время', 'значение тега', ....]
+      }
+      function GetSourceTimeStateAsList(aSourceName, aTag: AnsiString): TMemVectorOfString;
 
     end;
 
@@ -419,6 +430,49 @@ begin
     Result := src.State.GetStrValue(aTag)
   else
     Result := '';
+end;
+
+{
+Получить список состояний тега источника данных в виде массива строк
+@param aSourceName Наименование источника данных
+@param aTag Наименование тега-поля источника данных
+@return Значения тега-поля источника данных в виде списка строк
+        или пустой список, если данных нет.
+        Список составляется следующим способом:
+        ['дата-время', 'значение тега', ....]
+}
+function TICLoggerProto.GetSourceTimeStateAsList(aSourceName, aTag: AnsiString): TMemVectorOfString;
+var
+  src: TICObjectProto;
+  i: Integer;
+  str_datetime: AnsiString;
+  state: TStrDictionary;
+  new_point: TMemVectorItem;
+
+begin
+  Result := TMemVectorOfString.Create;
+
+  src := FindSource(aSourceName);
+  if src <> nil then
+  begin
+    try
+      for i := 0 to src.TimeState.Count - 1 do
+      begin
+        // Заполним вектор пустыми значениями
+        new_point := TMemVectorItem.Create;
+        str_datetime := src.TimeState.GetKey(i);
+        new_point.datetime := str_datetime;
+        state := src.TimeState.GetByName(str_datetime) As TStrDictionary;
+        new_point.value := state.GetStrValue(aTag);
+        Result.Add(Addr(new_point));
+      end;
+    except
+      log.FatalMsgFmt('Ошибка получения списка состояний тега <%s> из буфера объекта <%s>', [aTag, aSourceName]);
+      Result.Clear;
+    end;
+  end
+  else
+    Result.Clear;
 end;
 
 constructor TICLogger.Create(TheOwner: TComponent);
