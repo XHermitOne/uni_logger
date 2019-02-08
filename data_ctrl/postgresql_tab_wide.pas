@@ -100,11 +100,11 @@ type
 
     {
     Запись всех внутренних данных
-    @param aTime: Время актуальности данных.
+    @param dtTime: Время актуальности данных.
                   Если не определено, то берется текущее системное время.
     @return Результат записи - True - запись прошла успешно False - ошибка
     }
-    function WriteAll(aTime: TDateTime = 0): Boolean; override;
+    function WriteAll(dtTime: TDateTime = 0): Boolean; override;
 
 end;
 
@@ -219,11 +219,11 @@ end;
 
 {
 Запись всех внутренних данных
-@param aTime: Время актуальности данных.
+@param dtTime: Время актуальности данных.
               Если не определено, то берется текущее системное время.
 @return Результат записи - True - запись прошла успешно False - ошибка
 }
-function TICPostgreSQLTableWide.WriteAll(aTime: TDateTime): Boolean;
+function TICPostgreSQLTableWide.WriteAll(dtTime: TDateTime): Boolean;
 var
   values: Array Of String;
   time_values: TMemRecordSet;
@@ -255,7 +255,7 @@ begin
   // Добавить запись
   values := ReadStateValues();
   if Length(values) > 0 then
-    Result := Result and InsertRecord(Properties.GetStrValue('table_name'), values);
+    Result := Result and InsertRecord(Properties.GetStrValue('table_name'), values, dtTime);
   // Добавить записи из временного буфера
   time_values := ReadTimeStateValues();
   if time_values.Count > 0 then
@@ -409,8 +409,12 @@ begin
     field_type_list := GetFieldTypes();
 
     field_names := strfunc.JoinStr(field_name_list, ', ');
-    // log.DebugMsgFmt('Имена полей строкой <%s>', [field_names]);
     param_names := ':' + strfunc.JoinStr(field_name_list, ', :');
+    if dtTime <> 0 then
+      field_names := DATETIME_FIELD_NAME + ', ' + field_names;
+    if dtTime <> 0 then
+      param_names := ':' + DATETIME_FIELD_NAME + ', ' + field_names;
+    // log.DebugMsgFmt('Имена полей строкой <%s>', [field_names]);
     // log.DebugMsgFmt('Параметры строкой <%s>', [param_names]);
     sql := Format(INSERT_RECORD_SQL_FMT, [aTableName, field_names, param_names]);
     //log.DebugMsgFmt('Добавление записи. SQL <%s>', [sql]);
@@ -418,6 +422,9 @@ begin
     // FSQLQuery.Database := FPQConnection;
     FSQLQuery.SQL.Clear;
     FSQLQuery.SQL.Add(sql);
+
+    if dtTime <> 0 then
+      FSQLQuery.Params.ParamByName(DATETIME_FIELD_NAME).AsDateTime := dtTime;
 
     // Заполнение параметров
     for i := 0 to Length(StringValues) - 1 do
