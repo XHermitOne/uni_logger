@@ -21,7 +21,7 @@ uses
 const
   OPC_HDA_NODE_TYPE: AnsiString = 'OPC_HDA';
 
-  RESERV_PROPERTIES: Array [1..5] Of String = ('type', 'name', 'description', 'opc_server', 'topic');
+  RESERV_PROPERTIES: Array [1..6] Of String = ('type', 'name', 'description', 'opc_server', 'topic', 'value_time_count');
 
   UNKNOWN_GROUP_NAME: AnsiString = 'UNKNOWN_GROUP';
 
@@ -360,7 +360,9 @@ begin
   inherited SetProperties(dProperties);
 
   if Properties.HasKey('opc_server') then
-    SetOPCServerName(Properties.GetStrValue('opc_server'))
+    SetOPCServerName(Properties.GetStrValue('opc_server'));
+  if Properties.HasKey('value_time_count') then
+      ValueTimeCount := StrToInt(Properties.GetStrValue('value_time_count'));
 end;
 
 {  Установить связь }
