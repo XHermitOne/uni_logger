@@ -21,6 +21,10 @@ uses
   Classes, SysUtils, FileUtil, DaemonApp, crt,
   log, engine, ExtCtrls;
 
+const
+  { Количество ожиданий завершения тика при остановке службы }
+  STOP_TIMEOUT_COUNT: Integer = 30;
+
 type
 
   { TUniLoggerDaemon -   непосредственно экземпляр сервиса.
@@ -81,16 +85,21 @@ end;
 
 procedure TUniLoggerDaemon.DataModuleStop(Sender: TCustomDaemon; var OK: Boolean
   );
+var
+  i: Integer;
 begin
   // Останавливаем таймер отсчета тиков
   TickTimer.Enabled := False;
   // Необходимо подождать пока все не закончим
-  while engine.LOGGER_ENGINE.IsTick do
-  begin
-    log.WarningMsg('Ожидание завершения обработки');
-    // Ожидаем 1 секунду, потом опять сделаем проверку
-    Sleep(1000);
-  end;
+  for i := 1 to STOP_TIMEOUT_COUNT do
+    if engine.LOGGER_ENGINE.IsTick then
+    begin
+      log.WarningMsg('Ожидание завершения обработки');
+      // Ожидаем 1 секунду, потом опять сделаем проверку
+      Sleep(1000);
+    end
+    else
+      break;
 
   // Корректно завершаем работу движка
   engine.LOGGER_ENGINE.Stop;
