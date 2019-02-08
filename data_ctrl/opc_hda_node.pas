@@ -385,9 +385,15 @@ begin
   begin
     ServerProgID := StringToOleStr(sOPCServerName);
     HRes := CLSIDFromProgID(ServerProgID, ServerCLSID);
+
+    { ВНИМАНИЕ! Необходимо производить CoInitialize и CoUnintialize
+    иначе будет возникать искличение:
+    <EOLESysError не был произведен вызов CoInitialize> }
+    HRes := CoInitialize(nil);
     try
       FHDASyncRead := ComObj.CreateRemoteComObject(sComputer, ServerCLSID) as IOPCHDA_SyncRead;
     except
+      CoUninitialize;
       FHDASyncRead := nil;
       log.FatalMsg('Класс не зарегистрирован');
       Exit;
@@ -405,6 +411,12 @@ var
 begin
  FHDASyncRead._AddRef;
  HRes := FHDASyncRead._Release;
+
+ { ВНИМАНИЕ! Необходимо производить CoInitialize и CoUnintialize
+ иначе будет возникать искличение:
+ <EOLESysError не был произведен вызов CoInitialize> }
+ CoUninitialize;
+
  FHDASyncRead := nil;
  Result := True;
 end;
