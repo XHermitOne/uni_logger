@@ -205,13 +205,12 @@ var
   haAggregate: DWORD;
   dwCount: DWORD;
 
-  NewDataArray: TStrings;
-  DataArray: TStrings;
-  DateArray: TStrings;
-
   i, i_tag: Integer;
   tags: TStrDictionary;
-  address: AnsiString;
+  tag_name, address, value, dt_str: AnsiString;
+  dt_time: TDateTime;
+
+  new_state: TStrDictionary;
 
 begin
   Result := TStringList.Create;
@@ -224,8 +223,9 @@ begin
   try
     for i_tag := 0 to tags.Count - 1 do
     begin
-      address := tags.GetStrValue(tags[i]);
-      log.DebugMsgFmt('Чтение данных тега <%s> по адресу <%s>', [tags[i], address]);
+      tag_name := tags[i];
+      address := tags.GetStrValue(tag_name);
+      log.DebugMsgFmt('Чтение данных тега <%s> по адресу <%s>', [tag_name, address]);
       try
         HRes := GetItemServerHandle(FHDASyncRead , address, 1, iServerH);
       except
@@ -245,10 +245,6 @@ begin
       if HRes = Windows.E_FAIL then
         log.ErrorMsg('Ошибка чтения данных');
 
-      DataArray.Clear;
-      DateArray.Clear;
-      NewDataArray.Clear;
-
       ppItemValuesItem := ppItemValues^[0];
       pvDataValues := ppItemValuesItem.pvDataValues;
       pftTimeStamps := ppItemValuesItem.pftTimeStamps;
@@ -257,12 +253,25 @@ begin
 
       for i := 0 to ValueTimeCount - 1 do
       begin
-        DataArray.Append(pvDataValues^[i]);
-      end;
-
-      for i := 0 to ValueTimeCount - 1 do
-      begin
-        DateArray.Append(DateTimeToStr(FileTimeToDateTime(pftTimeStamps^[i])));
+        value := pvDataValues^[i];
+        dt_time := FileTimeToDateTime(pftTimeStamps^[i]);
+        dt_str := DateTimeToStr(dt_time);
+        log.DebugMsgFmt('Источник <%s>. OPC HDA. Прочитаны данные <%s> тега <%s> за <%s>', [Name, value, tag_name, dt_str]);
+        // Записать в буфер
+        if TimeState.HasKey(dt_str) then
+        begin
+          new_state := TimeState.GetByName(dt_str) As TStrDictionary;
+          new_state.SetStrValue(tag_name, value);
+        end
+        else
+        begin
+          new_state := CreateTags();
+          new_state.SetStrValue(tag_name, value);
+          TimeState.AddObject(dt_str, new_state);
+        end;
+        // Записываем в выходной список, если необходимо ,
+        // то можнопотом распарсить
+        Result.Add(Format('%s|%s|%s', [tag_name, dt_str, value]));
       end;
     end;
   except
