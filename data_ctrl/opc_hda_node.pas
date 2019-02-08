@@ -21,7 +21,7 @@ uses
 const
   OPC_HDA_NODE_TYPE: AnsiString = 'OPC_HDA';
 
-  RESERV_PROPERTIES: Array [1..6] Of String = ('type', 'name', 'description', 'opc_server', 'topic', 'value_time_count');
+  RESERV_PROPERTIES: Array [1..7] Of String = ('type', 'name', 'description', 'opc_server', 'topic', 'value_time_count', 'value_time_tick');
 
   UNKNOWN_GROUP_NAME: AnsiString = 'UNKNOWN_GROUP';
 
@@ -55,9 +55,28 @@ type
     }
     FValueTimeCount: Integer;
 
+    {
+    Это шаг регистрации временных данных в контроллере.
+    Задется в настройках в формате <yyyy-mm-dd hh:nn:ss>
+    }
+    FValueTimeTick: TDateTime;
+
     { Получить хендл сервера  }
     function GetItemServerHandle(aServerInterface: IUnknown; sItem: String; iClient: DWORD; var iServer: DWORD): HRESULT;
 
+    {
+    Вычислить начальное время запрашиваемого диапазона от указанного
+    @param dtEnd Конечная дата-время вычисляемого диапазона.
+                  Если не определена, то берется текущая системная.
+    @param dtTick Временной шаг
+    @param iCount: Количество шагов
+    @param bNotHour: С точностью до часа?
+    @param bNotMinute: С точностью до минут?
+    @param bNotSecond: С точностью до секунд?
+    @return Вычисленное временное значение начала диапазона
+    }
+    function CalcStartDateTime(dtEnd: TDateTime=0; dtTick: TDateTime=0; iCount: Integer=0;
+                               bNotHour: Boolean=True; bNotMinute: Boolean=True; bNotSecond: Boolean=True): TDateTime;
   public
     constructor Create;
     destructor Destroy; override;
@@ -125,6 +144,7 @@ type
 
   published
     property ValueTimeCount: Integer read FValueTimeCount write FValueTimeCount;
+    property ValueTimeTick: TDateTime read FValueTimeTick write FValueTimeTick;
 
 end;
 
@@ -213,6 +233,9 @@ var
   new_state: TStrDictionary;
 
 begin
+  if dtTime = 0 then
+    dtTime := Now();
+
   Result := TStringList.Create;
 
   // Список читаемых тегов
@@ -229,17 +252,24 @@ begin
       try
         HRes := GetItemServerHandle(FHDASyncRead , address, 1, iServerH);
       except
-        log.FatalMsgFmt('Ошибка полачения хендла сервера по адресу тега <%s>', [address]);
+        log.FatalMsgFmt('Ошибка получения хендла сервера по адресу тега <%s>', [address]);
       end;
 
       htStartTime.bString := False;
       htStartTime.ftTime := filefunc.DateTimeToFileTime(dtTime);
+      htEndTime.bString := False;
+      htEndTime.ftTime := filefunc.DateTimeToFileTime(dtTime);
 
       arrServer[0] := iServerH;
       phServer := @arrServer;
+
+      log.DebugMsg('Начало чтения');
+
       HRes := FHDASyncRead.ReadRaw(htStartTime, htEndTime,
                                    ValueTimeCount, False, 1,
                                    phServer, ppItemValues, ppErrors);
+      log.DebugMsgFmt('Результат чтения ReadRaw <%d>', [HRes]);
+
       if ppItemValues = nil then
         log.WarningMsgFmt('Ошибка чтения значения по адресу <%s> из OPC HDA сервера <%s>', [address, FOPCServerName]);
       if HRes = Windows.E_FAIL then
@@ -381,6 +411,8 @@ begin
     SetOPCServerName(Properties.GetStrValue('opc_server'));
   if Properties.HasKey('value_time_count') then
       ValueTimeCount := StrToInt(Properties.GetStrValue('value_time_count'));
+  if Properties.HasKey('value_time_tick') then
+      ValueTimeTick := StrToDateTime(Properties.GetStrValue('value_time_tick'));
 end;
 
 {  Установить связь }
@@ -474,7 +506,7 @@ begin
    except
      log.FatalMsg('Ошибка получения хендела OPC HDA сервера');
    end;
-   log.DebugMsgFmt('Результат выполнения <%d : %d>', [Result, E_FAIL]);
+   // log.DebugMsgFmt('Результат выполнения <%d : %d>', [Result, E_FAIL]);
 
    if Succeeded(Result) then
    begin
@@ -509,6 +541,23 @@ begin
     end;
   end;
   Result := tags;
+end;
+
+{
+Вычислить начальное время запрашиваемого диапазона от указанного
+@param dtEnd Конечная дата-время вычисляемого диапазона.
+              Если не определена, то берется текущая системная.
+@param dtTick Временной шаг
+@param iCount: Количество шагов
+@param bNotHour: С точностью до часа?
+@param bNotMinute: С точностью до минут?
+@param bNotSecond: С точностью до секунд?
+@return Вычисленное временное значение начала диапазона
+}
+function TICOPCHDANode.CalcStartDateTime(dtEnd: TDateTime; dtTick: TDateTime; iCount: Integer;
+                                         bNotHour: Boolean; bNotMinute: Boolean; bNotSecond: Boolean): TDateTime;
+begin
+
 end;
 
 end.
