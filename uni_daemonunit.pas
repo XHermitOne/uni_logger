@@ -23,7 +23,7 @@ uses
 
 const
   { Количество ожиданий завершения тика при остановке службы }
-  STOP_TIMEOUT_COUNT: Integer = 30;
+  STOP_TIMEOUT_COUNT: Integer = 10;
 
 type
 
