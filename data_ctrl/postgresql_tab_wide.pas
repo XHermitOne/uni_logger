@@ -260,6 +260,8 @@ begin
   time_values := ReadTimeStateValues();
   if time_values.Count > 0 then
     Result := Result and InsertRecords(Properties.GetStrValue('table_name'), time_values);
+  // После использования обязательно удаляем рекордсет
+  time_values.Destroy;
 
   // Закрываем соединение
   if not Disconnect() then
@@ -571,6 +573,8 @@ begin
         end;
 
       end;
+      // Обязательно очищем память после использования векторов
+      values.Destroy;
     end;
   except
     log.FatalMsg('Ошибка чтения значений временного буфера состояний источников данных');
