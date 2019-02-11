@@ -14,7 +14,7 @@ uses
   {$IFDEF windows}
   Windows, ActiveX, ComObj,
   {$ENDIF}
-  Classes, SysUtils,
+  Classes, SysUtils, DateUtils,
   OPCHDA, OPCtypes,
   obj_proto, dictionary, strfunc;
 
@@ -77,6 +77,17 @@ type
     }
     function CalcStartDateTime(dtEnd: TDateTime=0; dtTick: TDateTime=0; iCount: Integer=0;
                                bNotHour: Boolean=True; bNotMinute: Boolean=True; bNotSecond: Boolean=True): TDateTime;
+    {
+    Коррекция конечного времени запрашиваемого диапазона.
+    @param dtEnd Конечная дата-время вычисляемого диапазона.
+                  Если не определена, то берется текущая системная.
+    @param bNotHour: С точностью до часа?
+    @param bNotMinute: С точностью до минут?
+    @param bNotSecond: С точностью до секунд?
+    @return Вычисленное временное значение конца диапазона
+    }
+    function CalcEndDateTime(dtEnd: TDateTime;
+                             bNotHour: Boolean; bNotMinute: Boolean; bNotSecond: Boolean): TDateTime;
   public
     constructor Create;
     destructor Destroy; override;
@@ -232,6 +243,8 @@ var
 
   new_state: TStrDictionary;
 
+  cur_hour, cur_minute, cur_sec, cur_msec: Word;
+
 begin
   if dtTime = 0 then
     dtTime := Now();
@@ -256,9 +269,16 @@ begin
       end;
 
       htStartTime.bString := False;
-      htStartTime.ftTime := filefunc.DateTimeToFileTime(dtTime);
+      SysUtils.DecodeTime(ValueTimeTick, cur_hour, cur_minute, cur_sec, cur_msec);
+      dt_time := CalcStartDateTime(dtTime, 0, 0, cur_hour<>0, cur_minute<>0, cur_sec<>0);
+      log.DebugMsgFmt('Запрашиваемый диапазон. Базовое время %s. Начальное время %s', [FormatDateTime(obj_proto.DATETIME_TXT_FMT, dtTime),
+                                                                                       FormatDateTime(obj_proto.DATETIME_TXT_FMT, dt_time)]);
+      htStartTime.ftTime := filefunc.DateTimeToFileTime(dt_time);
       htEndTime.bString := False;
-      htEndTime.ftTime := filefunc.DateTimeToFileTime(dtTime);
+      dt_time := CalcEndDateTime(dtTime, cur_hour<>0, cur_minute<>0, cur_sec<>0);
+      log.DebugMsgFmt('Запрашиваемый диапазон. Базовое время %s. Конечное время %s', [FormatDateTime(obj_proto.DATETIME_TXT_FMT, dtTime),
+                                                                                      FormatDateTime(obj_proto.DATETIME_TXT_FMT, dt_time)]);
+      htEndTime.ftTime := filefunc.DateTimeToFileTime(dt_time);
 
       arrServer[0] := iServerH;
       phServer := @arrServer;
@@ -556,8 +576,60 @@ end;
 }
 function TICOPCHDANode.CalcStartDateTime(dtEnd: TDateTime; dtTick: TDateTime; iCount: Integer;
                                          bNotHour: Boolean; bNotMinute: Boolean; bNotSecond: Boolean): TDateTime;
+var
+ curYear, curMonth, curDay : Word;
+ curHour, curMin, curSec, curMilli : Word;
 begin
+  if dtEnd = 0 then
+    dtEnd := Now();
 
+  if dtTick = 0 then
+    dtTick := ValueTimeTick;
+  if iCount = 0 then
+    iCount := ValueTimeCount;
+
+  DateUtils.DecodeDateTime(dtEnd, curYear, curMonth, curDay,
+                 curHour, curMin, curSec, curMilli);
+
+  if not bNotSecond then
+    dtEnd := DateUtils.EncodeDateTime(curYear, curMonth, curDay, curHour, curMin, 0, 0);
+  if not bNotMinute then
+    dtEnd := DateUtils.EncodeDateTime(curYear, curMonth, curDay, curHour, 0, 0, 0);
+  if not bNotHour then
+    dtEnd := DateUtils.EncodeDateTime(curYear, curMonth, curDay, 0, 0, 0, 0);
+
+  Result := dtEnd - (dtTick * iCount);
+end;
+
+{
+Коррекция конечного времени запрашиваемого диапазона.
+@param dtEnd Конечная дата-время вычисляемого диапазона.
+              Если не определена, то берется текущая системная.
+@param bNotHour: С точностью до часа?
+@param bNotMinute: С точностью до минут?
+@param bNotSecond: С точностью до секунд?
+@return Вычисленное временное значение конца диапазона
+}
+function TICOPCHDANode.CalcEndDateTime(dtEnd: TDateTime;
+                                       bNotHour: Boolean; bNotMinute: Boolean; bNotSecond: Boolean): TDateTime;
+var
+ curYear, curMonth, curDay : Word;
+ curHour, curMin, curSec, curMilli : Word;
+begin
+  if dtEnd = 0 then
+    dtEnd := Now();
+
+  DateUtils.DecodeDateTime(dtEnd, curYear, curMonth, curDay,
+                curHour, curMin, curSec, curMilli);
+
+  if not bNotSecond then
+    dtEnd := DateUtils.EncodeDateTime(curYear, curMonth, curDay, curHour, curMin, 0, 0);
+  if not bNotMinute then
+    dtEnd := DateUtils.EncodeDateTime(curYear, curMonth, curDay, curHour, 0, 0, 0);
+  if not bNotHour then
+    dtEnd := DateUtils.EncodeDateTime(curYear, curMonth, curDay, 0, 0, 0, 0);
+
+  Result := dtEnd;
 end;
 
 end.
