@@ -502,6 +502,9 @@ var
 begin
   log.DebugMsg('Добавление записей в БД');
   Result := False;
+
+  dt_format := DefaultFormatSettings;
+  dt_format.DateSeparator := '-';
   dt_format.ShortDateFormat := DB_DATETIME_FMT;
 
   if aRecordSet.Count > 0 then

@@ -425,6 +425,7 @@ end;
 
 procedure TICOPCHDANode.SetProperties(dProperties: TStrDictionary);
 var
+  dt_format: TFormatSettings;
   value: AnsiString;
 begin
   inherited SetProperties(dProperties);
@@ -439,9 +440,13 @@ begin
   end;
   if Properties.HasKey('value_time_tick') then
   begin
+    dt_format := DefaultFormatSettings;
+    dt_format.DateSeparator := '-';
+    dt_format.ShortDateFormat := obj_proto.DATETIME_TXT_FMT;
+
     value := Properties.GetStrValue('value_time_tick');
     log.DebugMsgFmt('Время одного тика регистрации данных в буфере <%s>', [value]);
-    ValueTimeTick := StrToDateTime(value);
+    ValueTimeTick := StrToDateTime(value, dt_format);
     log.DebugMsgFmt('Время одного тика регистрации данных в буфере <%s>. Временное значение <%s>', [value,
                                                                                                     FormatDateTime(obj_proto.DATETIME_TXT_FMT, ValueTimeTick)]);
   end;
