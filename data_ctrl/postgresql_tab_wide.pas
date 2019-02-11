@@ -570,7 +570,8 @@ begin
         begin
           // Не нашли такую временную метку. Необходимо добавить строку
           new_record := TMemRecord.Create;
-          Result.Add(Addr(new_record));
+          new_record.SetLength(aSrcTagList.Count + 1);
+          Result.Add(new_record);
           // Ставим временную метку
           i_rec := Result.Count - 1;
           Result.Records[i_rec][0] := dt_str;

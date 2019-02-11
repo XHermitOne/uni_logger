@@ -447,8 +447,7 @@ var
   i: Integer;
   str_datetime: AnsiString;
   state: TStrDictionary;
-  new_point: TMemVectorItem;
-
+  // new_point: TMemVectorItem;
 begin
   Result := TMemVectorOfString.Create;
 
@@ -459,13 +458,16 @@ begin
       for i := 0 to src.TimeState.Count - 1 do
       begin
         // Заполним вектор пустыми значениями
-        new_point := TMemVectorItem.Create;
+        //new_point := TMemVectorItem.Create;
         str_datetime := src.TimeState.GetKey(i);
-        new_point.datetime := str_datetime;
+        //new_point.datetime := str_datetime;
         state := src.TimeState.GetByName(str_datetime) As TStrDictionary;
-        new_point.value := state.GetStrValue(aTag);
-        Result.Add(Addr(new_point));
+        //new_point.value := state.GetStrValue(aTag);
+        //Result.Add(new_point);
+        Result.AddNewPoint(str_datetime, state.GetStrValue(aTag));
+        //new_point := nil;
       end;
+      Result.PrintPoints();
     except
       log.FatalMsgFmt('Ошибка получения списка состояний тега <%s> из буфера объекта <%s>', [aTag, aSourceName]);
       Result.Clear;
