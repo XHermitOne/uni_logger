@@ -259,7 +259,7 @@ begin
   try
     for i_tag := 0 to tags.Count - 1 do
     begin
-      tag_name := tags[i];
+      tag_name := tags.GetKey(i);
       address := tags.GetStrValue(tag_name);
       log.DebugMsgFmt('Чтение данных тега <%s> по адресу <%s>', [tag_name, address]);
       try
@@ -332,6 +332,7 @@ begin
     log.FatalMsgFmt('Ошибка чтения всех данных из источника данных <%s>', [Name]);
   end;
   Disconnect();
+  tags.Free();
 end;
 
 {

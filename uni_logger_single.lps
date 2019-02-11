@@ -9,7 +9,7 @@
         <Filename Value="uni_logger_single.lpr"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="68"/>
+        <TopLine Value="67"/>
         <CursorPos Y="104"/>
         <UsageCount Value="21"/>
         <Loaded Value="True"/>
@@ -17,11 +17,11 @@
       <Unit1>
         <Filename Value="utils\dictionary.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <WindowIndex Value="-1"/>
-        <TopLine Value="-1"/>
-        <CursorPos X="-1" Y="-1"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="63"/>
+        <CursorPos X="19" Y="70"/>
         <UsageCount Value="21"/>
+        <Loaded Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="utils\exttypes.pas"/>
@@ -97,7 +97,7 @@
       <Unit10>
         <Filename Value="engine.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="3"/>
+        <EditorIndex Value="4"/>
         <CursorPos X="16" Y="4"/>
         <UsageCount Value="21"/>
         <Loaded Value="True"/>
@@ -125,8 +125,8 @@
         <IsPartOfProject Value="True"/>
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="553"/>
-        <CursorPos X="7" Y="584"/>
+        <TopLine Value="243"/>
+        <CursorPos X="33" Y="262"/>
         <UsageCount Value="21"/>
         <Loaded Value="True"/>
       </Unit13>
