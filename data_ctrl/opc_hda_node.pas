@@ -253,13 +253,14 @@ begin
 
   // Список читаемых тегов
   tags := CreateTags();
+  log.DebugMsgFmt('Читаемых тегов <%d>', [tags.Count]);
 
   Connect();
 
   try
     for i_tag := 0 to tags.Count - 1 do
     begin
-      tag_name := tags.GetKey(i);
+      tag_name := tags.GetKey(i_tag);
       address := tags.GetStrValue(tag_name);
       log.DebugMsgFmt('Чтение данных тега <%s> по адресу <%s>', [tag_name, address]);
       try
