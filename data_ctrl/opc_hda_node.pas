@@ -1,7 +1,7 @@
 {
 Модуль узла OPC HDA сервера
 
-Версия: 0.0.1.1
+Версия: 0.0.1.2
 }
 
 unit opc_hda_node;
@@ -233,8 +233,8 @@ var
   ppItemValuesItem: OPCHDA_ITEM;
   pvDataValues: POleVariantArray;
   pftTimeStamps: PFileTimeArray;
-  haAggregate: DWORD;
-  dwCount: DWORD;
+  //haAggregate: DWORD;
+  //dwCount: DWORD;
 
   i, i_tag: Integer;
   tags: TStrDictionary;
@@ -267,6 +267,7 @@ begin
       except
         log.FatalMsgFmt('Ошибка получения хендла сервера по адресу тега <%s>', [address]);
       end;
+      log.DebugMsgFmt('Получение хендла сервера. Результат <%d : %d>', [HRes, iServerH]);
 
       htStartTime.bString := False;
       SysUtils.DecodeTime(ValueTimeTick, cur_hour, cur_minute, cur_sec, cur_msec);
@@ -301,14 +302,14 @@ begin
       ppItemValuesItem := ppItemValues^[0];
       pvDataValues := ppItemValuesItem.pvDataValues;
       pftTimeStamps := ppItemValuesItem.pftTimeStamps;
-      haAggregate := ppItemValuesItem.haAggregate;
-      dwCount := ppItemValuesItem.dwCount;
+      //haAggregate := ppItemValuesItem.haAggregate;
+      //dwCount := ppItemValuesItem.dwCount;
 
       for i := 0 to ValueTimeCount - 1 do
       begin
         value := pvDataValues^[i];
         dt_time := FileTimeToDateTime(pftTimeStamps^[i]);
-        dt_str := DateTimeToStr(dt_time);
+        dt_str := FormatDateTime(obj_proto.DATETIME_TXT_FMT, dt_time);
         log.DebugMsgFmt('Источник <%s>. OPC HDA. Прочитаны данные <%s> тега <%s> за <%s>', [Name, value, tag_name, dt_str]);
         // Записать в буфер
         if TimeState.HasKey(dt_str) then
