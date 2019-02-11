@@ -1,7 +1,7 @@
 {
 Модуль узла OPC HDA сервера
 
-Версия: 0.0.1.2
+Версия: 0.0.1.3
 }
 
 unit opc_hda_node;
@@ -120,31 +120,6 @@ type
     { Установить свойства объекта в виде словаря }
     procedure SetProperties(dProperties: TStrDictionary); override;
 
-    //{
-    //Фунция чтения данных
-    //@param sAddresses Список адресов для чтения
-    //@param dtTime: Время актуальности за которое необходимо получить данные.
-    //              Если не определено, то берется текущее системное время.
-    //@return Список прочитанных значений.
-    //}
-    //function Read(sAddresses: TStringList; dtTime: TDateTime = 0): TStringList; override;
-
-    //{
-    //Чтение значений по адресам
-    //@param sAddresses Массив адресов для чтения
-    //@param dtTime: Время актуальности за которое необходимо получить данные.
-    //              Если не определено, то берется текущее системное время.
-    //@return Список прочитанных значений.
-    //}
-    //function ReadAddresses(sAddresses: Array Of String; dtTime: TDateTime = 0): TStringList; override;
-    {
-    Чтение значения по адресу
-    @param sAddress Строка адреса для чтения
-    @param dtTime: Время актуальности за которое необходимо получить данные.
-                  Если не определено, то берется текущее системное время.
-    @return Прочитанное значение в виде строки.
-    }
-    function ReadAddress(sAddress: AnsiString; dtTime: TDateTime = 0): AnsiString; override;
     {
     Чтение всех внутренних данных, описанных в свойствах.
     @param dtTime: Время актуальности за которое необходимо получить данные.
@@ -168,18 +143,12 @@ uses
 constructor TICOPCHDANode.Create;
 begin
   inherited Create;
-  // FOPCClient := nil;
 
   FComputerName := DEFAULT_COMPUTER_NAME;
 end;
 
 destructor TICOPCHDANode.Destroy;
 begin
-  //if FOPCClient <> nil then
-  //begin
-  //  FOPCClient.Destroy;
-  //  FOPCClient := nil;
-  //end;
   inherited Destroy;
 end;
 
@@ -345,102 +314,8 @@ begin
   tags.Free();
 end;
 
-{
-Чтение значения по адресу
-@param sAddress Строка адреса для чтения
-@param dtTime: Время актуальности за которое необходимо получить данные.
-              Если не определено, то берется текущее системное время.
-@return Прочитанное значение в виде строки.
-}
-function TICOPCHDANode.ReadAddress(sAddress: AnsiString; dtTime: TDateTime): AnsiString;
-var
-  HRes: HRESULT;
-  htStartTime: OPCHDA_TIME;
-  htEndTime: OPCHDA_TIME;
-  arrServer: Array [0..0] of DWORD;
-  phServer: POPCHANDLEARRAY;
-  ppErrors: PResultList;
-
-  ppItemValues: POPCHDA_ITEMARRAY;
-  ppItemValuesItem: OPCHDA_ITEM;
-  pvDataValues: POleVariantArray;
-  pftTimeStamps: PFileTimeArray;
-  haAggregate: DWORD;
-  dwCount: DWORD;
-
-  NewDataArray: TStrings;
-  DataArray: TStrings;
-  DateArray: TStrings;
-
-  i: Integer;
-
-begin
-  Connect();
-
-  HRes := GetItemServerHandle(FHDASyncRead , 'TagName', 1, iServerH);
-
-  htStartTime.bString := False;
-  htStartTime.ftTime := filefunc.DateTimeToFileTime(dtTime);
-
-  arrServer[0] := iServerH;
-  phServer := @arrServer;
-  HRes := FHDASyncRead.ReadRaw(htStartTime, htEndTime,
-                               ValueTimeCount, False, 1,
-                               phServer, ppItemValues, ppErrors);
-  if ppItemValues = nil then
-    log.WarningMsgFmt('Ошибка чтения значения по адресу <%s> из OPC HDA сервера <%s>', [sAddress, FOPCServerName]);
-  if HRes = Windows.E_FAIL then
-    log.ErrorMsg('Ошибка чтения данных');
-
-  DataArray.Clear;
-  DateArray.Clear;
-  NewDataArray.Clear;
-
-  ppItemValuesItem := ppItemValues^[0];
-  pvDataValues := ppItemValuesItem.pvDataValues;
-  pftTimeStamps := ppItemValuesItem.pftTimeStamps;
-  haAggregate := ppItemValuesItem.haAggregate;
-  dwCount := ppItemValuesItem.dwCount;
-
-  for i := 0 to ValueTimeCount - 1 do
-  begin
-    DataArray.Append(pvDataValues^[i]);
-  end;
-
-  for i := 0 to ValueTimeCount - 1 do
-  begin
-    DateArray.Append(DateTimeToStr(FileTimeToDateTime(pftTimeStamps^[i])));
-  end;
-
-  Disconnect();
-end;
-
-{ Выбрать описания тегов из свойств }
-//function TICOPCHDANode.CreateTags(): TStrDictionary;
-//var
-//  i: Integer;
-//  key, value: AnsiString;
-//  tags: TStrDictionary;
-//
-//begin
-//  log.DebugMsg('Создание тегов');
-//  tags := TStrDictionary.Create;
-//  for i := 0 to Properties.Count - 1 do
-//  begin
-//    key := Properties.GetKey(i);
-//    if not IsStrInList(key, RESERV_PROPERTIES) then
-//    begin
-//      value := Properties.GetStrValue(key);
-//      log.DebugMsgFmt('Тег <%s : %s>', [key, value]);
-//      tags.AddStrValue(key, value);
-//    end;
-//  end;
-//  Result := tags;
-//end;
-
 procedure TICOPCHDANode.SetProperties(dProperties: TStrDictionary);
 var
-  // dt_format: TFormatSettings;
   value: AnsiString;
 begin
   inherited SetProperties(dProperties);
@@ -455,10 +330,6 @@ begin
   end;
   if Properties.HasKey('value_time_tick') then
   begin
-    //dt_format := DefaultFormatSettings;
-    //dt_format.DateSeparator := obj_proto.DATE_TXT_SEPARATOR;
-    //dt_format.ShortDateFormat := obj_proto.DATETIME_TXT_FMT;
-
     value := Properties.GetStrValue('value_time_tick');
     log.DebugMsgFmt('Время одного тика регистрации данных в буфере <%s>', [value]);
     ValueTimeTick := DateUtils.ScanDateTime(obj_proto.DATETIME_TXT_FMT, value);
