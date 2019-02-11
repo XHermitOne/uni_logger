@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, Grids,
-  StdCtrls,
+  StdCtrls, DateUtils,
   settings;
 
 const
@@ -43,15 +43,30 @@ var
 implementation
 
 uses
-  log, strfunc, opc_server_node;
+  log, strfunc;
 
 {$R *.lfm}
 
 { TProgForm }
 
 procedure TProgForm.FormCreate(Sender: TObject);
+var
+  dt_format: TFormatSettings;
+  value: AnsiString;
+  dt: TDateTime;
 begin
-  RefreshAll();
+  // RefreshAll();
+
+  dt_format := DefaultFormatSettings;
+  dt_format.DateSeparator := '-';
+  dt_format.ShortDateFormat := 'yyyy-mm-dd hh:nn:ss';
+
+  value := '0000-00-00 01:00:00';
+  log.DebugMsgFmt('Время одного тика регистрации данных в буфере <%s>', [value]);
+  dt := ScanDateTime('yyyy-mm-dd hh:nn:ss', value);
+  log.DebugMsgFmt('Время одного тика регистрации данных в буфере <%s>. Временное значение <%s>', [value,
+                                                                                                  FormatDateTime('yyyy-mm-dd hh:nn:ss', dt)]);
+
 end;
 
 { Заполнение грида тегами }
@@ -59,18 +74,18 @@ function TProgForm.RefreshTagList(aSettingsManager: settings.TICSettingsManager;
 var
   i: Integer;
   tag_names: TStringList;
-  opc: opc_server_node.TICOPCServerNode;
+  //opc: opc_server_node.TICOPCServerNode;
   address: AnsiString;
   option_name: AnsiString;
 begin
   tag_names := aSettingsManager.GetOptionNameList('SPT_961');
-  opc := opc_server_node.TICOPCServerNode.Create;
+  //opc := opc_server_node.TICOPCServerNode.Create;
 
   for i := tag_names.Count - 1 downto 0  do
   begin
     option_name := tag_names[i];
-    if option_name = 'opc_server' then
-      opc.SetOPCServerName(aSettingsManager.GetOptionValue('SPT_961', option_name));
+    //if option_name = 'opc_server' then
+    //  opc.SetOPCServerName(aSettingsManager.GetOptionValue('SPT_961', option_name));
     if strfunc.IsStrInList(option_name, ['description', 'opc_server', 'type']) then
       tag_names.Delete(i);
   end;
@@ -84,10 +99,10 @@ begin
     address := aSettingsManager.GetOptionValue('SPT_961', option_name);
     address := strfunc.EncodeString(address, aFromEncoding, aToEncoding);
     TagStringGrid.Cells[2, i+1] := address;
-    TagStringGrid.Cells[3, i+1] := opc.ReadAddress(address);
+    //TagStringGrid.Cells[3, i+1] := opc.ReadAddress(address);
   end;
 
-  opc.Free;
+  //opc.Free;
   tag_names.Free;
 end;
 

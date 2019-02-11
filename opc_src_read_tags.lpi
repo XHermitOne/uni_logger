@@ -28,7 +28,7 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="11">
+    <Units Count="10">
       <Unit0>
         <Filename Value="opc_src_read_tags.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -53,29 +53,25 @@
         <IsPartOfProject Value="True"/>
       </Unit4>
       <Unit5>
-        <Filename Value="data_ctrl\opc_server_node.pas"/>
+        <Filename Value="opc_client\opc_client.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit5>
       <Unit6>
-        <Filename Value="opc_client\opc_client.pas"/>
+        <Filename Value="data_ctrl\opc_hda_node.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit6>
       <Unit7>
-        <Filename Value="data_ctrl\opc_hda_node.pas"/>
+        <Filename Value="utils\filefunc.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit7>
       <Unit8>
-        <Filename Value="utils\filefunc.pas"/>
+        <Filename Value="utils\sysfunc.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit8>
       <Unit9>
-        <Filename Value="utils\sysfunc.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit9>
-      <Unit10>
         <Filename Value="obj_proto.pas"/>
         <IsPartOfProject Value="True"/>
-      </Unit10>
+      </Unit9>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

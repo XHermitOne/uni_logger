@@ -15,6 +15,7 @@ interface
 
 uses
     Classes, SysUtils,
+    DateUtils,
     SQLdb, pqconnection,
     obj_proto, dictionary, strfunc, exttypes,
     tag_list;
@@ -499,21 +500,21 @@ var
   i, i_rec: Integer;
   rec: Array Of String;
   dt_time: TDateTime;
-  dt_format : TFormatSettings;
+  //dt_format : TFormatSettings;
 begin
   log.DebugMsg('Добавление записей в БД');
   Result := False;
 
-  dt_format := DefaultFormatSettings;
-  dt_format.DateSeparator := DB_DATE_SEPARATOR;
-  dt_format.ShortDateFormat := DB_DATETIME_FMT;
+  //dt_format := DefaultFormatSettings;
+  //dt_format.DateSeparator := DB_DATE_SEPARATOR;
+  //dt_format.ShortDateFormat := DB_DATETIME_FMT;
 
   if aRecordSet.Count > 0 then
   begin
     SetLength(rec, aRecordSet.Records[0].Count - 1);
     for i_rec := 0 to aRecordSet.Count - 1 do
     begin
-      dt_time := StrToDateTime(aRecordSet.Records[i_rec][0], dt_format);
+      dt_time := DateUtils.ScanDateTime(DB_DATETIME_FMT, aRecordSet.Records[i_rec][0]);
       for i := 1 to aRecordSet.Records[i_rec].Count - 1 do
         rec[i - 1] := aRecordSet.Records[i_rec][i];
       Result := Result and InsertRecord(aTableName, rec, dt_time);
