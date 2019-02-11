@@ -471,6 +471,8 @@ begin
   if sOPCServerName = '' then
     sOPCServerName := FOPCServerName;
 
+  log.InfoMsgFmt('Установка связи с <%s : %s>', [sComputer, sOPCServerName]);
+
   Result := False;
   if Trim(sOPCServerName) <> '' then
   begin
@@ -507,6 +509,8 @@ begin
  иначе будет возникать исключение:
  <EOLESysError не был произведен вызов CoInitialize> }
  CoUninitialize;
+
+ log.InfoMsg('Разрыв связи');
 
  FHDASyncRead := nil;
  Result := True;
@@ -569,7 +573,7 @@ var
   tags: TStrDictionary;
 
 begin
-  //log.DebugMsg('Создание тегов');
+  log.DebugMsg('Создание тегов');
   tags := TStrDictionary.Create;
   for i := 0 to Properties.Count - 1 do
   begin
@@ -577,7 +581,7 @@ begin
     if not IsStrInList(key, RESERV_PROPERTIES) then
     begin
       value := Properties.GetStrValue(key);
-      //log.DebugMsgFmt('Тег <%s : %s>', [key, value]);
+      log.DebugMsgFmt('Тег <%s : %s>', [key, value]);
       tags.AddStrValue(key, value);
     end;
   end;
