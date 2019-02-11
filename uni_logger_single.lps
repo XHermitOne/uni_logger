@@ -8,10 +8,9 @@
       <Unit0>
         <Filename Value="uni_logger_single.lpr"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="61"/>
-        <CursorPos Y="100"/>
+        <TopLine Value="65"/>
+        <CursorPos X="62" Y="24"/>
         <UsageCount Value="20"/>
         <Loaded Value="True"/>
       </Unit0>
@@ -63,8 +62,9 @@
       <Unit6>
         <Filename Value="utils\log.pas"/>
         <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
         <TopLine Value="82"/>
-        <CursorPos X="12" Y="89"/>
+        <CursorPos X="31" Y="112"/>
         <UsageCount Value="20"/>
         <Loaded Value="True"/>
       </Unit6>
@@ -303,7 +303,7 @@
         <UsageCount Value="20"/>
       </Unit32>
     </Units>
-    <JumpHistory Count="5" HistoryIndex="4">
+    <JumpHistory Count="8" HistoryIndex="7">
       <Position1>
         <Filename Value="utils\log.pas"/>
         <Caret Line="89" Column="12" TopLine="82"/>
@@ -324,6 +324,18 @@
         <Filename Value="engine.pas"/>
         <Caret Line="4" Column="22"/>
       </Position5>
+      <Position6>
+        <Filename Value="uni_logger_single.lpr"/>
+        <Caret Line="100" TopLine="61"/>
+      </Position6>
+      <Position7>
+        <Filename Value="uni_logger_single.lpr"/>
+        <Caret Line="90" Column="9" TopLine="37"/>
+      </Position7>
+      <Position8>
+        <Filename Value="uni_logger_single.lpr"/>
+        <Caret Line="100" TopLine="61"/>
+      </Position8>
     </JumpHistory>
   </ProjectSession>
 </CONFIG>

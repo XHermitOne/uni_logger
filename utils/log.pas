@@ -104,12 +104,12 @@ const
   NORMAL_COLOR_TEXT: AnsiString = Chr($1b) + '[0m';       // normal
 
   { Режим отладки по умолчанию. Позволяет принудительно установить режим в обход параметров из окружения }
-  DEFAULT_DEBUG_MODE: Boolean = False;
+  DEFAULT_DEBUG_MODE: Boolean = True;
   { Режим журналирования по умолчанию. Позволяет принудительно установить режим в обход параметров из окружения }
-  DEFAULT_LOG_MODE: Boolean = True;
+  DEFAULT_LOG_MODE: Boolean = False;
 
   { Режим журналирования Application.Log. Включается для служб Windows }
-  DEFAULT_APP_LOG_MODE = True;
+  DEFAULT_APP_LOG_MODE = False;
 
 
 {
