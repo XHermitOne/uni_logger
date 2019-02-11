@@ -283,11 +283,14 @@ begin
       arrServer[0] := iServerH;
       phServer := @arrServer;
 
-      log.DebugMsg('Начало чтения');
-
-      HRes := FHDASyncRead.ReadRaw(htStartTime, htEndTime,
-                                   ValueTimeCount, False, 1,
-                                   phServer, ppItemValues, ppErrors);
+      log.DebugMsg('Начало чтения ReadRaw');
+      try
+        HRes := FHDASyncRead.ReadRaw(htStartTime, htEndTime,
+                                     ValueTimeCount, False, 1,
+                                     phServer, ppItemValues, ppErrors);
+      except
+        log.FatalMsg('Ошибка чтения ReadRaw');
+      end;
       log.DebugMsgFmt('Результат чтения ReadRaw <%d>', [HRes]);
 
       if ppItemValues = nil then
