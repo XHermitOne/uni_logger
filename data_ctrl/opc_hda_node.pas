@@ -86,8 +86,8 @@ type
     @param bNotSecond: С точностью до секунд?
     @return Вычисленное временное значение конца диапазона
     }
-    function CalcEndDateTime(dtEnd: TDateTime;
-                             bNotHour: Boolean; bNotMinute: Boolean; bNotSecond: Boolean): TDateTime;
+    function CalcEndDateTime(dtEnd: TDateTime=0;
+                             bNotHour: Boolean=True; bNotMinute: Boolean=True; bNotSecond: Boolean=True): TDateTime;
   public
     constructor Create;
     destructor Destroy; override;
@@ -424,15 +424,27 @@ end;
 //end;
 
 procedure TICOPCHDANode.SetProperties(dProperties: TStrDictionary);
+var
+  value: AnsiString;
 begin
   inherited SetProperties(dProperties);
 
   if Properties.HasKey('opc_server') then
     SetOPCServerName(Properties.GetStrValue('opc_server'));
   if Properties.HasKey('value_time_count') then
-      ValueTimeCount := StrToInt(Properties.GetStrValue('value_time_count'));
+  begin
+    value := Properties.GetStrValue('value_time_count');
+    log.DebugMsgFmt('Количество регистрируемых данных в буфере <%s>', [value]);
+    ValueTimeCount := StrToInt(value);
+  end;
   if Properties.HasKey('value_time_tick') then
-      ValueTimeTick := StrToDateTime(Properties.GetStrValue('value_time_tick'));
+  begin
+    value := Properties.GetStrValue('value_time_tick');
+    log.DebugMsgFmt('Время одного тика регистрации данных в буфере <%s>', [value]);
+    ValueTimeTick := StrToDateTime(value);
+    log.DebugMsgFmt('Время одного тика регистрации данных в буфере <%s>. Временное значение <%s>', [value,
+                                                                                                    FormatDateTime(obj_proto.DATETIME_TXT_FMT, ValueTimeTick)]);
+  end;
 end;
 
 {  Установить связь }

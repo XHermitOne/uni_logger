@@ -49,6 +49,7 @@
         <Filename Value="obj_proto.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="1"/>
+        <TopLine Value="139"/>
         <CursorPos X="3" Y="16"/>
         <UsageCount Value="262"/>
         <Loaded Value="True"/>
@@ -261,8 +262,8 @@
         <IsPartOfProject Value="True"/>
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="242"/>
-        <CursorPos X="138" Y="279"/>
+        <TopLine Value="411"/>
+        <CursorPos Y="445"/>
         <UsageCount Value="199"/>
         <Loaded Value="True"/>
       </Unit28>
