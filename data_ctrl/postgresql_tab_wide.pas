@@ -30,6 +30,7 @@ const
   INSERT_RECORD_SQL_FMT: AnsiString = 'INSERT INTO %s (%s) VALUES (%s)';
 
   DB_DATETIME_FMT: AnsiString = 'yyyy-mm-dd hh:mm:ss';
+  DB_DATE_SEPARATOR: Char = '-';
 
 
 type
@@ -504,7 +505,7 @@ begin
   Result := False;
 
   dt_format := DefaultFormatSettings;
-  dt_format.DateSeparator := '-';
+  dt_format.DateSeparator := DB_DATE_SEPARATOR;
   dt_format.ShortDateFormat := DB_DATETIME_FMT;
 
   if aRecordSet.Count > 0 then

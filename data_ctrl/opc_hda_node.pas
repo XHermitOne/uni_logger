@@ -441,7 +441,7 @@ begin
   if Properties.HasKey('value_time_tick') then
   begin
     dt_format := DefaultFormatSettings;
-    dt_format.DateSeparator := '-';
+    dt_format.DateSeparator := obj_proto.DATE_TXT_SEPARATOR;
     dt_format.ShortDateFormat := obj_proto.DATETIME_TXT_FMT;
 
     value := Properties.GetStrValue('value_time_tick');

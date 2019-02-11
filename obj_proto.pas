@@ -14,6 +14,7 @@ uses
 
 const
   DATETIME_TXT_FMT: AnsiString = 'yyyy-mm-dd hh:nn:ss';
+  DATE_TXT_SEPARATOR: Char = '-';
 
 type
   {
