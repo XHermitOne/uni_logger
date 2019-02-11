@@ -85,7 +85,7 @@ interface
 uses
     Classes, SysUtils,
     { Для функций перекодировки UTF8ToWinCP }
-    LazUTF8, lconvencoding,
+    LazUTF8, LConvEncoding,
     DaemonApp,
     crt,
     sysfunc;

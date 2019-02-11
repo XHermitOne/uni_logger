@@ -1,7 +1,7 @@
 {
 Модуль классов движка
 
-Версия: 0.0.2.1
+Версия: 0.0.2.2
 }
 
 unit engine;
@@ -183,7 +183,7 @@ var
 implementation
 
 uses
-  log, config, reg_data_ctrl, strfunc;
+  log, reg_data_ctrl, strfunc;
 
 constructor TICLoggerProto.Create(TheOwner: TComponent);
 begin

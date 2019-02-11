@@ -230,11 +230,10 @@
       <Unit26>
         <Filename Value="data_ctrl\postgresql_tab_wide.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="1"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="484"/>
         <CursorPos X="28" Y="517"/>
         <UsageCount Value="259"/>
-        <Loaded Value="True"/>
       </Unit26>
       <Unit27>
         <Filename Value="data_ctrl\opc_da_node.pas"/>
@@ -248,10 +247,9 @@
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
         <IsPartOfProject Value="True"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="416"/>
-        <CursorPos X="32" Y="449"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="16" Y="4"/>
         <UsageCount Value="200"/>
-        <Loaded Value="True"/>
       </Unit28>
       <Unit29>
         <Filename Value="opcdelphi\OPC_AE.pas"/>
@@ -321,7 +319,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="16"/>
         <CursorPos Y="39"/>
-        <UsageCount Value="166"/>
+        <UsageCount Value="168"/>
       </Unit36>
       <Unit37>
         <Filename Value="data_ctrl\opc_server_node.pas"/>
@@ -337,24 +335,10 @@
         <UsageCount Value="59"/>
       </Unit38>
     </Units>
-    <JumpHistory Count="4" HistoryIndex="3">
-      <Position1>
-        <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="27" TopLine="188"/>
-      </Position1>
-      <Position2>
-        <Filename Value="data_ctrl\postgresql_tab_wide.pas"/>
-        <Caret Line="23" TopLine="23"/>
-      </Position2>
-      <Position3>
-        <Filename Value="data_ctrl\postgresql_tab_wide.pas"/>
-        <Caret Line="516" Column="48" TopLine="483"/>
-      </Position3>
-      <Position4>
-        <Filename Value="data_ctrl\postgresql_tab_wide.pas"/>
-        <Caret Line="38" Column="15" TopLine="21"/>
-      </Position4>
-    </JumpHistory>
+    <General>
+      <ActiveWindowIndexAtStart Value="-1"/>
+    </General>
+    <JumpHistory HistoryIndex="-1"/>
   </ProjectSession>
   <Debugging>
     <BreakPoints Count="1">
