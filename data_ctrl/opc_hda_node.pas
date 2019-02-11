@@ -296,9 +296,15 @@ begin
       log.DebugMsgFmt('Результат чтения ReadRaw <%d>', [HRes]);
 
       if ppItemValues = nil then
+      begin
         log.WarningMsgFmt('Ошибка чтения значения по адресу <%s> из OPC HDA сервера <%s>', [address, FOPCServerName]);
+        Exit;
+      end;
       if HRes = Windows.E_FAIL then
+      begin
         log.ErrorMsg('Ошибка чтения данных');
+        Exit;
+      end;
 
       ppItemValuesItem := ppItemValues^[0];
       pvDataValues := ppItemValuesItem.pvDataValues;
