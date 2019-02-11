@@ -1,7 +1,7 @@
 {
 Модуль абстрактного объекта системы
 
-Версия: 0.0.3.1
+Версия: 0.0.3.2
 }
 unit obj_proto;
 
@@ -167,6 +167,7 @@ begin
   FDescription := '';
   FReadValues := TStringList.Create;
   FState := TStrDictionary.Create;
+  FTimeStateBuffer := TStrDictionary.Create;
 end;
 
 destructor TICObjectProto.Destroy;
@@ -180,6 +181,11 @@ begin
   begin
     FState.Free;
     FState := nil;
+  end;
+  if FTimeStateBuffer <> nil then
+  begin
+    FTimeStateBuffer.Free;
+    FTimeStateBuffer := nil;
   end;
 
   if FProperties <> nil then

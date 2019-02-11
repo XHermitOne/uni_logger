@@ -306,6 +306,9 @@ begin
       //haAggregate := ppItemValuesItem.haAggregate;
       //dwCount := ppItemValuesItem.dwCount;
 
+      if not TimeState.IsEmpty() then
+        TimeState.Clear;
+
       for i := 0 to ValueTimeCount - 1 do
       begin
         value := pvDataValues^[i];
@@ -325,7 +328,7 @@ begin
           TimeState.AddObject(dt_str, new_state);
         end;
         // Записываем в выходной список, если необходимо ,
-        // то можнопотом распарсить
+        // то можно потом распарсить
         Result.Add(Format('%s|%s|%s', [tag_name, dt_str, value]));
       end;
     end;
