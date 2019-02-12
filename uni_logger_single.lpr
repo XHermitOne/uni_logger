@@ -166,7 +166,7 @@ begin
   if HasOption('l', 'log') then
     LOG_MODE := True;
 
-  If HasOption('s', 'settings') then
+  if HasOption('s', 'settings') then
     settings.SETTINGS_INI_FILENAME := Trim(GetOptionValue('s', 'settings'));
 
   if LOG_MODE then
@@ -184,9 +184,6 @@ begin
 
   // Корректно завершаем работу движка
   engine.LOGGER_ENGINE.Stop;
-  // ВНИМАНИЕ! Вместо Free я вызываю Destroy.
-  // Предположительно из-за этого на останавливается корректно служба
-  //engine.LOGGER_ENGINE.Free;
   engine.LOGGER_ENGINE.Destroy;
   engine.LOGGER_ENGINE := nil;
 
