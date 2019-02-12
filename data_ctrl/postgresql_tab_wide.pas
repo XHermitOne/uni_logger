@@ -29,6 +29,9 @@ const
 
   CREATE_TABLE_SQL_FMT: AnsiString = 'CREATE TABLE %s (id BIGSERIAL NOT NULL, %s, CONSTRAINT %s_pkey PRIMARY KEY (id));';
   INSERT_RECORD_SQL_FMT: AnsiString = 'INSERT INTO %s (%s) VALUES (%s)';
+  // Добавление не существующей записи
+  INSERT_NOT_EXISTS_RECORD_SQL_FMT: AnsiString = 'INSERT INTO %s (%s) SELECT %s WHERE NOT EXISTS (SELECT 1 FROM %s WHERE %s = %s)';
+  UPSERT_RECORD_SQL_FMT: AnsiString = 'INSERT INTO %s (%s) VALUES (%s) ON CONFLICT (%s) DO UPDATE SET (%s) = (%s)';
 
   DB_DATETIME_FMT: AnsiString = 'yyyy-mm-dd hh:mm:ss';
   DB_DATE_SEPARATOR: Char = '-';
@@ -420,8 +423,12 @@ begin
       param_names := ':' + DATETIME_FIELD_NAME + ', ' + param_names;
     // log.DebugMsgFmt('Имена полей строкой <%s>', [field_names]);
     // log.DebugMsgFmt('Параметры строкой <%s>', [param_names]);
-    sql := Format(INSERT_RECORD_SQL_FMT, [aTableName, field_names, param_names]);
-    //log.DebugMsgFmt('Добавление записи. SQL <%s>', [sql]);
+    if dtTime <> 0 then
+      sql := Format(INSERT_NOT_EXISTS_RECORD_SQL_FMT, [aTableName, field_names, param_names, aTableName, DATETIME_FIELD_NAME, ':' + DATETIME_FIELD_NAME])
+    else
+      sql := Format(INSERT_RECORD_SQL_FMT, [aTableName, field_names, param_names]);
+    // sql := Format(UPSERT_RECORD_SQL_FMT, [aTableName, field_names, param_names, DATETIME_FIELD_NAME, field_names, param_names]);
+    log.DebugMsgFmt('Добавление записи. SQL <%s>', [sql]);
 
     // FSQLQuery.Database := FPQConnection;
     FSQLQuery.SQL.Clear;
