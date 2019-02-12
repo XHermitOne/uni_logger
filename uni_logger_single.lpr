@@ -121,7 +121,7 @@ uses
   }
   Interfaces,
   Classes, SysUtils, CustApp,
-  engine
+  engine, memfunc, log, settings
   { you can add units after this };
 
 type
@@ -143,20 +143,34 @@ procedure TUniLoggerSingleApplication.DoRun;
 var
   ErrorMsg: String;
 begin
-  // quick check parameters
-  ErrorMsg := CheckOptions('h', 'help');
-  if ErrorMsg <> '' then begin
+  // Чтание параметров коммандной строки
+  ErrorMsg := CheckOptions('hdls:','help debug log settings:');
+  if ErrorMsg <> '' then
+  begin
     ShowException(Exception.Create(ErrorMsg));
     Terminate;
     Exit;
   end;
 
   // parse parameters
-  if HasOption('h', 'help') then begin
+  if HasOption('h', 'help') then
+  begin
     WriteHelp;
     Terminate;
     Exit;
   end;
+
+  if HasOption('d', 'debug') then
+    DEBUG_MODE := True;
+
+  if HasOption('l', 'log') then
+    LOG_MODE := True;
+
+  If HasOption('s', 'settings') then
+    settings.SETTINGS_INI_FILENAME := Trim(GetOptionValue('s', 'settings'));
+
+  if LOG_MODE then
+    OpenLog(ChangeFileExt(ParamStr(0), '.log'));
 
   { add your program here }
 
@@ -176,6 +190,9 @@ begin
   engine.LOGGER_ENGINE.Destroy;
   engine.LOGGER_ENGINE := nil;
 
+  if LOG_MODE then
+    CloseLog();
+
   // stop program loop
   Terminate;
 end;
@@ -194,12 +211,20 @@ end;
 procedure TUniLoggerSingleApplication.WriteHelp;
 begin
   { add your help code here }
-  WriteLn('Usage: ', ExeName, ' -h');
+  PrintColorTxt('uni_logger_single - Программа регистрации данных из различных источников данных в SQL БД', CYAN_COLOR_TEXT);
+  PrintColorTxt('Парметры коммандной строки:', CYAN_COLOR_TEXT);
+  PrintColorTxt(Format('    Помощь: %s --help', [ExeName]), CYAN_COLOR_TEXT);
+  PrintColorTxt(Format('    Режим вывода сообщений в консоль: %s --debug', [ExeName]), CYAN_COLOR_TEXT);
+  PrintColorTxt(Format('    Режим вывода сообщений в журнал: %s --log', [ExeName]), CYAN_COLOR_TEXT);
+  PrintColorTxt(Format('    Файл настройки: %s --settings=имя_файла_настройки.ini', [ExeName]), CYAN_COLOR_TEXT);
 end;
 
 var
   Application: TUniLoggerSingleApplication;
 begin
+  if log.DEBUG_MODE then
+    memfunc.InitStatusMemory();
+
   Application := TUniLoggerSingleApplication.Create(nil);
   Application.Title := 'UniLogger single mode';
   Application.Run;
@@ -210,5 +235,7 @@ begin
   //if UseHeapTrace then // Test if reporting is on
   //   SetHeapTraceOutput(ChangeFileExt(ParamStr(0), '.mem'));
   //{$ifend}
+  if log.DEBUG_MODE then
+    memfunc.PrintLostMemory();
 end.
 

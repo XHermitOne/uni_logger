@@ -1,5 +1,7 @@
 {
 Функции отладки утечек памяти.
+
+Версия: 0.0.1.1
 }
 unit memfunc;
 
@@ -8,7 +10,7 @@ unit memfunc;
 interface
 
 uses
-    Classes, SysUtils;
+  Classes, SysUtils;
 
 var HPStart : THeapStatus;
 var HPEnd : THeapStatus;
@@ -25,7 +27,7 @@ procedure PrintLostMemory();
 implementation
 
 uses
-    log;
+  log;
 
 {
 Инициализировать состояние памяти на данный момент.
@@ -54,9 +56,9 @@ var
 begin
   lost_memory := GetLostMemory;
   if lost_memory > 0 then
-     log.WarningMsg(Format('Обнаружена утечка памяти <%d>', [lost_memory]), True)
+    log.WarningMsg(Format('Обнаружена утечка памяти <%d>', [lost_memory]), True)
   else
-     log.ServiceMsg('Утечек памяти не обнаружено', True);
+    log.ServiceMsg('Утечек памяти не обнаружено', True);
 end;
 
 end.

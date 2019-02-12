@@ -1,7 +1,7 @@
 {
 Модуль поддержки настроек программы
 
-Версия: 0.0.2.2
+Версия: 0.0.2.3
 }
 unit settings;
 
@@ -14,7 +14,7 @@ uses
   Classes, SysUtils, INIFiles, StrUtils,
   inifunc, dictionary, strfunc, exttypes;
 
-const DEFAULT_SETTINGS_INI_FILENAME: AnsiString = 'settings.ini';
+// const DEFAULT_SETTINGS_INI_FILENAME: AnsiString = 'settings.ini';
 
 type
   {
@@ -92,6 +92,9 @@ type
   end;
 
 var
+  { Имя файла настроек }
+  SETTINGS_INI_FILENAME: AnsiString = 'settings.ini';
+
   SETTINGS_MANAGER: TICSettingsManager;
 
 
@@ -126,7 +129,7 @@ var
 begin
   cur_path := ExtractFileDir(ParamStr(0));
 
-  FIniFileName := JoinPath([cur_path, DEFAULT_SETTINGS_INI_FILENAME]);
+  FIniFileName := JoinPath([cur_path, SETTINGS_INI_FILENAME]);
 
   log.DebugMsgFmt('Файл настроек: <%s>', [FIniFileName]);
 

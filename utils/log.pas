@@ -66,7 +66,7 @@
 
 47 	белый
 
-Версия: 0.0.7.1
+Версия: 0.0.8.3
 
 ВНИМАНИЕ! Вывод сообщений под Linux проверять только в терминале.
 Только он выводит корректно сообщения.
@@ -103,15 +103,6 @@ const
   WHITE_COLOR_TEXT: AnsiString = Chr($1b) + '[37m';       // white
   NORMAL_COLOR_TEXT: AnsiString = Chr($1b) + '[0m';       // normal
 
-  { Режим отладки по умолчанию. Позволяет принудительно установить режим в обход параметров из окружения }
-  DEFAULT_DEBUG_MODE: Boolean = True;
-  { Режим журналирования по умолчанию. Позволяет принудительно установить режим в обход параметров из окружения }
-  DEFAULT_LOG_MODE: Boolean = False;
-
-  { Режим журналирования Application.Log. Включается для служб Windows }
-  DEFAULT_APP_LOG_MODE = False;
-
-
 {
 Определить актуальную кодировку для вывода текста.
 @return Актуальная кодировка для вывода текста
@@ -128,7 +119,7 @@ function GetLogMode(): Boolean;
 @param sCodePage Указание кодировки
 @return Перекодированный текст
 }
-function EncodeUnicodeString(sTxt: AnsiString; sCodePage: AnsiString = 'utf-8'): AnsiString;
+function EncodeUnicodeString(sTxt: AnsiString; sCodePage: AnsiString = ''): AnsiString;
 {
 Печать цветового текста
 @param sTxt Печатаемый текст
@@ -263,6 +254,14 @@ var
     LOG_FILE: Text;
     IS_OPEN_LOG_FILE: Boolean = False;
 
+    { Режим отладки }
+    DEBUG_MODE: Boolean = False;
+    { Режим журналирования }
+    LOG_MODE: Boolean = False;
+
+    { Режим журналирования Application.Log. Включается для служб Windows }
+    APP_LOG_MODE: Boolean = False;
+
 
 implementation
 
@@ -275,7 +274,6 @@ uses
 }
 function GetDefaultEncoding(): AnsiString;
 begin
-    // writeln(DefaultSystemCodePage, ' ', CP_UTF8);
     result := 'utf-8';
     if sysfunc.IsOSWindows() then
         result := 'cp866';
@@ -286,16 +284,10 @@ end;
 }
 function GetDebugMode(): Boolean;
 begin
-  if DEFAULT_DEBUG_MODE then
+  if DEBUG_MODE then
     Result := True
   else
     Result := False;
-
-  if not Result then
-    if not DEFAULT_APP_LOG_MODE then
-    //  AppLogMsg(etWarning, 'Режим отладки отключен')
-    //else
-      PrintColorTxt('Режим отладки отключен', YELLOW_COLOR_TEXT);
 end;
 
 {
@@ -303,19 +295,12 @@ end;
 }
 function GetLogMode(): Boolean;
 begin
-  if DEFAULT_APP_LOG_MODE then
+  if APP_LOG_MODE then
     Result := True
-  else if DEFAULT_LOG_MODE then
+  else if LOG_MODE then
     Result := IS_OPEN_LOG_FILE
   else
     Result := False;
-
-  if not Result then
-    //if not DEFAULT_APP_LOG_MODE then
-    //  AppLogMsg(etWarning, 'Режим журналирования отключен')
-    //else
-      PrintColorTxt('Режим журналирования отключен', YELLOW_COLOR_TEXT);
-
 end;
 
 {
@@ -326,29 +311,32 @@ end;
 }
 function EncodeUnicodeString(sTxt: AnsiString; sCodePage: AnsiString): AnsiString;
 begin
-    result := '';
-    if (sCodePage = 'utf-8') or (sCodePage = 'UTF-8') or (sCodePage = 'utf8') or (sCodePage = 'UTF8') then
-    begin
-      // ВНИМАНИЕ! Мы везде работаем с UTF-8 кодировкой
-      // Поэтому перекодировать здесь не надо
-      result := sTxt;
-    end
-    else if (sCodePage = 'cp866') or (sCodePage = 'CP866') then
-    begin
-      // В модуле lconvencoding есть очень много функций по перекодированию
-      result := lconvencoding.UTF8ToCP866(sTxt);
-    end
-    else if (sCodePage = 'cp1251') or (sCodePage = 'CP1251') then
-    begin
-      // С Windows системами мы можем пользоваться
-      // функциями UTF8ToWinCP и WinCPToUTF8 модуль LazUTF8
-      result := LazUTF8.UTF8ToWinCP(sTxt);
-    end
+  Result := '';
+  if sCodePage = '' then
+    sCodePage := GetDefaultEncoding();
+
+  if (sCodePage = 'utf-8') or (sCodePage = 'UTF-8') or (sCodePage = 'utf8') or (sCodePage = 'UTF8') then
+  begin
+    // ВНИМАНИЕ! Мы везде работаем с UTF-8 кодировкой
+    // Поэтому перекодировать здесь не надо
+    Result := sTxt;
+  end
+  else if (sCodePage = 'cp866') or (sCodePage = 'CP866') then
+  begin
+    // В модуле lconvencoding есть очень много функций по перекодированию
+    Result := lconvencoding.UTF8ToCP866(sTxt);
+  end
+  else if (sCodePage = 'cp1251') or (sCodePage = 'CP1251') then
+  begin
+    // С Windows системами мы можем пользоваться
+    // функциями UTF8ToWinCP и WinCPToUTF8 модуль LazUTF8
+    Result := LazUTF8.UTF8ToWinCP(sTxt);
+  end
+  else
+    if APP_LOG_MODE then
+      AppLogMsg(etWarning, Format('Не поддерживаемая кодировка <%s>', [sCodePage]))
     else
-      if DEFAULT_APP_LOG_MODE then
-        AppLogMsg(etWarning, Format('Не поддерживаемая кодировка <%s>', [sCodePage]))
-      else
-        PrintColorTxt(Format('Не поддерживаемая кодировка <%s>', [sCodePage]), YELLOW_COLOR_TEXT);
+      PrintColorTxt(Format('Не поддерживаемая кодировка <%s>', [sCodePage]), YELLOW_COLOR_TEXT);
 end;
 
 {
@@ -400,7 +388,7 @@ begin
     Result := False;
 
     // Если журналирование переведено в SysLog, то ничего не делать
-    if DEFAULT_APP_LOG_MODE then
+    if APP_LOG_MODE then
        Exit;
 
     if sLogFileName = '' then
@@ -436,7 +424,7 @@ begin
   Result := False;
 
   // Если журналирование переведено в SysLog, то ничего не делать
-  if DEFAULT_APP_LOG_MODE then
+  if APP_LOG_MODE then
      Exit;
 
   // Если журналирование отключено, то ничего не делать
@@ -470,7 +458,7 @@ begin
   Result := False;
 
   // Если журналирование переведено в SysLog, то ничего не делать
-  if DEFAULT_APP_LOG_MODE then
+  if APP_LOG_MODE then
     Exit;
   if not IS_OPEN_LOG_FILE then
     Exit;
@@ -496,7 +484,7 @@ end;
 function AppLogMsg(aEventType: TEventType; sMsg: AnsiString = ''; bForceLog: Boolean=False): Boolean;
 begin
   Result := False;
-  if DEFAULT_APP_LOG_MODE then
+  if APP_LOG_MODE then
   begin
     try
       Application.Log(aEventType, EncodeUnicodeString(sMsg, GetDefaultEncoding()));
@@ -519,7 +507,7 @@ begin
       PrintColorTxt('DEBUG. ' + sMsg, BLUE_COLOR_TEXT);
 
     if (GetLogMode()) or (bForceLog) then
-      if DEFAULT_APP_LOG_MODE then
+      if APP_LOG_MODE then
         AppLogMsg(etDebug, sMsg)
       else
         LogMsg('DEBUG. ' + sMsg);
@@ -536,7 +524,7 @@ begin
     if (GetDebugMode()) or (bForcePrint) then
       PrintColorTxt('INFO. ' + sMsg, GREEN_COLOR_TEXT);
     if (GetLogMode()) or (bForceLog) then
-      if DEFAULT_APP_LOG_MODE then
+      if APP_LOG_MODE then
         AppLogMsg(etInfo, sMsg)
       else
         LogMsg('INFO. ' + sMsg);
@@ -553,7 +541,7 @@ begin
     if (GetDebugMode()) or (bForcePrint) then
       PrintColorTxt('ERROR. ' + sMsg, RED_COLOR_TEXT);
     if (GetLogMode()) or (bForceLog) then
-      if DEFAULT_APP_LOG_MODE then
+      if APP_LOG_MODE then
         AppLogMsg(etError, sMsg)
       else
         LogMsg('ERROR. ' + sMsg);
@@ -570,7 +558,7 @@ begin
     if (GetDebugMode()) or (bForcePrint) then
       PrintColorTxt('WARNING. ' + sMsg, YELLOW_COLOR_TEXT);
     if (GetLogMode()) or (bForceLog) then
-      if DEFAULT_APP_LOG_MODE then
+      if APP_LOG_MODE then
         AppLogMsg(etWarning, sMsg)
       else
         LogMsg('WARNING. ' + sMsg);
@@ -601,7 +589,7 @@ begin
         PrintColorTxt(except_msg, RED_COLOR_TEXT);
       end;
     if (GetLogMode()) or (bForceLog) then
-      if DEFAULT_APP_LOG_MODE then
+      if APP_LOG_MODE then
         AppLogMsg(etError, msg + '\n' + except_msg)
       else
         begin
@@ -621,7 +609,7 @@ begin
     if (GetDebugMode()) or (bForcePrint) then
       PrintColorTxt('SERVICE. ' + sMsg, CYAN_COLOR_TEXT);
     if (GetLogMode()) or (bForceLog) then
-      if DEFAULT_APP_LOG_MODE then
+      if APP_LOG_MODE then
         AppLogMsg(etCustom, sMsg)
       else
         LogMsg('SERVICE. ' + sMsg);
