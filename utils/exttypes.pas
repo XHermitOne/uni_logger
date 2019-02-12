@@ -1,7 +1,7 @@
 {
 Расширенные типы для использования в программе
 
-Версия: 0.0.1.1
+Версия: 0.0.2.1
 }
 unit exttypes;
 
@@ -11,7 +11,7 @@ unit exttypes;
 interface
 
 uses
-  Classes;
+  Classes, Contnrs;
 
 
 type
@@ -29,7 +29,7 @@ type
   end;
 
   { Набор значений строковых значений }
-  TMemRecordSet = class(TList)
+  TMemRecordSet = class(TObjectList)
     public
       function GetRecord(Index: Integer): TMemRecord;
 
@@ -40,17 +40,18 @@ type
   TMemTableOfString = TMemRecordSet;
 
   { Вектор строковых значений }
-  TMemVectorItem = class(TCollectionItem)
+  TMemVectorItem = class(TObject)
     public
       datetime: AnsiString;
       value: AnsiString;
   end;
 
-  TMemVectorOfString = class(TCollection)
+
+  TMemVectorOfString = class(TObjectList)
     public
       function GetPoint(Index: Integer): TMemVectorItem;
 
-      procedure AddNewPoint(sDateTime: AnsiString; sValue: AnsiString);
+      function AddNewPoint(sDateTime: AnsiString; sValue: AnsiString): Integer;
       { Вывести на экран все точки. Для отладки }
       procedure PrintPoints();
 
@@ -80,7 +81,7 @@ end;
 
 function TMemRecordSet.GetRecord(Index: Integer): TMemRecord;
 begin
-  Result := TMemRecord(Items[Index]^);
+  Result := TMemRecord(Items[Index]);
 end;
 
 function TMemVectorOfString.GetPoint(Index: Integer): TMemVectorItem;
@@ -101,14 +102,14 @@ begin
   end;
 end;
 
-procedure TMemVectorOfString.AddNewPoint(sDateTime: AnsiString; sValue: AnsiString);
+function TMemVectorOfString.AddNewPoint(sDateTime: AnsiString; sValue: AnsiString): Integer;
 var
   new_point: TMemVectorItem;
 begin
-  new_point := Add();
-  // new_point := TMemVectorItem.Create(Self);
+  new_point := TMemVectorItem.Create;
   new_point.datetime := sDateTime;
   new_point.value := sValue;
+  Result := Add(new_point);
 end;
 
 end.

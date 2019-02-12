@@ -256,7 +256,7 @@ begin
 
   // Добавить запись
   values := ReadStateValues();
-  if Length(values) > 0 then
+  if (Length(values) > 0) and (not values[0].IsEmpty) then
     Result := Result and InsertRecord(Properties.GetStrValue('table_name'), values, dtTime);
   // Добавить записи из временного буфера
   time_values := ReadTimeStateValues();
@@ -417,7 +417,7 @@ begin
     if dtTime <> 0 then
       field_names := DATETIME_FIELD_NAME + ', ' + field_names;
     if dtTime <> 0 then
-      param_names := ':' + DATETIME_FIELD_NAME + ', ' + field_names;
+      param_names := ':' + DATETIME_FIELD_NAME + ', ' + param_names;
     // log.DebugMsgFmt('Имена полей строкой <%s>', [field_names]);
     // log.DebugMsgFmt('Параметры строкой <%s>', [param_names]);
     sql := Format(INSERT_RECORD_SQL_FMT, [aTableName, field_names, param_names]);
@@ -471,7 +471,7 @@ begin
     free_tag_list := True;
   end;
 
-  //log.DebugMsgFmt('Запуск чтения состояний источников данных. Количество <%d>', [aSrcTagList.Count]);
+  log.DebugMsgFmt('Запуск чтения состояний источников данных. Количество <%d>', [aSrcTagList.Count]);
 
   SetLength(Result, aSrcTagList.Count);
 
@@ -483,7 +483,7 @@ begin
       // Родительский менеджер обработки
       parent_engine := GetParent() As TICLogger;
       value := parent_engine.GetSourceStateAsString(src_name, tag);
-      //log.DebugMsgFmt('Чтение состояния источника данных <%s>. Тег <%s>. Значение <%s>', [src_name, tag, value]);
+      log.DebugMsgFmt('Чтение состояния источника данных <%s>. Тег <%s>. Значение <%s>', [src_name, tag, value]);
       Result[i] := value;
     end;
   except
@@ -500,14 +500,9 @@ var
   i, i_rec: Integer;
   rec: Array Of String;
   dt_time: TDateTime;
-  //dt_format : TFormatSettings;
 begin
   log.DebugMsg('Добавление записей в БД');
   Result := False;
-
-  //dt_format := DefaultFormatSettings;
-  //dt_format.DateSeparator := DB_DATE_SEPARATOR;
-  //dt_format.ShortDateFormat := DB_DATETIME_FMT;
 
   if aRecordSet.Count > 0 then
   begin
@@ -517,7 +512,7 @@ begin
       dt_time := DateUtils.ScanDateTime(DB_DATETIME_FMT, aRecordSet.Records[i_rec][0]);
       for i := 1 to aRecordSet.Records[i_rec].Count - 1 do
         rec[i - 1] := aRecordSet.Records[i_rec][i];
-      Result := Result and InsertRecord(aTableName, rec, dt_time);
+      Result := InsertRecord(aTableName, rec, dt_time) and Result;
     end;
   end;
 end;
@@ -575,7 +570,7 @@ begin
           // Ставим временную метку
           i_rec := Result.Count - 1;
           Result.Records[i_rec][0] := dt_str;
-          Result.Records[i_rec][i_rec] := value;
+          Result.Records[i_rec][i+1] := value;
         end;
 
       end;
