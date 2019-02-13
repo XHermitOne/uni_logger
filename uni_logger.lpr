@@ -114,7 +114,7 @@ Uses
   }
   DaemonApp, EventLog, SysUtils, Interfaces,
   lazdaemonapp, uni_daemonmapperunit, uni_daemonunit,
-  engine, log
+  engine, log, settings
   { add your units here };
 
 begin
@@ -129,6 +129,13 @@ begin
     except
       log.FatalMsg('Ошибка параметра коммандной строки. Время интервала обработки');
     end;
+  if Application.HasOption('l', 'log') then
+  begin
+    log.LOG_MODE := True;
+    log.APP_LOG_MODE := True;
+  end;
+  if Application.HasOption('s', 'settings') then
+    settings.SETTINGS_INI_FILENAME := Application.GetOptionValue('s', 'settings');
 
   // Запуск по умолчанию
   // vvvvvvvvvvvvvvvvvvvvvvv
@@ -139,11 +146,14 @@ begin
    begin
      Title := 'UniLoggerService Daemon';
      { Указываем режим журналирования в log файл }
-     EventLog.LogType := ltFile;
-     EventLog.DefaultEventType := etDebug;
-     EventLog.AppendContent := True;
-     { Имя файла журнала }
-     EventLog.FileName := ChangeFileExt(ParamStr(0), '.log');
+     if APP_LOG_MODE then
+     begin
+       EventLog.LogType := ltFile;
+       EventLog.DefaultEventType := etDebug;
+       EventLog.AppendContent := True;
+       { Имя файла журнала }
+       EventLog.FileName := ChangeFileExt(ParamStr(0), '.log');
+     end;
 
      Initialize;
      Run;

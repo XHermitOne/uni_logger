@@ -209,6 +209,7 @@ procedure TUniLoggerSingleApplication.WriteHelp;
 begin
   { add your help code here }
   PrintColorTxt('uni_logger_single - Программа регистрации данных из различных источников данных в SQL БД', CYAN_COLOR_TEXT);
+  PrintColorTxt(Format('Версия: %s', [engine.VERSION]), CYAN_COLOR_TEXT);
   PrintColorTxt('Парметры коммандной строки:', CYAN_COLOR_TEXT);
   PrintColorTxt(Format('    Помощь: %s --help', [ExeName]), CYAN_COLOR_TEXT);
   PrintColorTxt(Format('    Режим вывода сообщений в консоль: %s --debug', [ExeName]), CYAN_COLOR_TEXT);
