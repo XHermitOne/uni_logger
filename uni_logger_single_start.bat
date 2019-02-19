@@ -1,0 +1,1 @@
+uni_logger_single.exe --log --settings=settings.ini
