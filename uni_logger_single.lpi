@@ -23,6 +23,7 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
+        <CommandLineParams Value="--log"/>
       </local>
     </RunParams>
     <RequiredPackages Count="2">
