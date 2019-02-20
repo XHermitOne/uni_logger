@@ -1,1 +1,1 @@
-uni_logger_single.exe --log --settings=settings.ini
+D:\SPT\src\uni_logger\uni_logger_single.exe --log --settings=settings.ini
