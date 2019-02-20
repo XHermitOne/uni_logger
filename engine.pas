@@ -449,6 +449,7 @@ var
   i: Integer;
   str_datetime: AnsiString;
   state: TStrDictionary;
+  value: AnsiString;
   // new_point: TMemVectorItem;
 begin
   Result := TMemVectorOfString.Create;
@@ -466,10 +467,12 @@ begin
         state := src.TimeState.GetByName(str_datetime) As TStrDictionary;
         //new_point.value := state.GetStrValue(aTag);
         //Result.Add(new_point);
-        Result.AddNewPoint(str_datetime, state.GetStrValue(aTag));
+        value := state.GetStrValue(aTag);
+        Result.AddNewPoint(str_datetime, value);
+        log.DebugMsgFmt('Источник <%s>. Тег <%s>. Добавлена точка <%s : %s>', [aSourceName, aTag, str_datetime, value]);
         //new_point := nil;
       end;
-      Result.PrintPoints();
+      // Result.PrintPoints();
     except
       log.FatalMsgFmt('Ошибка получения списка состояний тега <%s> из буфера объекта <%s>', [aTag, aSourceName]);
       Result.Clear;

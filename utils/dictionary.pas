@@ -57,7 +57,11 @@ type
       procedure Free;
 
       {Распечатать содержимое словаря}
-      procedure PrintContent();
+      procedure PrintContent(aDictionary: TStrDictionary = nil);
+
+      {Распечатать ключи словаря}
+      procedure PrintKeys(aDictionary: TStrDictionary = nil);
+
       {
       Проверка на существование переменной окружения с таким именем
       @param sKey Проверяемый ключ словаря
@@ -186,7 +190,7 @@ end;
 {
 Печать содержимое словаря
 }
-procedure TStrDictionary.PrintContent();
+procedure TStrDictionary.PrintContent(aDictionary: TStrDictionary);
 var
   i: Integer;
   item_name: AnsiString;
@@ -194,19 +198,24 @@ var
   msg: AnsiString;
   item_obj: TObject;
 begin
+  if aDictionary = nil then
+    aDictionary := self;
+
   try
-    msg := Format('Содержимое <%s : %s>:', [UnitName, ClassName]);
+    msg := Format('Содержимое <%s : %s>:', [aDictionary.UnitName, aDictionary.ClassName]);
     log.ServiceMsg(msg);
 
-    for i := 0 to GetCount-1 do
+    for i := 0 to aDictionary.GetCount-1 do
     begin
-      item_name := Strings[i];
-      item_obj := Objects[i];
+      item_name := aDictionary.Strings[i];
+      item_obj := aDictionary.Objects[i];
       if item_obj <> nil then
       begin
         item_class := item_obj.ClassName;
         if item_class = 'TObjString' then
           item_class := (item_obj As TObjString).Value
+        else if item_class = 'TStrDictionary' then
+          aDictionary.PrintContent(item_obj As TStrDictionary)
         else
           item_class := Format('<%s>', [item_class]);
       end
@@ -218,7 +227,29 @@ begin
       end;
 
   except
-    log.FatalMsg('Ошибка печати содержания окружения');
+    log.FatalMsg('Ошибка печати содержания словаря');
+  end;
+end;
+
+{Распечатать ключи словаря}
+procedure TStrDictionary.PrintKeys(aDictionary: TStrDictionary);
+var
+  i: Integer;
+  item_name: AnsiString;
+begin
+  if aDictionary = nil then
+    aDictionary := self;
+
+  try
+    log.ServiceMsgFmt('Ключи <%s : %s>:', [UnitName, ClassName]);
+
+    for i := 0 to GetCount-1 do
+    begin
+      item_name := Strings[i];
+      log.ServiceMsgFmt(#9'%s', [item_name]);
+    end;
+  except
+    log.FatalMsg('Ошибка печати ключей словаря');
   end;
 end;
 
@@ -229,8 +260,10 @@ function TStrDictionary.HasKey(sKey: AnsiString): Boolean;
 var
   idx: Integer;
 begin
+  // PrintContent;
   idx := IndexOf(sKey);
-  result := idx >= 0;
+  Result := idx >= 0;
+  // log.ServiceMsgFmt('Проверка наличия ключа <%s : %d>', [sKey, idx]);
 end;
 
 {

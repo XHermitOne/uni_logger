@@ -224,6 +224,10 @@ begin
   tags := CreateTags();
   log.DebugMsgFmt('Читаемых тегов <%d>', [tags.Count]);
 
+  // Перед началом чтения необходимо очистить буфер
+  if not TimeState.IsEmpty() then
+    TimeState.Clear;
+
   Connect();
 
   try
@@ -272,12 +276,16 @@ begin
 
       if ppItemValues = nil then
       begin
-        log.WarningMsgFmt('Ошибка чтения значения по адресу <%s> из OPC HDA сервера <%s>', [address, FOPCServerName]);
+        log.ErrorMsgFmt('Ошибка чтения значения по адресу <%s> из OPC HDA сервера <%s>', [address, FOPCServerName]);
+        Disconnect();
+        tags.Free();
         Exit;
       end;
       if HRes = Windows.E_FAIL then
       begin
         log.ErrorMsg('Ошибка чтения данных');
+        Disconnect();
+        tags.Free();
         Exit;
       end;
 
@@ -286,9 +294,6 @@ begin
       pftTimeStamps := ppItemValuesItem.pftTimeStamps;
       //haAggregate := ppItemValuesItem.haAggregate;
       //dwCount := ppItemValuesItem.dwCount;
-
-      if not TimeState.IsEmpty() then
-        TimeState.Clear;
 
       for i := 0 to ValueTimeCount - 1 do
       begin
@@ -299,11 +304,13 @@ begin
         // Записать в буфер
         if TimeState.HasKey(dt_str) then
         begin
+          log.DebugMsgFmt('Добавление тега <%s> значение: <%s> к существующей записи буфера за <%s>', [tag_name, value, dt_str]);
           new_state := TimeState.GetByName(dt_str) As TStrDictionary;
           new_state.SetStrValue(tag_name, value);
         end
         else
         begin
+          log.DebugMsgFmt('Добавление тега <%s> значение: <%s>. Создание новой записи буфера за <%s>', [tag_name, value, dt_str]);
           new_state := CreateTags();
           new_state.SetStrValue(tag_name, value);
           TimeState.AddObject(dt_str, new_state);
@@ -316,6 +323,7 @@ begin
   except
     log.FatalMsgFmt('Ошибка чтения всех данных из источника данных <%s>', [Name]);
   end;
+  //TimeState.PrintContent();
   Disconnect();
   tags.Free();
 end;
@@ -461,7 +469,7 @@ var
   tags: TStrDictionary;
 
 begin
-  log.DebugMsg('Создание тегов');
+  //log.DebugMsg('Создание тегов');
   tags := TStrDictionary.Create;
   for i := 0 to Properties.Count - 1 do
   begin
@@ -469,7 +477,7 @@ begin
     if not IsStrInList(key, RESERV_PROPERTIES) then
     begin
       value := Properties.GetStrValue(key);
-      log.DebugMsgFmt('Тег <%s : %s>', [key, value]);
+      //log.DebugMsgFmt('Тег <%s : %s>', [key, value]);
       tags.AddStrValue(key, value);
     end;
   end;

@@ -149,7 +149,7 @@ type
     property Name: AnsiString read GetName write SetName;
     property Properties: TStrDictionary read GetProperties write SetProperties;
     property State: TStrDictionary read FState write FState;
-    property TimeState: TStrDictionary read FTimeStateBuffer;
+    property TimeState: TStrDictionary read FTimeStateBuffer write FTimeStateBuffer;
 
 end;
 

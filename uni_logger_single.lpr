@@ -121,7 +121,8 @@ uses
   }
   Interfaces,
   Classes, SysUtils, CustApp,
-  engine, memfunc, log, settings
+  //memfunc,
+  engine, log, settings
   { you can add units after this };
 
 type
@@ -163,14 +164,17 @@ begin
   if HasOption('d', 'debug') then
     DEBUG_MODE := True;
 
-  if HasOption('l', 'log') then
-    LOG_MODE := True;
+  // Очень странно, но при  отключении режима логирования
+  // пропадает ошибка Access violation при  вызове ReadRaw
+
+  //if HasOption('l', 'log') then
+  //  LOG_MODE := True;
 
   if HasOption('s', 'settings') then
     settings.SETTINGS_INI_FILENAME := Trim(GetOptionValue('s', 'settings'));
 
-  if LOG_MODE then
-    OpenLog(ChangeFileExt(ParamStr(0), '.log'));
+  //if LOG_MODE then
+  //  OpenLog(ChangeFileExt(ParamStr(0), '.log'));
 
   { add your program here }
 
@@ -187,8 +191,8 @@ begin
   engine.LOGGER_ENGINE.Destroy;
   engine.LOGGER_ENGINE := nil;
 
-  if LOG_MODE then
-    CloseLog();
+  //if LOG_MODE then
+  //  CloseLog();
 
   // stop program loop
   Terminate;
@@ -208,20 +212,20 @@ end;
 procedure TUniLoggerSingleApplication.WriteHelp;
 begin
   { add your help code here }
-  PrintColorTxt('uni_logger_single - Программа регистрации данных из различных источников данных в SQL БД', CYAN_COLOR_TEXT);
-  PrintColorTxt(Format('Версия: %s', [engine.VERSION]), CYAN_COLOR_TEXT);
-  PrintColorTxt('Парметры коммандной строки:', CYAN_COLOR_TEXT);
-  PrintColorTxt(Format('    Помощь: %s --help', [ExeName]), CYAN_COLOR_TEXT);
-  PrintColorTxt(Format('    Режим вывода сообщений в консоль: %s --debug', [ExeName]), CYAN_COLOR_TEXT);
-  PrintColorTxt(Format('    Режим вывода сообщений в журнал: %s --log', [ExeName]), CYAN_COLOR_TEXT);
-  PrintColorTxt(Format('    Файл настройки: %s --settings=имя_файла_настройки.ini', [ExeName]), CYAN_COLOR_TEXT);
+  //PrintColorTxt('uni_logger_single - Программа регистрации данных из различных источников данных в SQL БД', CYAN_COLOR_TEXT);
+  //PrintColorTxt(Format('Версия: %s', [engine.VERSION]), CYAN_COLOR_TEXT);
+  //PrintColorTxt('Парметры коммандной строки:', CYAN_COLOR_TEXT);
+  //PrintColorTxt(Format('    Помощь: %s --help', [ExeName]), CYAN_COLOR_TEXT);
+  //PrintColorTxt(Format('    Режим вывода сообщений в консоль: %s --debug', [ExeName]), CYAN_COLOR_TEXT);
+  //PrintColorTxt(Format('    Режим вывода сообщений в журнал: %s --log', [ExeName]), CYAN_COLOR_TEXT);
+  //PrintColorTxt(Format('    Файл настройки: %s --settings=имя_файла_настройки.ini', [ExeName]), CYAN_COLOR_TEXT);
 end;
 
 var
   Application: TUniLoggerSingleApplication;
 begin
-  if log.DEBUG_MODE then
-    memfunc.InitStatusMemory();
+  //if log.DEBUG_MODE then
+  //  memfunc.InitStatusMemory();
 
   Application := TUniLoggerSingleApplication.Create(nil);
   Application.Title := 'UniLogger single mode';
@@ -233,7 +237,8 @@ begin
   //if UseHeapTrace then // Test if reporting is on
   //   SetHeapTraceOutput(ChangeFileExt(ParamStr(0), '.mem'));
   //{$ifend}
-  if log.DEBUG_MODE then
-    memfunc.PrintLostMemory();
+
+  //if log.DEBUG_MODE then
+  //  memfunc.PrintLostMemory();
 end.
 
