@@ -441,12 +441,18 @@ begin
     for i := 0 to Length(StringValues) - 1 do
     begin
       field_type := LowerCase(field_type_list[i]);
-      log.DebugMsgFmt('Параметр <%s> : <%s>', [field_name_list[i], field_type]);
+      //log.DebugMsgFmt('Параметр <%s> : <%s> : <%s>', [field_name_list[i], field_type, StringValues[i]]);
 
       if strfunc.IsStrInList(field_type, ['float']) then
-        FSQLQuery.Params.ParamByName(field_name_list[i]).AsFloat := StrToFloat(StringValues[i])
+        if StringValues[i] <> '' then
+          FSQLQuery.Params.ParamByName(field_name_list[i]).AsFloat := StrToFloat(StringValues[i])
+        else
+          FSQLQuery.Params.ParamByName(field_name_list[i]).AsFloat := 0.0
       else if strfunc.IsStrInList(field_type, ['integer']) then
-        FSQLQuery.Params.ParamByName(field_name_list[i]).AsInteger := StrToInt(StringValues[i])
+        if StringValues[i] <> '' then
+          FSQLQuery.Params.ParamByName(field_name_list[i]).AsInteger := StrToInt(StringValues[i])
+        else
+          FSQLQuery.Params.ParamByName(field_name_list[i]).AsInteger := 0
       else if strfunc.AnyWordInStr(['text', 'string', 'varchar'], field_type) then
         FSQLQuery.Params.ParamByName(field_name_list[i]).AsString := StringValues[i]
       else

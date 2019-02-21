@@ -23,7 +23,7 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <CommandLineParams Value="--log"/>
+        <CommandLineParams Value="--debug"/>
       </local>
     </RunParams>
     <RequiredPackages Count="2">
@@ -34,7 +34,7 @@
         <PackageName Value="FCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="34">
+    <Units Count="35">
       <Unit0>
         <Filename Value="uni_logger_single.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -154,6 +154,7 @@
       <Unit29>
         <Filename Value="opcdelphi\OPCerror.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="OpcError"/>
       </Unit29>
       <Unit30>
         <Filename Value="opcdelphi\OPCHDA.pas"/>
@@ -171,6 +172,10 @@
         <Filename Value="settings.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit33>
+      <Unit34>
+        <Filename Value="utils\dtfunc.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit34>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

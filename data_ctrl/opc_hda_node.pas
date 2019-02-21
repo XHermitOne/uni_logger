@@ -14,7 +14,7 @@ uses
   {$IFDEF windows}
   Windows, ActiveX, ComObj,
   {$ENDIF}
-  Classes, SysUtils, DateUtils,
+  Classes, SysUtils, DateUtils, Variants, VarUtils,
   OPCHDA, OPCtypes, OPCError,
   obj_proto, dictionary, strfunc;
 
@@ -70,24 +70,28 @@ type
                   Если не определена, то берется текущая системная.
     @param dtTick Временной шаг
     @param iCount: Количество шагов
+    @param bNotMonth: С точностью до месяца?
+    @param bNotDay: С точностью до дня?
     @param bNotHour: С точностью до часа?
     @param bNotMinute: С точностью до минут?
     @param bNotSecond: С точностью до секунд?
     @return Вычисленное временное значение начала диапазона
     }
     function CalcStartDateTime(dtEnd: TDateTime=0; dtTick: TDateTime=0; iCount: Integer=0;
-                               bNotHour: Boolean=True; bNotMinute: Boolean=True; bNotSecond: Boolean=True): TDateTime;
+                               bNotMonth: Boolean=True; bNotDay: Boolean=True; bNotHour: Boolean=True; bNotMinute: Boolean=True; bNotSecond: Boolean=True): TDateTime;
     {
     Коррекция конечного времени запрашиваемого диапазона.
     @param dtEnd Конечная дата-время вычисляемого диапазона.
                   Если не определена, то берется текущая системная.
+    @param bNotMonth: С точностью до месяца?
+    @param bNotDay: С точностью до дня?
     @param bNotHour: С точностью до часа?
     @param bNotMinute: С точностью до минут?
     @param bNotSecond: С точностью до секунд?
     @return Вычисленное временное значение конца диапазона
     }
     function CalcEndDateTime(dtEnd: TDateTime=0;
-                             bNotHour: Boolean=True; bNotMinute: Boolean=True; bNotSecond: Boolean=True): TDateTime;
+                             bNotMonth: Boolean=True; bNotDay: Boolean=True; bNotHour: Boolean=True; bNotMinute: Boolean=True; bNotSecond: Boolean=True): TDateTime;
   public
     constructor Create;
     destructor Destroy; override;
@@ -112,7 +116,7 @@ type
 
 
     { Выбрать описания тегов из свойств }
-    function CreateTags(): TStrDictionary;
+    function CreateTags(bClearValue: Boolean = False): TStrDictionary;
 
     { Установить свойства в виде списка параметров }
     procedure SetPropertiesArray(aArgs: Array Of Const); override;
@@ -268,11 +272,17 @@ begin
   inherited Create;
 
   FComputerName := DEFAULT_COMPUTER_NAME;
+
+  { Внутренние переменные для работы с OPC HDA интерфейсами }
+  FHDASyncRead := nil;
+  iServerH := 0;
 end;
 
 destructor TICOPCHDANode.Destroy;
 begin
   inherited Destroy;
+
+  Disconnect();
 end;
 
 { Установить наименование OPC сервера }
@@ -333,10 +343,11 @@ var
   tag_name, address, value, dt_str: AnsiString;
   dt_time: TDateTime;
   //value_variant: Variant;
+  dt: Double;
 
   new_state: TStrDictionary;
 
-  cur_hour, cur_minute, cur_sec, cur_msec: Word;
+  cur_year, cur_month, cur_day, cur_hour, cur_minute, cur_sec, cur_msec: Word;
 
 begin
   if dtTime = 0 then
@@ -353,65 +364,63 @@ begin
     TimeState.Clear;
 
   Connect();
-
   try
     for i_tag := 0 to tags.Count - 1 do
     begin
       tag_name := tags.GetKey(i_tag);
       address := tags.GetStrValue(tag_name);
-      log.DebugMsgFmt('Чтение данных тега <%s> по адресу <%s>', [tag_name, address]);
+      //log.DebugMsgFmt('Чтение данных тега <%s> по адресу <%s>', [tag_name, address]);
       try
         HRes := GetItemServerHandle(FHDASyncRead , address, 1, iServerH);
       except
         log.FatalMsgFmt('Ошибка получения хендла сервера по адресу тега <%s>', [address]);
-        Disconnect();
-        tags.Free();
-        Exit;
+        break;
       end;
       //log.DebugMsgFmt('Получение хендла сервера. Результат <%d : %d>', [HRes, iServerH]);
 
       htStartTime.bString := False;
+      SysUtils.DecodeDate(FValueTimeTick, cur_year, cur_month, cur_day);
+      cur_day := DateUtils.DayOfTheMonth(FValueTimeTick);
+      cur_month := DateUtils.MonthOf(FValueTimeTick);
+      //cur_year := DateUtils.YearOf(FValueTimeTick);
+      dt := Double(FValueTimeTick);
       SysUtils.DecodeTime(ValueTimeTick, cur_hour, cur_minute, cur_sec, cur_msec);
-      dt_time := CalcStartDateTime(dtTime, 0, 0, cur_hour<>0, cur_minute<>0, cur_sec<>0);
-      //log.DebugMsgFmt('Запрашиваемый диапазон. Базовое время %s. Начальное время %s', [FormatDateTime(obj_proto.DATETIME_TXT_FMT, dtTime),
-      //                                                                                 FormatDateTime(obj_proto.DATETIME_TXT_FMT, dt_time)]);
+      dt_time := CalcStartDateTime(dtTime, 0, 0, cur_month<>0, cur_day<>0, cur_hour<>0, cur_minute<>0, cur_sec<>0);
+      log.DebugMsgFmt('Запрашиваемый диапазон. Базовое время %s. Начальное время %s', [FormatDateTime(obj_proto.DATETIME_TXT_FMT, dtTime),
+                                                                                       FormatDateTime(obj_proto.DATETIME_TXT_FMT, dt_time)]);
       htStartTime.ftTime := filefunc.DateTimeToFileTime(dt_time);
       htEndTime.bString := False;
-      dt_time := CalcEndDateTime(dtTime, cur_hour<>0, cur_minute<>0, cur_sec<>0);
-      //log.DebugMsgFmt('Запрашиваемый диапазон. Базовое время %s. Конечное время %s', [FormatDateTime(obj_proto.DATETIME_TXT_FMT, dtTime),
-      //                                                                                FormatDateTime(obj_proto.DATETIME_TXT_FMT, dt_time)]);
+      dt_time := CalcEndDateTime(dtTime, cur_month<>0, cur_day<>0, cur_hour<>0, cur_minute<>0, cur_sec<>0);
+      log.DebugMsgFmt('Запрашиваемый диапазон. Базовое время %s. Конечное время %s', [FormatDateTime(obj_proto.DATETIME_TXT_FMT, dtTime),
+                                                                                      FormatDateTime(obj_proto.DATETIME_TXT_FMT, dt_time)]);
       htEndTime.ftTime := filefunc.DateTimeToFileTime(dt_time);
 
       arrServer[0] := iServerH;
       phServer := @arrServer;
 
       //log.DebugMsg('Начало чтения ReadRaw');
+      if FHDASyncRead = nil then
+        log.WarningMsg('Не определен интерфейс для чтения OPC HDA сервера');
       try
         HRes := FHDASyncRead.ReadRaw(htStartTime, htEndTime,
-                                     ValueTimeCount, False, 1,
+                                     FValueTimeCount, False, 1,
                                      phServer, ppItemValues, ppErrors);
       except
-        log.FatalMsg('Ошибка чтения ReadRaw');
-        Disconnect();
-        tags.Free();
-        Exit;
+        log.FatalMsgFmt('Ошибка чтения ReadRaw <%s>', [address]);
+        break;
       end;
-      log.DebugMsgFmt('Результат чтения ReadRaw <%d>', [HRes]);
+      // log.DebugMsgFmt('Результат чтения ReadRaw <%d>', [HRes]);
 
       if HRes <> 0 then
       begin
-        log.ErrorMsg('Ошибка чтения данных из OPC HDA сервера:');
+        log.ErrorMsgFmt('Ошибка чтения данных из OPC HDA сервера по адресу <%s>:', [address]);
         log.ErrorMsg(GetOPCErrorMsg(HRes));
-        Disconnect();
-        tags.Free();
-        Exit;
+        break;
       end;
       if ppItemValues = nil then
       begin
         log.ErrorMsgFmt('Ошибка чтения значения по адресу <%s> из OPC HDA сервера <%s>', [address, FOPCServerName]);
-        Disconnect();
-        tags.Free();
-        Exit;
+        break;
       end;
 
       ppItemValuesItem := ppItemValues^[0];
@@ -424,14 +433,17 @@ begin
       begin
         try
           // value_variant := pvDataValues^[i];
-          value := pvDataValues^[i];
+          value := Variants.VarToStr(pvDataValues^[i]);
+          // Сразу очищаем память
+          VarUtils.VariantClear(TVarData(ppItemValuesItem.pvDataValues^[i]));
+          SysFreeString(StringToOleStr(Variants.VarToStr(Word(PDWORDARRAY(ppItemValuesItem.pdwQualities)^[i]))));
         except
           log.FatalMsgFmt('Ошибка приведения типа значения к строке. Тег <%s>', [tag_name]);
           value := '';
         end;
         dt_time := FileTimeToDateTime(pftTimeStamps^[i]);
         dt_str := FormatDateTime(obj_proto.DATETIME_TXT_FMT, dt_time);
-        //log.DebugMsgFmt('Источник <%s>. OPC HDA. Прочитаны данные <%s> тега <%s> за <%s>', [Name, value, tag_name, dt_str]);
+        log.DebugMsgFmt('Источник <%s>. OPC HDA. Прочитаны данные <%s> тега <%s> за <%s>', [Name, value, tag_name, dt_str]);
         // Записать в буфер
         if TimeState.HasKey(dt_str) then
         begin
@@ -442,7 +454,7 @@ begin
         else
         begin
           //log.DebugMsgFmt('Добавление тега <%s> значение: <%s>. Создание новой записи буфера за <%s>', [tag_name, value, dt_str]);
-          new_state := CreateTags();
+          new_state := CreateTags(True);
           new_state.SetStrValue(tag_name, value);
           TimeState.AddObject(dt_str, new_state);
         end;
@@ -450,11 +462,20 @@ begin
         // то можно потом распарсить
         Result.Add(Format('%s|%s|%s', [tag_name, dt_str, value]));
       end;
+      // Сразу очищаем память
+      CoTaskMemFree(ppItemValuesItem.pdwQualities);
+      CoTaskMemFree(ppItemValuesItem.pftTimeStamps);
+      CoTaskMemFree(ppItemValuesItem.pvDataValues);
     end;
   except
     log.FatalMsgFmt('Ошибка чтения всех данных из источника данных <%s>', [Name]);
   end;
   //TimeState.PrintContent();
+
+  CoTaskMemFree(ppItemValues);
+  CoTaskMemFree(phServer);
+  CoTaskMemFree(ppErrors);
+
   Disconnect();
   tags.Free();
 end;
@@ -491,7 +512,6 @@ var
   ServerCLSID: TCLSID;
 
   Container: IConnectionPointContainer;
-
 begin
   if sComputer = '' then
     sComputer := FComputerName;
@@ -504,8 +524,14 @@ begin
   if Trim(sOPCServerName) <> '' then
   begin
     ServerProgID := StringToOleStr(sOPCServerName);
+    // log.InfoMsgFmt('ServerProgID: <%s>', [ServerProgID]);
     HRes := CLSIDFromProgID(ServerProgID, ServerCLSID);
 
+    //if HRes <> 0 then
+    //begin
+    //  log.ErrorMsg('Ошибка определение идентификатора класса:');
+    //  log.ErrorMsg(GetOPCErrorMsg(HRes));
+    //end;
     { ВНИМАНИЕ! Необходимо производить CoInitialize и CoUnintialize
     иначе будет возникать исключение:
     <EOLESysError не был произведен вызов CoInitialize> }
@@ -527,20 +553,23 @@ end;
 function TICOPCHDANode.Disconnect(): Boolean;
 var
   HRes: HRESULT;
-
 begin
- FHDASyncRead._AddRef;
- HRes := FHDASyncRead._Release;
+  Result := False;
+  if FHDASyncRead <> nil then
+  begin
+    FHDASyncRead._AddRef;
+    HRes := FHDASyncRead._Release;
 
- { ВНИМАНИЕ! Необходимо производить CoInitialize и CoUnintialize
- иначе будет возникать исключение:
- <EOLESysError не был произведен вызов CoInitialize> }
- CoUninitialize;
+    { ВНИМАНИЕ! Необходимо производить CoInitialize и CoUnintialize
+    иначе будет возникать исключение:
+    <EOLESysError не был произведен вызов CoInitialize> }
+    CoUninitialize;
 
- log.InfoMsg('Разрыв связи');
+    log.InfoMsg('Разрыв связи');
 
- FHDASyncRead := nil;
- Result := True;
+    FHDASyncRead := nil;
+    Result := True;
+  end;
 end;
 
 { Получить хендл сервера  }
@@ -583,6 +612,13 @@ begin
    if Succeeded(Result) then
    begin
      Result := Errors^[0];
+
+     if Result <> 0 then
+     begin
+       log.ErrorMsg('Ошибка получение хендла OPC HDA сервера:');
+       log.ErrorMsg(GetOPCErrorMsg(Result));
+     end;
+
      CoTaskMemFree(Errors);
      iServerH := pphServer^[0];
      CoTaskMemFree(pphServer);
@@ -593,7 +629,7 @@ begin
 end;
 
 { Выбрать описания тегов из свойств }
-function TICOPCHDANode.CreateTags(): TStrDictionary;
+function TICOPCHDANode.CreateTags(bClearValue: Boolean): TStrDictionary;
 var
   i: Integer;
   key, value: AnsiString;
@@ -607,7 +643,10 @@ begin
     key := Properties.GetKey(i);
     if not IsStrInList(key, RESERV_PROPERTIES) then
     begin
-      value := Properties.GetStrValue(key);
+      if bClearValue then
+        value := ''
+      else
+        value := Properties.GetStrValue(key);
       //log.DebugMsgFmt('Тег <%s : %s>', [key, value]);
       tags.AddStrValue(key, value);
     end;
@@ -621,16 +660,19 @@ end;
               Если не определена, то берется текущая системная.
 @param dtTick Временной шаг
 @param iCount: Количество шагов
+@param bNotMonth: С точностью до месяца?
+@param bNotDay: С точностью до дня?
 @param bNotHour: С точностью до часа?
 @param bNotMinute: С точностью до минут?
 @param bNotSecond: С точностью до секунд?
 @return Вычисленное временное значение начала диапазона
 }
 function TICOPCHDANode.CalcStartDateTime(dtEnd: TDateTime; dtTick: TDateTime; iCount: Integer;
-                                         bNotHour: Boolean; bNotMinute: Boolean; bNotSecond: Boolean): TDateTime;
+                                         bNotMonth: Boolean; bNotDay: Boolean; bNotHour: Boolean; bNotMinute: Boolean; bNotSecond: Boolean): TDateTime;
 var
  curYear, curMonth, curDay : Word;
  curHour, curMin, curSec, curMilli : Word;
+ i: Integer;
 begin
   if dtEnd = 0 then
     dtEnd := Now();
@@ -649,21 +691,30 @@ begin
     dtEnd := DateUtils.EncodeDateTime(curYear, curMonth, curDay, curHour, 0, 0, 0);
   if not bNotHour then
     dtEnd := DateUtils.EncodeDateTime(curYear, curMonth, curDay, 0, 0, 0, 0);
+  if not bNotDay then
+    dtEnd := DateUtils.EncodeDateTime(curYear, curMonth, 1, 0, 0, 0, 0);
+  if not bNotMonth then
+    dtEnd := DateUtils.EncodeDateTime(curYear, 1, 1, 0, 0, 0, 0);
 
-  Result := dtEnd - (dtTick * iCount);
+  log.DebugMsgFmt('<%s>', [FormatDateTime(obj_proto.DATETIME_TXT_FMT, dtEnd)]);
+  Result := dtEnd;
+  for i := 0 to iCount -1  do
+    Result := Result - dtTick;
 end;
 
 {
 Коррекция конечного времени запрашиваемого диапазона.
 @param dtEnd Конечная дата-время вычисляемого диапазона.
               Если не определена, то берется текущая системная.
+@param bNotMonth: С точностью до месяца?
+@param bNotDay: С точностью до дня?
 @param bNotHour: С точностью до часа?
 @param bNotMinute: С точностью до минут?
 @param bNotSecond: С точностью до секунд?
 @return Вычисленное временное значение конца диапазона
 }
 function TICOPCHDANode.CalcEndDateTime(dtEnd: TDateTime;
-                                       bNotHour: Boolean; bNotMinute: Boolean; bNotSecond: Boolean): TDateTime;
+                                       bNotMonth: Boolean; bNotDay: Boolean; bNotHour: Boolean; bNotMinute: Boolean; bNotSecond: Boolean): TDateTime;
 var
  curYear, curMonth, curDay : Word;
  curHour, curMin, curSec, curMilli : Word;
@@ -680,6 +731,10 @@ begin
     dtEnd := DateUtils.EncodeDateTime(curYear, curMonth, curDay, curHour, 0, 0, 0);
   if not bNotHour then
     dtEnd := DateUtils.EncodeDateTime(curYear, curMonth, curDay, 0, 0, 0, 0);
+  if not bNotDay then
+    dtEnd := DateUtils.EncodeDateTime(curYear, curMonth, 0, 0, 0, 0, 0);
+  if not bNotMonth then
+    dtEnd := DateUtils.EncodeDateTime(curYear, 0, 0, 0, 0, 0, 0);
 
   Result := dtEnd;
 end;
