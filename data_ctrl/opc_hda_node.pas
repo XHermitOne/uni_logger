@@ -183,6 +183,454 @@ begin
   end;
 end;
 
+procedure TICOPCHDANode.PrintOPCError(aHResult);
+begin
+  if aHResult = OPC_E_INVALIDHANDLE then
+    log.ErrorMsg('  The value of the handle is invalid.')
+  else if aHResult = OPC_E_BADTYPE then
+    log.ErrorMsg('  The server cannot convert the data between the requested data type and the canonical data type.')
+  else if aHResult = OPC_E_PUBLIC then
+    log.ErrorMsg('  The requested operation cannot be done on a public group.')
+  else if aHResult = OPC_E_BADRIGHTS then
+    log.ErrorMsg('  The Items AccessRights do not allow the operation.')
+  else if aHResult = OPC_E_UNKNOWNITEMID then
+    log.ErrorMsg('  The item is no longer available in the server address space.')
+  else if aHResult = OPC_E_INVALIDITEMID then
+    log.ErrorMsg('  The item definition doesn't conform to the server's syntax.')
+  else if aHResult = OPC_E_INVALIDFILTER then
+    log.ErrorMsg('  The filter string was not valid.')
+  else if aHResult = OPC_E_UNKNOWNPATH then
+    log.ErrorMsg('  The item's access path is not known to the server.')
+  else if
+  //
+  OPC_E_UNKNOWNPATH = HResult($C004000A);
+
+  //
+  // MessageId: OPC_E_RANGE
+  //
+  // MessageText:
+  //
+  //  The value was out of range.
+  //
+  OPC_E_RANGE = HResult($C004000B);
+
+  //
+  // MessageId: OPC_E_DUPLICATENAME
+  //
+  // MessageText:
+  //
+  //  Duplicate name not allowed.
+  //
+  OPC_E_DUPLICATENAME = HResult($C004000C);
+
+  //
+  // MessageId: OPC_S_UNSUPPORTEDRATE
+  //
+  // MessageText:
+  //
+  //  The server does not support the requested data rate
+  //  but will use the closest available rate.
+  //
+  OPC_S_UNSUPPORTEDRATE = HResult($0004000D);
+
+  //
+  // MessageId: OPC_S_CLAMP
+  //
+  // MessageText:
+  //
+  //  A value passed to WRITE was accepted but the output was clamped.
+  //
+  OPC_S_CLAMP = HResult($0004000E);
+
+  //
+  // MessageId: OPC_S_INUSE
+  //
+  // MessageText:
+  //
+  //  The operation cannot be completed because the
+  //  object still has references that exist.
+  //
+  OPC_S_INUSE = HResult($0004000F);
+
+  //
+  // MessageId: OPC_E_INVALIDCONFIGFILE
+  //
+  // MessageText:
+  //
+  //  The server's configuration file is an invalid format.
+  //
+  OPC_E_INVALIDCONFIGFILE = HResult($C0040010);
+
+  //
+  // MessageId: OPC_E_NOTFOUND
+  //
+  // MessageText:
+  //
+  //  The server could not locate the requested object.
+  //
+  OPC_E_NOTFOUND = HResult($C0040011);
+
+  //
+  // MessageId: OPC_E_INVALID_PID
+  //
+  // MessageText:
+  //
+  //  The server does not recognise the passed property ID.
+  //
+  OPC_E_INVALID_PID = HResult($C0040203);
+
+  //
+  // MessageId: OPC_E_DEADBANDNOTSET
+  //
+  // MessageText:
+  //
+  //  The item deadband has not been set for this item.
+  //
+  OPC_E_DEADBANDNOTSET = HResult($C0040400);
+
+  //
+  // MessageId: OPC_E_DEADBANDNOTSUPPORTED
+  //
+  // MessageText:
+  //
+  //  The item does not support deadband.
+  //
+  OPC_E_DEADBANDNOTSUPPORTED = HResult($C0040401);
+
+  //
+  // MessageId: OPC_E_NOBUFFERING
+  //
+  // MessageText:
+  //
+  //  The server does not support buffering of data items that are collected at
+  //  a faster rate than the group update rate.
+  //
+  OPC_E_NOBUFFERING = HResult($C0040402);
+
+  //
+  // MessageId: OPC_E_INVALIDCONTINUATIONPOINT
+  //
+  // MessageText:
+  //
+  //  The continuation point is not valid.
+  //
+  OPC_E_INVALIDCONTINUATIONPOINT = HResult($C0040403);
+
+  //
+  // MessageId: OPC_S_DATAQUEUEOVERFLOW
+  //
+  // MessageText:
+  //
+  //  Data Queue Overflow - Some value transitions were lost.
+  //
+  OPC_S_DATAQUEUEOVERFLOW = HResult($00040404);
+
+  //
+  // MessageId: OPC_E_RATENOTSET
+  //
+  // MessageText:
+  //
+  //  Server does not support requested rate.
+  //
+  OPC_E_RATENOTSET = HResult($C0040405);
+
+  //
+  // MessageId: OPC_E_NOTSUPPORTED
+  //
+  // MessageText:
+  //
+  //  The server does not support writing of quality and/or timestamp.
+  //
+  OPC_E_NOTSUPPORTED = HResult($C0040406);
+
+  //
+  // MessageId: OPCCPX_E_TYPE_CHANGED
+  //
+  // MessageText:
+  //
+  //  The dictionary and/or type description for the item has changed.
+  //
+  OPCCPX_E_TYPE_CHANGED = HResult($C0040407);
+
+  //
+  // MessageId: OPCCPX_E_FILTER_DUPLICATE
+  //
+  // MessageText:
+  //
+  //  A data filter item with the specified name already exists.
+  //
+  OPCCPX_E_FILTER_DUPLICATE = HResult($C0040408);
+
+  //
+  // MessageId: OPCCPX_E_FILTER_INVALID
+  //
+  // MessageText:
+  //
+  //  The data filter value does not conform to the server's syntax.
+  //
+  OPCCPX_E_FILTER_INVALID = HResult($C0040409);
+
+  //
+  // MessageId: OPCCPX_E_FILTER_ERROR
+  //
+  // MessageText:
+  //
+  //  An error occurred when the filter value was applied to the source data.
+  //
+  OPCCPX_E_FILTER_ERROR = HResult($C004040A);
+
+  //
+  // MessageId: OPCCPX_S_FILTER_NO_DATA
+  //
+  // MessageText:
+  //
+  //  The item value is empty because the data filter has excluded all fields.
+  //
+  OPCCPX_S_FILTER_NO_DATA = HResult($0004040B);
+
+  // OPC Alarms & Events
+
+  //
+  // MessageId: OPC_S_ALREADYACKED
+  //
+  // MessageText:
+  //
+  //  The condition has already been acknowleged
+  //
+  OPC_S_ALREADYACKED = HResult($00040200);
+
+  //
+  // MessageId: OPC_S_INVALIDBUFFERTIME
+  //
+  // MessageText:
+  //
+  //  The buffer time parameter was invalid
+  //
+  OPC_S_INVALIDBUFFERTIME = HResult($00040201);
+
+  //
+  // MessageId: OPC_S_INVALIDMAXSIZE
+  //
+  // MessageText:
+  //
+  //  The max size parameter was invalid
+  //
+  OPC_S_INVALIDMAXSIZE = HResult($00040202);
+
+  //
+  // MessageId: OPC_S_INVALIDKEEPALIVETIME
+  //
+  // MessageText:
+  //
+  //  The KeepAliveTime parameter was invalid
+  //
+  OPC_S_INVALIDKEEPALIVETIME = HResult($00040203);
+
+  //
+  // MessageId: OPC_E_INVALIDBRANCHNAME
+  //
+  // MessageText:
+  //
+  //  The string was not recognized as an area name
+  //
+  OPC_E_INVALIDBRANCHNAME = HResult($C0040203);
+
+  //
+  // MessageId: OPC_E_INVALIDTIME
+  //
+  // MessageText:
+  //
+  //  The time does not match the latest active time
+  //
+  OPC_E_INVALIDTIME = HResult($C0040204);
+
+  //
+  // MessageId: OPC_E_BUSY
+  //
+  // MessageText:
+  //
+  //  A refresh is currently in progress
+  //
+  OPC_E_BUSY = HResult($C0040205);
+
+  //
+  // MessageId: OPC_E_NOINFO
+  //
+  // MessageText:
+  //
+  //  Information is not available
+  //
+  OPC_E_NOINFO = HResult($C0040206);
+
+  // OPC Historical Data Access
+
+  //
+  // MessageId: OPC_E_MAXEXCEEDED
+  //
+  // MessageText:
+  //
+  //  The maximum number of values requested exceeds the server's limit.
+  //
+  OPC_E_MAXEXCEEDED = HResult($C0041001);
+
+  //
+  // MessageId: OPC_S_NODATA
+  //
+  // MessageText:
+  //
+  //  There is no data within the specified parameters
+  //
+  OPC_S_NODATA = HResult($40041002);
+
+  //
+  // MessageId: OPC_S_MOREDATA
+  //
+  // MessageText:
+  //
+  // There is more data satisfying the query than was returned
+  //
+  OPC_S_MOREDATA = HResult($40041003);
+
+  //
+  // MessageId: OPC_E_INVALIDAGGREGATE
+  //
+  // MessageText:
+  //
+  //  The aggregate requested is not valid.
+  //
+  OPC_E_INVALIDAGGREGATE = HResult($C0041004);
+
+  //
+  // MessageId: OPC_S_CURRENTVALUE
+  //
+  // MessageText:
+  //
+  //  The server only returns current values for the requested item attributes.
+  //
+  OPC_S_CURRENTVALUE = HResult($40041005);
+
+  //
+  // MessageId: OPC_S_EXTRADATA
+  //
+  // MessageText:
+  //
+  //  Additional data satisfying the query was found.
+  //
+  OPC_S_EXTRADATA = HResult($40041006);
+
+  //
+  // MessageId: OPC_W_NOFILTER
+  //
+  // MessageText:
+  //
+  //  The server does not support this filter.
+  //
+  OPC_W_NOFILTER = HResult($80041007);
+
+  //
+  // MessageId: OPC_E_UNKNOWNATTRID
+  //
+  // MessageText:
+  //
+  //  The server does not support this attribute.
+  //
+  OPC_E_UNKNOWNATTRID = HResult($C0041008);
+
+  //
+  // MessageId: OPC_E_NOT_AVAIL
+  //
+  // MessageText:
+  //
+  //  The requested aggregate is not available for the specified item.
+  //
+  OPC_E_NOT_AVAIL = HResult($C0041009);
+
+  //
+  // MessageId: OPC_E_INVALIDDATATYPE
+  //
+  // MessageText:
+  //
+  //  The supplied value for the attribute is not a correct data type.
+  //
+  OPC_E_INVALIDDATATYPE = HResult($C004100A);
+
+  //
+  // MessageId: OPC_E_DATAEXISTS
+  //
+  // MessageText:
+  //
+  //  Unable to insert - data already present.
+  //
+  OPC_E_DATAEXISTS = HResult($C004100B);
+
+  //
+  // MessageId: OPC_E_INVALIDATTRID
+  //
+  // MessageText:
+  //
+  //  The supplied attribute ID is not valid.
+  //
+  OPC_E_INVALIDATTRID = HResult($C004100C);
+
+  //
+  // MessageId: OPC_E_NODATAEXISTS
+  //
+  // MessageText:
+  //
+  //  The server has no value for the specified time and item ID.
+  //
+  OPC_E_NODATAEXISTS = HResult($C004100D);
+
+  //
+  // MessageId: OPC_S_INSERTED
+  //
+  // MessageText:
+  //
+  //  The requested insert occurred.
+  //
+  OPC_S_INSERTED = HResult($4004100E);
+
+  //
+  // MessageId: OPC_S_REPLACED
+  //
+  // MessageText:
+  //
+  //  The requested replace occurred.
+  //
+  OPC_S_REPLACED = HResult($4004100F);
+
+  // OPC Security
+
+  //
+  // MessageId: OPC_E_PRIVATE_ACTIVE
+  //
+  // MessageText:
+  //
+  //  OPC Security: A session using private OPC credentials is already active.
+  //
+  OPC_E_PRIVATE_ACTIVE = HResult($C0040301);
+
+  //
+  // MessageId: OPC_E_LOW_IMPERS_LEVEL
+  //
+  // MessageText:
+  //
+  //  OPC Security: Server requires higher impersonation level to access secured
+  //  data.
+  //
+  OPC_E_LOW_IMPERS_LEVEL = HResult($C0040302);
+
+  //
+  // MessageId: OPC_S_LOW_AUTHN_LEVEL
+  //
+  // MessageText:
+  //
+  //  OPC Security: Server expected higher level of package privacy.
+  //
+  OPC_S_LOW_AUTHN_LEVEL = HResult($00040303);
+
+end;
+
 {
 Чтение всех внутренних данных, описанных в свойствах.
 @param dtTime: Время актуальности за которое необходимо получить данные.
@@ -209,6 +657,7 @@ var
   tags: TStrDictionary;
   tag_name, address, value, dt_str: AnsiString;
   dt_time: TDateTime;
+  //value_variant: Variant;
 
   new_state: TStrDictionary;
 
@@ -244,24 +693,24 @@ begin
         tags.Free();
         Exit;
       end;
-      log.DebugMsgFmt('Получение хендла сервера. Результат <%d : %d>', [HRes, iServerH]);
+      //log.DebugMsgFmt('Получение хендла сервера. Результат <%d : %d>', [HRes, iServerH]);
 
       htStartTime.bString := False;
       SysUtils.DecodeTime(ValueTimeTick, cur_hour, cur_minute, cur_sec, cur_msec);
       dt_time := CalcStartDateTime(dtTime, 0, 0, cur_hour<>0, cur_minute<>0, cur_sec<>0);
-      log.DebugMsgFmt('Запрашиваемый диапазон. Базовое время %s. Начальное время %s', [FormatDateTime(obj_proto.DATETIME_TXT_FMT, dtTime),
-                                                                                       FormatDateTime(obj_proto.DATETIME_TXT_FMT, dt_time)]);
+      //log.DebugMsgFmt('Запрашиваемый диапазон. Базовое время %s. Начальное время %s', [FormatDateTime(obj_proto.DATETIME_TXT_FMT, dtTime),
+      //                                                                                 FormatDateTime(obj_proto.DATETIME_TXT_FMT, dt_time)]);
       htStartTime.ftTime := filefunc.DateTimeToFileTime(dt_time);
       htEndTime.bString := False;
       dt_time := CalcEndDateTime(dtTime, cur_hour<>0, cur_minute<>0, cur_sec<>0);
-      log.DebugMsgFmt('Запрашиваемый диапазон. Базовое время %s. Конечное время %s', [FormatDateTime(obj_proto.DATETIME_TXT_FMT, dtTime),
-                                                                                      FormatDateTime(obj_proto.DATETIME_TXT_FMT, dt_time)]);
+      //log.DebugMsgFmt('Запрашиваемый диапазон. Базовое время %s. Конечное время %s', [FormatDateTime(obj_proto.DATETIME_TXT_FMT, dtTime),
+      //                                                                                FormatDateTime(obj_proto.DATETIME_TXT_FMT, dt_time)]);
       htEndTime.ftTime := filefunc.DateTimeToFileTime(dt_time);
 
       arrServer[0] := iServerH;
       phServer := @arrServer;
 
-      log.DebugMsg('Начало чтения ReadRaw');
+      //log.DebugMsg('Начало чтения ReadRaw');
       try
         HRes := FHDASyncRead.ReadRaw(htStartTime, htEndTime,
                                      ValueTimeCount, False, 1,
@@ -274,16 +723,16 @@ begin
       end;
       log.DebugMsgFmt('Результат чтения ReadRaw <%d>', [HRes]);
 
-      if ppItemValues = nil then
+      if HRes = Windows.E_FAIL then
       begin
-        log.ErrorMsgFmt('Ошибка чтения значения по адресу <%s> из OPC HDA сервера <%s>', [address, FOPCServerName]);
+        log.ErrorMsg('Ошибка чтения данных из OPC HDA сервера');
         Disconnect();
         tags.Free();
         Exit;
       end;
-      if HRes = Windows.E_FAIL then
+      if ppItemValues = nil then
       begin
-        log.ErrorMsg('Ошибка чтения данных');
+        log.ErrorMsgFmt('Ошибка чтения значения по адресу <%s> из OPC HDA сервера <%s>', [address, FOPCServerName]);
         Disconnect();
         tags.Free();
         Exit;
@@ -297,20 +746,26 @@ begin
 
       for i := 0 to ValueTimeCount - 1 do
       begin
-        value := pvDataValues^[i];
+        try
+          // value_variant := pvDataValues^[i];
+          value := pvDataValues^[i];
+        except
+          log.FatalMsgFmt('Ошибка приведения типа значения к строке. Тег <%s>', [tag_name]);
+          value := '';
+        end;
         dt_time := FileTimeToDateTime(pftTimeStamps^[i]);
         dt_str := FormatDateTime(obj_proto.DATETIME_TXT_FMT, dt_time);
-        log.DebugMsgFmt('Источник <%s>. OPC HDA. Прочитаны данные <%s> тега <%s> за <%s>', [Name, value, tag_name, dt_str]);
+        //log.DebugMsgFmt('Источник <%s>. OPC HDA. Прочитаны данные <%s> тега <%s> за <%s>', [Name, value, tag_name, dt_str]);
         // Записать в буфер
         if TimeState.HasKey(dt_str) then
         begin
-          log.DebugMsgFmt('Добавление тега <%s> значение: <%s> к существующей записи буфера за <%s>', [tag_name, value, dt_str]);
+          //log.DebugMsgFmt('Добавление тега <%s> значение: <%s> к существующей записи буфера за <%s>', [tag_name, value, dt_str]);
           new_state := TimeState.GetByName(dt_str) As TStrDictionary;
           new_state.SetStrValue(tag_name, value);
         end
         else
         begin
-          log.DebugMsgFmt('Добавление тега <%s> значение: <%s>. Создание новой записи буфера за <%s>', [tag_name, value, dt_str]);
+          //log.DebugMsgFmt('Добавление тега <%s> значение: <%s>. Создание новой записи буфера за <%s>', [tag_name, value, dt_str]);
           new_state := CreateTags();
           new_state.SetStrValue(tag_name, value);
           TimeState.AddObject(dt_str, new_state);
@@ -441,7 +896,7 @@ begin
    arrClient[0] := iClient;
    phClient := @arrClient;
 
-   log.DebugMsgFmt('Получение хендела OPC HDA сервера по адресу <%s>', [sItem]);
+   //log.DebugMsgFmt('Получение хендела OPC HDA сервера по адресу <%s>', [sItem]);
    try
      Result := ServerInterface.GetItemHandles(1, @arrPsItemW, phClient, pphServer, Errors);
    except

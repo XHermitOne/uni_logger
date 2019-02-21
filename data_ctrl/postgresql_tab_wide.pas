@@ -428,7 +428,7 @@ begin
     else
       sql := Format(INSERT_RECORD_SQL_FMT, [aTableName, field_names, param_names]);
     // sql := Format(UPSERT_RECORD_SQL_FMT, [aTableName, field_names, param_names, DATETIME_FIELD_NAME, field_names, param_names]);
-    log.DebugMsgFmt('Добавление записи. SQL <%s>', [sql]);
+    //log.DebugMsgFmt('Добавление записи. SQL <%s>', [sql]);
 
     // FSQLQuery.Database := FPQConnection;
     FSQLQuery.SQL.Clear;
@@ -441,7 +441,7 @@ begin
     for i := 0 to Length(StringValues) - 1 do
     begin
       field_type := LowerCase(field_type_list[i]);
-      //log.DebugMsgFmt('Параметр <%s> : <%s>', [field_name_list[i], field_type]);
+      log.DebugMsgFmt('Параметр <%s> : <%s>', [field_name_list[i], field_type]);
 
       if strfunc.IsStrInList(field_type, ['float']) then
         FSQLQuery.Params.ParamByName(field_name_list[i]).AsFloat := StrToFloat(StringValues[i])
@@ -478,7 +478,7 @@ begin
     free_tag_list := True;
   end;
 
-  log.DebugMsgFmt('Запуск чтения состояний источников данных. Количество <%d>', [aSrcTagList.Count]);
+  //log.DebugMsgFmt('Запуск чтения состояний источников данных. Количество <%d>', [aSrcTagList.Count]);
 
   SetLength(Result, aSrcTagList.Count);
 
@@ -490,7 +490,7 @@ begin
       // Родительский менеджер обработки
       parent_engine := GetParent() As TICLogger;
       value := parent_engine.GetSourceStateAsString(src_name, tag);
-      log.DebugMsgFmt('Чтение состояния источника данных <%s>. Тег <%s>. Значение <%s>', [src_name, tag, value]);
+      //log.DebugMsgFmt('Чтение состояния источника данных <%s>. Тег <%s>. Значение <%s>', [src_name, tag, value]);
       Result[i] := value;
     end;
   except
@@ -525,7 +525,7 @@ begin
 end;
 
 { Прочитать все значения состояния из временных буферов источников }
-function TICPostgreSQLTableWide.ReadTimeStateValues(aSrcTagList: TStringList = nil): TMemRecordSet;
+function TICPostgreSQLTableWide.ReadTimeStateValues(aSrcTagList: TStringList): TMemRecordSet;
 var
   src_name, tag, value, dt_str: AnsiString;
   values: TMemVectorOfString;
@@ -542,7 +542,7 @@ begin
     free_tag_list := True;
   end;
 
-  log.DebugMsg('Запуск чтения буфера состояний источников данных');
+  // log.DebugMsg('Запуск чтения буфера состояний источников данных');
   Result := TMemRecordSet.Create;
 
   try
@@ -557,13 +557,14 @@ begin
       begin
         dt_str := values.Points[i_value].datetime;
         value := values.Points[i_value].value;
+        //log.DebugMsgFmt('Обработка точки <%s : %s : %s>', [tag, dt_str, value]);
         // Поиск такой же временной метки
         is_find_dt := False;
         for i_rec := 0 to Result.Count - 1 do
           if Result.Records[i_rec][0] = dt_str then
           begin
             // Нашли временную метку. Записываем
-            Result.Records[i + 1][i_rec] := value;
+            Result.Records[i_rec][i + 1] := value;
             is_find_dt := True;
             break;
           end;

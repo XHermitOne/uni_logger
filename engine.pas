@@ -469,7 +469,7 @@ begin
         //Result.Add(new_point);
         value := state.GetStrValue(aTag);
         Result.AddNewPoint(str_datetime, value);
-        log.DebugMsgFmt('Источник <%s>. Тег <%s>. Добавлена точка <%s : %s>', [aSourceName, aTag, str_datetime, value]);
+        //log.DebugMsgFmt('Источник <%s>. Тег <%s>. Добавлена точка <%s : %s>', [aSourceName, aTag, str_datetime, value]);
         //new_point := nil;
       end;
       // Result.PrintPoints();
