@@ -15,7 +15,7 @@ uses
   Windows, ActiveX, ComObj,
   {$ENDIF}
   Classes, SysUtils, DateUtils,
-  OPCHDA, OPCtypes,
+  OPCHDA, OPCtypes, OPCError,
   obj_proto, dictionary, strfunc;
 
 const
@@ -134,11 +134,134 @@ type
 
 end;
 
+{ Получить текст ошибки OPC сервера }
+function GetOPCErrorMsg(aHResult: HRESULT): AnsiString;
+
 implementation
 
 uses
   LCLIntf, // Для вычисления времени выполнения
   log, filefunc;
+
+
+{ Получить текст ошибки OPC сервера }
+function GetOPCErrorMsg(aHResult: HRESULT): AnsiString;
+begin
+  Result := '';
+  if aHResult = 0 then
+    Exit;
+
+  if aHResult = OPCError.OPC_E_INVALIDHANDLE then
+    Result := '  The value of the handle is invalid.'
+  else if aHResult = OPCError.OPC_E_BADTYPE then
+    Result := '  The server cannot convert the data between the requested data type and the canonical data type.'
+  else if aHResult = OPCError.OPC_E_PUBLIC then
+    Result := '  The requested operation cannot be done on a public group.'
+  else if aHResult = OPCError.OPC_E_BADRIGHTS then
+    Result := '  The Items AccessRights do not allow the operation.'
+  else if aHResult = OPCError.OPC_E_UNKNOWNITEMID then
+    Result := '  The item is no longer available in the server address space.'
+  else if aHResult = OPCError.OPC_E_INVALIDITEMID then
+    Result := '  The item definition doesn''t conform to the server''s syntax.'
+  else if aHResult = OPCError.OPC_E_INVALIDFILTER then
+    Result := '  The filter string was not valid.'
+  else if aHResult = OPCError.OPC_E_UNKNOWNPATH then
+    Result := '  The item''s access path is not known to the server.'
+  else if aHResult = OPCError.OPC_E_RANGE then
+    Result := '  The value was out of range.'
+  else if aHResult = OPCError.OPC_E_DUPLICATENAME then
+    Result := '  Duplicate name not allowed.'
+  else if aHResult = OPCError.OPC_S_UNSUPPORTEDRATE then
+    Result := '  The server does not support the requested data rate but will use the closest available rate.'
+  else if aHResult = OPCError.OPC_S_CLAMP then
+    Result := '  A value passed to WRITE was accepted but the output was clamped.'
+  else if aHResult = OPCError.OPC_S_INUSE then
+    Result := '  The operation cannot be completed because the object still has references that exist.'
+  else if aHResult = OPCError.OPC_E_INVALIDCONFIGFILE then
+    Result := '  The server''s configuration file is an invalid format.'
+  else if aHResult = OPCError.OPC_E_NOTFOUND then
+    Result := '  The server could not locate the requested object.'
+  else if aHResult = OPCError.OPC_E_INVALID_PID then
+    Result := '  The server does not recognise the passed property ID.'
+  else if aHResult = OPCError.OPC_E_DEADBANDNOTSET then
+    Result := '  The item deadband has not been set for this item.'
+  else if aHResult = OPCError.OPC_E_DEADBANDNOTSUPPORTED then
+    Result := '  The item does not support deadband.'
+  else if aHResult = OPCError.OPC_E_NOBUFFERING then
+    Result := '  The server does not support buffering of data items that are collected at  a faster rate than the group update rate.'
+  else if aHResult = OPCError.OPC_E_INVALIDCONTINUATIONPOINT then
+    Result := '  The continuation point is not valid.'
+  else if aHResult = OPCError.OPC_S_DATAQUEUEOVERFLOW then
+    Result := '  Data Queue Overflow - Some value transitions were lost.'
+  else if aHResult = OPCError.OPC_E_RATENOTSET then
+    Result := '  Server does not support requested rate.'
+  else if aHResult = OPCError.OPC_E_NOTSUPPORTED then
+    Result := '  The server does not support writing of quality and/or timestamp.'
+  else if aHResult = OPCError.OPCCPX_E_TYPE_CHANGED then
+    Result := '  The dictionary and/or type description for the item has changed.'
+  else if aHResult = OPCError.OPCCPX_E_FILTER_DUPLICATE then
+    Result := '  A data filter item with the specified name already exists.'
+  else if aHResult = OPCError.OPCCPX_E_FILTER_INVALID then
+    Result := '  The data filter value does not conform to the server''s syntax.'
+  else if aHResult = OPCError.OPCCPX_E_FILTER_ERROR then
+    Result := '  An error occurred when the filter value was applied to the source data.'
+  else if aHResult = OPCError.OPCCPX_S_FILTER_NO_DATA then
+    Result := '  The item value is empty because the data filter has excluded all fields.'
+  else if aHResult = OPCError.OPC_S_ALREADYACKED then
+    Result := '  The condition has already been acknowleged'
+  else if aHResult = OPCError.OPC_S_INVALIDBUFFERTIME then
+    Result := '  The buffer time parameter was invalid'
+  else if aHResult = OPCError.OPC_S_INVALIDMAXSIZE then
+    Result := '  The max size parameter was invalid'
+  else if aHResult = OPCError.OPC_S_INVALIDKEEPALIVETIME then
+    Result := '  The KeepAliveTime parameter was invalid'
+  else if aHResult = OPCError.OPC_E_INVALIDBRANCHNAME then
+    Result := '  The string was not recognized as an area name'
+  else if aHResult = OPCError.OPC_E_INVALIDTIME then
+    Result := '  The time does not match the latest active time'
+  else if aHResult = OPCError.OPC_E_BUSY then
+    Result := '  A refresh is currently in progress'
+  else if aHResult = OPCError.OPC_E_NOINFO then
+    Result := '  Information is not available'
+  else if aHResult = OPCError.OPC_E_MAXEXCEEDED then
+    Result := '  The maximum number of values requested exceeds the server''s limit.'
+  else if aHResult = OPCError.OPC_S_NODATA then
+    Result := '  There is no data within the specified parameters'
+  else if aHResult = OPCError.OPC_S_MOREDATA then
+    Result := ' There is more data satisfying the query than was returned'
+  else if aHResult = OPCError.OPC_E_INVALIDAGGREGATE then
+    Result := '  The aggregate requested is not valid.'
+  else if aHResult = OPCError.OPC_S_CURRENTVALUE then
+    Result := '  The server only returns current values for the requested item attributes.'
+  else if aHResult = OPCError.OPC_S_EXTRADATA then
+    Result := '  Additional data satisfying the query was found.'
+  else if aHResult = OPCError.OPC_W_NOFILTER then
+    Result := '  The server does not support this filter.'
+  else if aHResult = OPCError.OPC_E_UNKNOWNATTRID then
+    Result := '  The server does not support this attribute.'
+  else if aHResult = OPCError.OPC_E_NOT_AVAIL then
+    Result := '  The requested aggregate is not available for the specified item.'
+  else if aHResult = OPCError.OPC_E_INVALIDDATATYPE then
+    Result := '  The supplied value for the attribute is not a correct data type.'
+  else if aHResult = OPCError.OPC_E_DATAEXISTS then
+    Result := '  Unable to insert - data already present.'
+  else if aHResult = OPCError.OPC_E_INVALIDATTRID then
+    Result := '  The supplied attribute ID is not valid.'
+  else if aHResult = OPCError.OPC_E_NODATAEXISTS then
+    Result := '  The server has no value for the specified time and item ID.'
+  else if aHResult = OPCError.OPC_S_INSERTED then
+    Result := '  The requested insert occurred.'
+  else if aHResult = OPCError.OPC_S_REPLACED then
+    Result := '  The requested replace occurred.'
+  else if aHResult = OPCError.OPC_E_PRIVATE_ACTIVE then
+    Result := '  OPC Security: A session using private OPC credentials is already active.'
+  else if aHResult = OPCError.OPC_E_LOW_IMPERS_LEVEL then
+    Result := '  OPC Security: Server requires higher impersonation level to access secured data.'
+  else if aHResult = OPCError.OPC_S_LOW_AUTHN_LEVEL then
+    Result := '  OPC Security: Server expected higher level of package privacy.'
+  else
+    Result := '  Не известная ошибка OPC';
+end;
 
 constructor TICOPCHDANode.Create;
 begin
@@ -181,454 +304,6 @@ begin
       log.FatalMsgFmt('Ошибка установки массива спойств в <%s>', [ClassName]);
     end;
   end;
-end;
-
-procedure TICOPCHDANode.PrintOPCError(aHResult);
-begin
-  if aHResult = OPC_E_INVALIDHANDLE then
-    log.ErrorMsg('  The value of the handle is invalid.')
-  else if aHResult = OPC_E_BADTYPE then
-    log.ErrorMsg('  The server cannot convert the data between the requested data type and the canonical data type.')
-  else if aHResult = OPC_E_PUBLIC then
-    log.ErrorMsg('  The requested operation cannot be done on a public group.')
-  else if aHResult = OPC_E_BADRIGHTS then
-    log.ErrorMsg('  The Items AccessRights do not allow the operation.')
-  else if aHResult = OPC_E_UNKNOWNITEMID then
-    log.ErrorMsg('  The item is no longer available in the server address space.')
-  else if aHResult = OPC_E_INVALIDITEMID then
-    log.ErrorMsg('  The item definition doesn't conform to the server's syntax.')
-  else if aHResult = OPC_E_INVALIDFILTER then
-    log.ErrorMsg('  The filter string was not valid.')
-  else if aHResult = OPC_E_UNKNOWNPATH then
-    log.ErrorMsg('  The item's access path is not known to the server.')
-  else if
-  //
-  OPC_E_UNKNOWNPATH = HResult($C004000A);
-
-  //
-  // MessageId: OPC_E_RANGE
-  //
-  // MessageText:
-  //
-  //  The value was out of range.
-  //
-  OPC_E_RANGE = HResult($C004000B);
-
-  //
-  // MessageId: OPC_E_DUPLICATENAME
-  //
-  // MessageText:
-  //
-  //  Duplicate name not allowed.
-  //
-  OPC_E_DUPLICATENAME = HResult($C004000C);
-
-  //
-  // MessageId: OPC_S_UNSUPPORTEDRATE
-  //
-  // MessageText:
-  //
-  //  The server does not support the requested data rate
-  //  but will use the closest available rate.
-  //
-  OPC_S_UNSUPPORTEDRATE = HResult($0004000D);
-
-  //
-  // MessageId: OPC_S_CLAMP
-  //
-  // MessageText:
-  //
-  //  A value passed to WRITE was accepted but the output was clamped.
-  //
-  OPC_S_CLAMP = HResult($0004000E);
-
-  //
-  // MessageId: OPC_S_INUSE
-  //
-  // MessageText:
-  //
-  //  The operation cannot be completed because the
-  //  object still has references that exist.
-  //
-  OPC_S_INUSE = HResult($0004000F);
-
-  //
-  // MessageId: OPC_E_INVALIDCONFIGFILE
-  //
-  // MessageText:
-  //
-  //  The server's configuration file is an invalid format.
-  //
-  OPC_E_INVALIDCONFIGFILE = HResult($C0040010);
-
-  //
-  // MessageId: OPC_E_NOTFOUND
-  //
-  // MessageText:
-  //
-  //  The server could not locate the requested object.
-  //
-  OPC_E_NOTFOUND = HResult($C0040011);
-
-  //
-  // MessageId: OPC_E_INVALID_PID
-  //
-  // MessageText:
-  //
-  //  The server does not recognise the passed property ID.
-  //
-  OPC_E_INVALID_PID = HResult($C0040203);
-
-  //
-  // MessageId: OPC_E_DEADBANDNOTSET
-  //
-  // MessageText:
-  //
-  //  The item deadband has not been set for this item.
-  //
-  OPC_E_DEADBANDNOTSET = HResult($C0040400);
-
-  //
-  // MessageId: OPC_E_DEADBANDNOTSUPPORTED
-  //
-  // MessageText:
-  //
-  //  The item does not support deadband.
-  //
-  OPC_E_DEADBANDNOTSUPPORTED = HResult($C0040401);
-
-  //
-  // MessageId: OPC_E_NOBUFFERING
-  //
-  // MessageText:
-  //
-  //  The server does not support buffering of data items that are collected at
-  //  a faster rate than the group update rate.
-  //
-  OPC_E_NOBUFFERING = HResult($C0040402);
-
-  //
-  // MessageId: OPC_E_INVALIDCONTINUATIONPOINT
-  //
-  // MessageText:
-  //
-  //  The continuation point is not valid.
-  //
-  OPC_E_INVALIDCONTINUATIONPOINT = HResult($C0040403);
-
-  //
-  // MessageId: OPC_S_DATAQUEUEOVERFLOW
-  //
-  // MessageText:
-  //
-  //  Data Queue Overflow - Some value transitions were lost.
-  //
-  OPC_S_DATAQUEUEOVERFLOW = HResult($00040404);
-
-  //
-  // MessageId: OPC_E_RATENOTSET
-  //
-  // MessageText:
-  //
-  //  Server does not support requested rate.
-  //
-  OPC_E_RATENOTSET = HResult($C0040405);
-
-  //
-  // MessageId: OPC_E_NOTSUPPORTED
-  //
-  // MessageText:
-  //
-  //  The server does not support writing of quality and/or timestamp.
-  //
-  OPC_E_NOTSUPPORTED = HResult($C0040406);
-
-  //
-  // MessageId: OPCCPX_E_TYPE_CHANGED
-  //
-  // MessageText:
-  //
-  //  The dictionary and/or type description for the item has changed.
-  //
-  OPCCPX_E_TYPE_CHANGED = HResult($C0040407);
-
-  //
-  // MessageId: OPCCPX_E_FILTER_DUPLICATE
-  //
-  // MessageText:
-  //
-  //  A data filter item with the specified name already exists.
-  //
-  OPCCPX_E_FILTER_DUPLICATE = HResult($C0040408);
-
-  //
-  // MessageId: OPCCPX_E_FILTER_INVALID
-  //
-  // MessageText:
-  //
-  //  The data filter value does not conform to the server's syntax.
-  //
-  OPCCPX_E_FILTER_INVALID = HResult($C0040409);
-
-  //
-  // MessageId: OPCCPX_E_FILTER_ERROR
-  //
-  // MessageText:
-  //
-  //  An error occurred when the filter value was applied to the source data.
-  //
-  OPCCPX_E_FILTER_ERROR = HResult($C004040A);
-
-  //
-  // MessageId: OPCCPX_S_FILTER_NO_DATA
-  //
-  // MessageText:
-  //
-  //  The item value is empty because the data filter has excluded all fields.
-  //
-  OPCCPX_S_FILTER_NO_DATA = HResult($0004040B);
-
-  // OPC Alarms & Events
-
-  //
-  // MessageId: OPC_S_ALREADYACKED
-  //
-  // MessageText:
-  //
-  //  The condition has already been acknowleged
-  //
-  OPC_S_ALREADYACKED = HResult($00040200);
-
-  //
-  // MessageId: OPC_S_INVALIDBUFFERTIME
-  //
-  // MessageText:
-  //
-  //  The buffer time parameter was invalid
-  //
-  OPC_S_INVALIDBUFFERTIME = HResult($00040201);
-
-  //
-  // MessageId: OPC_S_INVALIDMAXSIZE
-  //
-  // MessageText:
-  //
-  //  The max size parameter was invalid
-  //
-  OPC_S_INVALIDMAXSIZE = HResult($00040202);
-
-  //
-  // MessageId: OPC_S_INVALIDKEEPALIVETIME
-  //
-  // MessageText:
-  //
-  //  The KeepAliveTime parameter was invalid
-  //
-  OPC_S_INVALIDKEEPALIVETIME = HResult($00040203);
-
-  //
-  // MessageId: OPC_E_INVALIDBRANCHNAME
-  //
-  // MessageText:
-  //
-  //  The string was not recognized as an area name
-  //
-  OPC_E_INVALIDBRANCHNAME = HResult($C0040203);
-
-  //
-  // MessageId: OPC_E_INVALIDTIME
-  //
-  // MessageText:
-  //
-  //  The time does not match the latest active time
-  //
-  OPC_E_INVALIDTIME = HResult($C0040204);
-
-  //
-  // MessageId: OPC_E_BUSY
-  //
-  // MessageText:
-  //
-  //  A refresh is currently in progress
-  //
-  OPC_E_BUSY = HResult($C0040205);
-
-  //
-  // MessageId: OPC_E_NOINFO
-  //
-  // MessageText:
-  //
-  //  Information is not available
-  //
-  OPC_E_NOINFO = HResult($C0040206);
-
-  // OPC Historical Data Access
-
-  //
-  // MessageId: OPC_E_MAXEXCEEDED
-  //
-  // MessageText:
-  //
-  //  The maximum number of values requested exceeds the server's limit.
-  //
-  OPC_E_MAXEXCEEDED = HResult($C0041001);
-
-  //
-  // MessageId: OPC_S_NODATA
-  //
-  // MessageText:
-  //
-  //  There is no data within the specified parameters
-  //
-  OPC_S_NODATA = HResult($40041002);
-
-  //
-  // MessageId: OPC_S_MOREDATA
-  //
-  // MessageText:
-  //
-  // There is more data satisfying the query than was returned
-  //
-  OPC_S_MOREDATA = HResult($40041003);
-
-  //
-  // MessageId: OPC_E_INVALIDAGGREGATE
-  //
-  // MessageText:
-  //
-  //  The aggregate requested is not valid.
-  //
-  OPC_E_INVALIDAGGREGATE = HResult($C0041004);
-
-  //
-  // MessageId: OPC_S_CURRENTVALUE
-  //
-  // MessageText:
-  //
-  //  The server only returns current values for the requested item attributes.
-  //
-  OPC_S_CURRENTVALUE = HResult($40041005);
-
-  //
-  // MessageId: OPC_S_EXTRADATA
-  //
-  // MessageText:
-  //
-  //  Additional data satisfying the query was found.
-  //
-  OPC_S_EXTRADATA = HResult($40041006);
-
-  //
-  // MessageId: OPC_W_NOFILTER
-  //
-  // MessageText:
-  //
-  //  The server does not support this filter.
-  //
-  OPC_W_NOFILTER = HResult($80041007);
-
-  //
-  // MessageId: OPC_E_UNKNOWNATTRID
-  //
-  // MessageText:
-  //
-  //  The server does not support this attribute.
-  //
-  OPC_E_UNKNOWNATTRID = HResult($C0041008);
-
-  //
-  // MessageId: OPC_E_NOT_AVAIL
-  //
-  // MessageText:
-  //
-  //  The requested aggregate is not available for the specified item.
-  //
-  OPC_E_NOT_AVAIL = HResult($C0041009);
-
-  //
-  // MessageId: OPC_E_INVALIDDATATYPE
-  //
-  // MessageText:
-  //
-  //  The supplied value for the attribute is not a correct data type.
-  //
-  OPC_E_INVALIDDATATYPE = HResult($C004100A);
-
-  //
-  // MessageId: OPC_E_DATAEXISTS
-  //
-  // MessageText:
-  //
-  //  Unable to insert - data already present.
-  //
-  OPC_E_DATAEXISTS = HResult($C004100B);
-
-  //
-  // MessageId: OPC_E_INVALIDATTRID
-  //
-  // MessageText:
-  //
-  //  The supplied attribute ID is not valid.
-  //
-  OPC_E_INVALIDATTRID = HResult($C004100C);
-
-  //
-  // MessageId: OPC_E_NODATAEXISTS
-  //
-  // MessageText:
-  //
-  //  The server has no value for the specified time and item ID.
-  //
-  OPC_E_NODATAEXISTS = HResult($C004100D);
-
-  //
-  // MessageId: OPC_S_INSERTED
-  //
-  // MessageText:
-  //
-  //  The requested insert occurred.
-  //
-  OPC_S_INSERTED = HResult($4004100E);
-
-  //
-  // MessageId: OPC_S_REPLACED
-  //
-  // MessageText:
-  //
-  //  The requested replace occurred.
-  //
-  OPC_S_REPLACED = HResult($4004100F);
-
-  // OPC Security
-
-  //
-  // MessageId: OPC_E_PRIVATE_ACTIVE
-  //
-  // MessageText:
-  //
-  //  OPC Security: A session using private OPC credentials is already active.
-  //
-  OPC_E_PRIVATE_ACTIVE = HResult($C0040301);
-
-  //
-  // MessageId: OPC_E_LOW_IMPERS_LEVEL
-  //
-  // MessageText:
-  //
-  //  OPC Security: Server requires higher impersonation level to access secured
-  //  data.
-  //
-  OPC_E_LOW_IMPERS_LEVEL = HResult($C0040302);
-
-  //
-  // MessageId: OPC_S_LOW_AUTHN_LEVEL
-  //
-  // MessageText:
-  //
-  //  OPC Security: Server expected higher level of package privacy.
-  //
-  OPC_S_LOW_AUTHN_LEVEL = HResult($00040303);
-
 end;
 
 {
@@ -723,9 +398,10 @@ begin
       end;
       log.DebugMsgFmt('Результат чтения ReadRaw <%d>', [HRes]);
 
-      if HRes = Windows.E_FAIL then
+      if HRes <> 0 then
       begin
-        log.ErrorMsg('Ошибка чтения данных из OPC HDA сервера');
+        log.ErrorMsg('Ошибка чтения данных из OPC HDA сервера:');
+        log.ErrorMsg(GetOPCErrorMsg(HRes));
         Disconnect();
         tags.Free();
         Exit;
