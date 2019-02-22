@@ -11,7 +11,7 @@
         <EditorIndex Value="8"/>
         <TopLine Value="210"/>
         <CursorPos X="76" Y="227"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="104"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
@@ -20,7 +20,7 @@
         <EditorIndex Value="6"/>
         <TopLine Value="201"/>
         <CursorPos X="45" Y="223"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="104"/>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
@@ -30,7 +30,7 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="104"/>
       </Unit2>
       <Unit3>
         <Filename Value="utils\filefunc.pas"/>
@@ -39,7 +39,7 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="104"/>
       </Unit3>
       <Unit4>
         <Filename Value="utils\inifunc.pas"/>
@@ -48,7 +48,7 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="104"/>
       </Unit4>
       <Unit5>
         <Filename Value="utils\keyboardfunc.pas"/>
@@ -57,7 +57,7 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="104"/>
       </Unit5>
       <Unit6>
         <Filename Value="utils\log.pas"/>
@@ -65,7 +65,7 @@
         <EditorIndex Value="9"/>
         <TopLine Value="226"/>
         <CursorPos X="32" Y="258"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="104"/>
         <Loaded Value="True"/>
       </Unit6>
       <Unit7>
@@ -73,7 +73,7 @@
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <CursorPos Y="25"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="104"/>
       </Unit7>
       <Unit8>
         <Filename Value="utils\strfunc.pas"/>
@@ -82,7 +82,7 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="104"/>
       </Unit8>
       <Unit9>
         <Filename Value="utils\sysfunc.pas"/>
@@ -91,7 +91,7 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="104"/>
       </Unit9>
       <Unit10>
         <Filename Value="engine.pas"/>
@@ -99,7 +99,7 @@
         <EditorIndex Value="11"/>
         <TopLine Value="451"/>
         <CursorPos X="103" Y="483"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="104"/>
         <Loaded Value="True"/>
       </Unit10>
       <Unit11>
@@ -108,7 +108,7 @@
         <EditorIndex Value="7"/>
         <TopLine Value="124"/>
         <CursorPos X="29" Y="153"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="104"/>
         <Loaded Value="True"/>
       </Unit11>
       <Unit12>
@@ -118,15 +118,14 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="104"/>
       </Unit12>
       <Unit13>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
-        <TopLine Value="358"/>
-        <CursorPos X="22" Y="372"/>
-        <UsageCount Value="101"/>
+        <TopLine Value="367"/>
+        <CursorPos Y="382"/>
+        <UsageCount Value="104"/>
         <Loaded Value="True"/>
       </Unit13>
       <Unit14>
@@ -135,7 +134,7 @@
         <EditorIndex Value="10"/>
         <TopLine Value="434"/>
         <CursorPos X="85" Y="446"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="104"/>
         <Loaded Value="True"/>
       </Unit14>
       <Unit15>
@@ -145,7 +144,7 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="104"/>
       </Unit15>
       <Unit16>
         <Filename Value="opc_client\OPC.res"/>
@@ -154,7 +153,7 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="104"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit16>
       <Unit17>
@@ -164,7 +163,7 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="104"/>
       </Unit17>
       <Unit18>
         <Filename Value="opc_client\OPCCallback.pas"/>
@@ -173,7 +172,7 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="104"/>
       </Unit18>
       <Unit19>
         <Filename Value="opc_client\OPCCOMN.pas"/>
@@ -182,7 +181,7 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="104"/>
       </Unit19>
       <Unit20>
         <Filename Value="opc_client\OPCDA.pas"/>
@@ -191,7 +190,7 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="104"/>
       </Unit20>
       <Unit21>
         <Filename Value="opc_client\OPCError.pas"/>
@@ -200,7 +199,7 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="104"/>
       </Unit21>
       <Unit22>
         <Filename Value="opc_client\OPCSEC.pas"/>
@@ -209,7 +208,7 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="104"/>
       </Unit22>
       <Unit23>
         <Filename Value="opc_client\OPCTypes.pas"/>
@@ -218,7 +217,7 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="104"/>
       </Unit23>
       <Unit24>
         <Filename Value="opc_client\tag_list.pas"/>
@@ -227,7 +226,7 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="104"/>
       </Unit24>
       <Unit25>
         <Filename Value="opc_client\type_value.pas"/>
@@ -236,7 +235,7 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="104"/>
       </Unit25>
       <Unit26>
         <Filename Value="opcdelphi\OPC_AE.pas"/>
@@ -245,7 +244,7 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="104"/>
       </Unit26>
       <Unit27>
         <Filename Value="opcdelphi\OPCCOMN.pas"/>
@@ -254,7 +253,7 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="104"/>
       </Unit27>
       <Unit28>
         <Filename Value="opcdelphi\OPCDA.pas"/>
@@ -263,7 +262,7 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="104"/>
       </Unit28>
       <Unit29>
         <Filename Value="opcdelphi\OPCerror.pas"/>
@@ -272,7 +271,7 @@
         <EditorIndex Value="5"/>
         <TopLine Value="349"/>
         <CursorPos X="46" Y="212"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="104"/>
         <Loaded Value="True"/>
       </Unit29>
       <Unit30>
@@ -281,7 +280,7 @@
         <EditorIndex Value="4"/>
         <TopLine Value="243"/>
         <CursorPos X="3" Y="260"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="104"/>
         <Loaded Value="True"/>
       </Unit30>
       <Unit31>
@@ -291,7 +290,7 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="104"/>
       </Unit31>
       <Unit32>
         <Filename Value="opcdelphi\OPCtypes.pas"/>
@@ -299,7 +298,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="13"/>
         <CursorPos X="32" Y="16"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="104"/>
       </Unit32>
       <Unit33>
         <Filename Value="settings.pas"/>
@@ -307,15 +306,16 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="103"/>
         <CursorPos X="45" Y="135"/>
-        <UsageCount Value="52"/>
+        <UsageCount Value="55"/>
       </Unit33>
       <Unit34>
         <Filename Value="utils\dtfunc.pas"/>
         <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="85"/>
-        <CursorPos Y="122"/>
-        <UsageCount Value="23"/>
+        <TopLine Value="4"/>
+        <CursorPos Y="48"/>
+        <UsageCount Value="26"/>
         <Loaded Value="True"/>
       </Unit34>
       <Unit35>
@@ -352,159 +352,165 @@
       <Unit39>
         <Filename Value="C:\lazarus\fpc\3.0.4\source\packages\rtl-objpas\src\inc\dateutil.inc"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="544"/>
+        <TopLine Value="28"/>
         <CursorPos X="22" Y="31"/>
-        <UsageCount Value="11"/>
+        <UsageCount Value="12"/>
         <Loaded Value="True"/>
       </Unit39>
       <Unit40>
         <Filename Value="C:\lazarus\fpc\3.0.4\source\rtl\objpas\sysutils\datih.inc"/>
         <EditorIndex Value="3"/>
-        <TopLine Value="8"/>
         <CursorPos X="133" Y="110"/>
-        <UsageCount Value="11"/>
+        <UsageCount Value="12"/>
         <Loaded Value="True"/>
       </Unit40>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="396" TopLine="368"/>
+        <Caret Line="383" TopLine="366"/>
       </Position1>
       <Position2>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="398" TopLine="370"/>
+        <Caret Line="384" TopLine="366"/>
       </Position2>
       <Position3>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="399" TopLine="371"/>
+        <Caret Line="386" TopLine="366"/>
       </Position3>
       <Position4>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="396" Column="55" TopLine="372"/>
+        <Caret Line="387" TopLine="366"/>
       </Position4>
       <Position5>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="457" TopLine="440"/>
+        <Caret Line="388" TopLine="366"/>
       </Position5>
       <Position6>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="458" TopLine="440"/>
+        <Caret Line="390" TopLine="366"/>
       </Position6>
       <Position7>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="459" TopLine="440"/>
+        <Caret Line="690" TopLine="672"/>
       </Position7>
       <Position8>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="461" TopLine="440"/>
+        <Caret Line="692" TopLine="672"/>
       </Position8>
       <Position9>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="462" Column="26" TopLine="440"/>
+        <Caret Line="693" TopLine="672"/>
       </Position9>
       <Position10>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="387" Column="52" TopLine="370"/>
+        <Caret Line="695" TopLine="672"/>
       </Position10>
       <Position11>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="322" Column="19" TopLine="319"/>
+        <Caret Line="696" TopLine="672"/>
       </Position11>
       <Position12>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="363" TopLine="340"/>
+        <Caret Line="709" TopLine="693"/>
       </Position12>
       <Position13>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="387" TopLine="370"/>
+        <Caret Line="738" TopLine="716"/>
       </Position13>
       <Position14>
-        <Filename Value="opcdelphi\OPCHDA.pas"/>
-        <Caret Line="35" TopLine="35"/>
+        <Filename Value="data_ctrl\opc_hda_node.pas"/>
+        <Caret Line="407" TopLine="370"/>
       </Position14>
       <Position15>
-        <Filename Value="opcdelphi\OPCHDA.pas"/>
-        <Caret Line="339" Column="21" TopLine="322"/>
+        <Filename Value="data_ctrl\opc_hda_node.pas"/>
+        <Caret Line="382" TopLine="370"/>
       </Position15>
       <Position16>
-        <Filename Value="opcdelphi\OPCHDA.pas"/>
-        <Caret Line="455" Column="21" TopLine="427"/>
+        <Filename Value="data_ctrl\opc_hda_node.pas"/>
+        <Caret Line="383" TopLine="370"/>
       </Position16>
       <Position17>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="324" Column="22" TopLine="309"/>
+        <Caret Line="384" TopLine="370"/>
       </Position17>
       <Position18>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="321" Column="3" TopLine="304"/>
+        <Caret Line="386" TopLine="370"/>
       </Position18>
       <Position19>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="388" Column="68" TopLine="358"/>
+        <Caret Line="387" TopLine="370"/>
       </Position19>
       <Position20>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="694" Column="3" TopLine="667"/>
+        <Caret Line="399" Column="60" TopLine="370"/>
       </Position20>
       <Position21>
-        <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="382" Column="35" TopLine="362"/>
+        <Filename Value="utils\dtfunc.pas"/>
+        <Caret Line="46" TopLine="36"/>
       </Position21>
       <Position22>
-        <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="381" Column="28" TopLine="362"/>
+        <Filename Value="utils\dtfunc.pas"/>
+        <Caret Line="39" Column="15" TopLine="36"/>
       </Position22>
       <Position23>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="383" TopLine="362"/>
+        <Caret Line="382" TopLine="367"/>
       </Position23>
       <Position24>
-        <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="384" Column="12" TopLine="366"/>
+        <Filename Value="utils\dtfunc.pas"/>
+        <Caret Line="48" Column="27" TopLine="29"/>
       </Position24>
       <Position25>
         <Filename Value="utils\dtfunc.pas"/>
-        <Caret Line="15"/>
+        <Caret Line="44" Column="15" TopLine="29"/>
       </Position25>
       <Position26>
         <Filename Value="utils\dtfunc.pas"/>
-        <Caret Line="65" Column="22" TopLine="28"/>
+        <Caret Line="48" Column="8" TopLine="29"/>
       </Position26>
       <Position27>
         <Filename Value="utils\dtfunc.pas"/>
-        <Caret Line="12" Column="28"/>
+        <Caret Line="44" Column="12" TopLine="27"/>
       </Position27>
       <Position28>
-        <Filename Value="C:\lazarus\fpc\3.0.4\source\packages\rtl-objpas\src\inc\dateutil.inc"/>
-        <Caret TopLine="1558"/>
+        <Filename Value="data_ctrl\opc_hda_node.pas"/>
+        <Caret Line="382" TopLine="367"/>
       </Position28>
       <Position29>
-        <Filename Value="C:\lazarus\fpc\3.0.4\source\packages\rtl-objpas\src\inc\dateutil.inc"/>
-        <Caret Line="31" Column="22" TopLine="544"/>
+        <Filename Value="utils\dtfunc.pas"/>
+        <Caret Line="46" Column="21" TopLine="27"/>
       </Position29>
       <Position30>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="372" Column="22" TopLine="358"/>
+        <Caret Line="382" TopLine="367"/>
       </Position30>
     </JumpHistory>
   </ProjectSession>
   <Debugging>
-    <BreakPoints Count="2">
+    <BreakPoints Count="3">
       <Item1>
         <Kind Value="bpkSource"/>
         <WatchScope Value="wpsLocal"/>
         <WatchKind Value="wpkWrite"/>
         <Source Value="data_ctrl\opc_hda_node.pas"/>
-        <Line Value="407"/>
+        <Line Value="382"/>
       </Item1>
       <Item2>
         <Kind Value="bpkSource"/>
         <WatchScope Value="wpsLocal"/>
         <WatchKind Value="wpkWrite"/>
-        <Source Value="data_ctrl\opc_hda_node.pas"/>
-        <Line Value="382"/>
+        <Source Value="utils\dtfunc.pas"/>
+        <Line Value="63"/>
       </Item2>
+      <Item3>
+        <Kind Value="bpkSource"/>
+        <WatchScope Value="wpsLocal"/>
+        <WatchKind Value="wpkWrite"/>
+        <Source Value="utils\dtfunc.pas"/>
+        <Line Value="48"/>
+      </Item3>
     </BreakPoints>
   </Debugging>
 </CONFIG>

@@ -41,8 +41,11 @@ implementation
 procedure DecodeDateDelta(Date: TDateTime; out Year, Month, Day: Word);
 var
   ly, ld, lm, j : cardinal;
+  dt: Double;
 begin
-  if Date <= -DateDelta then  // If Date is before 1-1-1 then return 0-0-0
+  dt :=  Double(Date);
+  // If Date is before 1-1-1 then return 0-0-0
+  if dt = 0 then
   begin
     Year := 0;
     Month := 0;
@@ -57,20 +60,22 @@ begin
     if Date > MaxDateTime then
       Date := MaxDateTime;
 //       Raise EConvertError.CreateFmt('%f is not a valid TDatetime encoding, maximum value is %f.',[Date,MaxDateTime]);
-    j := pred((Trunc(System.Int(Date)) + 693900) SHL 2);
+    j := Trunc(System.Int(Date)) * 4;
+    //j := Trunc(System.Int(Date));
+    // Количество веков
     ly := j DIV 146097;
     j := j - 146097 * cardinal(ly);
-    ld := j SHR 2;
-    j :=(ld SHL 2 + 3) DIV 1461;
-    ld := (cardinal(ld) SHL 2 + 7 - 1461 * j) SHR 2;
+    ld := j DIV 4;
+    j := (ld * 4 + 3) DIV 1461;
+    ld := (cardinal(ld) * 4 + 7 - 1461 * j) DIV 4;
     lm := (5 * ld - 3) DIV 153;
     ld := (5 * ld + 2 - 153 * lm) DIV 5;
     ly := 100 * cardinal(ly) + j;
     if lm < 10 then
-      Inc(lm,3)
+      Inc(lm, 3)
     else
     begin
-      Dec(lm,9);
+      Dec(lm, 9);
       Inc(ly);
     end;
     Year := ly;

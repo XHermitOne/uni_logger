@@ -384,8 +384,8 @@ begin
       cur_year := dtfunc.GetYearDelta(FValueTimeTick);
       //dt := Double(FValueTimeTick);
       cur_hour := dtfunc.GetHourDelta(FValueTimeTick);
-      cur_minute := dtfunc.GetHourDelta(FValueTimeTick);
-      cur_sec := dtfunc.GetHourDelta(FValueTimeTick);
+      cur_minute := dtfunc.GetMinuteDelta(FValueTimeTick);
+      cur_sec := dtfunc.GetSecondDelta(FValueTimeTick);
       // SysUtils.DecodeTime(ValueTimeTick, cur_hour, cur_minute, cur_sec, cur_msec);
       dt_time := CalcStartDateTime(dtTime, 0, 0, cur_month<>0, cur_day<>0, cur_hour<>0, cur_minute<>0, cur_sec<>0);
       log.DebugMsgFmt('Запрашиваемый диапазон. Базовое время %s. Начальное время %s', [FormatDateTime(obj_proto.DATETIME_TXT_FMT, dtTime),
@@ -688,15 +688,23 @@ begin
                  curHour, curMin, curSec, curMilli);
 
   if not bNotSecond then
+  begin
     dtEnd := DateUtils.EncodeDateTime(curYear, curMonth, curDay, curHour, curMin, 0, 0);
-  if not bNotMinute then
-    dtEnd := DateUtils.EncodeDateTime(curYear, curMonth, curDay, curHour, 0, 0, 0);
-  if not bNotHour then
-    dtEnd := DateUtils.EncodeDateTime(curYear, curMonth, curDay, 0, 0, 0, 0);
-  if not bNotDay then
-    dtEnd := DateUtils.EncodeDateTime(curYear, curMonth, 1, 0, 0, 0, 0);
-  if not bNotMonth then
-    dtEnd := DateUtils.EncodeDateTime(curYear, 1, 1, 0, 0, 0, 0);
+    if not bNotMinute then
+    begin
+      dtEnd := DateUtils.EncodeDateTime(curYear, curMonth, curDay, curHour, 0, 0, 0);
+      if not bNotHour then
+      begin
+        dtEnd := DateUtils.EncodeDateTime(curYear, curMonth, curDay, 0, 0, 0, 0);
+        if not bNotDay then
+        begin
+          dtEnd := DateUtils.EncodeDateTime(curYear, curMonth, 1, 0, 0, 0, 0);
+          if not bNotMonth then
+            dtEnd := DateUtils.EncodeDateTime(curYear, 1, 1, 0, 0, 0, 0);
+        end;
+      end;
+    end;
+  end;
 
   log.DebugMsgFmt('<%s>', [FormatDateTime(obj_proto.DATETIME_TXT_FMT, dtEnd)]);
   Result := dtEnd;
@@ -728,15 +736,23 @@ begin
                 curHour, curMin, curSec, curMilli);
 
   if not bNotSecond then
+  begin
     dtEnd := DateUtils.EncodeDateTime(curYear, curMonth, curDay, curHour, curMin, 0, 0);
-  if not bNotMinute then
-    dtEnd := DateUtils.EncodeDateTime(curYear, curMonth, curDay, curHour, 0, 0, 0);
-  if not bNotHour then
-    dtEnd := DateUtils.EncodeDateTime(curYear, curMonth, curDay, 0, 0, 0, 0);
-  if not bNotDay then
-    dtEnd := DateUtils.EncodeDateTime(curYear, curMonth, 0, 0, 0, 0, 0);
-  if not bNotMonth then
-    dtEnd := DateUtils.EncodeDateTime(curYear, 0, 0, 0, 0, 0, 0);
+    if not bNotMinute then
+    begin
+      dtEnd := DateUtils.EncodeDateTime(curYear, curMonth, curDay, curHour, 0, 0, 0);
+      if not bNotHour then
+      begin
+        dtEnd := DateUtils.EncodeDateTime(curYear, curMonth, curDay, 0, 0, 0, 0);
+        if not bNotDay then
+        begin
+          dtEnd := DateUtils.EncodeDateTime(curYear, curMonth, 1, 0, 0, 0, 0);
+          if not bNotMonth then
+            dtEnd := DateUtils.EncodeDateTime(curYear, 1, 1, 0, 0, 0, 0);
+        end;
+      end;
+    end;
+  end;
 
   Result := dtEnd;
 end;
