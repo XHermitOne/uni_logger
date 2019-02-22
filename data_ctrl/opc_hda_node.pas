@@ -382,21 +382,18 @@ begin
       //log.DebugMsgFmt('Получение хендла сервера. Результат <%d : %d>', [HRes, iServerH]);
 
       htStartTime.bString := False;
-      // SysUtils.DecodeDate(FValueTimeTick, cur_year, cur_month, cur_day);
       cur_day := ValueTimeTick.DayDelta;
       cur_month := ValueTimeTick.MonthDelta;
       cur_year := ValueTimeTick.YearDelta;
-      //dt := Double(FValueTimeTick);
       cur_hour := ValueTimeTick.HourDelta;
       cur_minute := ValueTimeTick.MinuteDelta;
       cur_sec := ValueTimeTick.SecondDelta;
-      // SysUtils.DecodeTime(ValueTimeTick, cur_hour, cur_minute, cur_sec, cur_msec);
-      dt_time := CalcStartDateTime(dtTime, nil, 0, cur_month<>0, cur_day<>0, cur_hour<>0, cur_minute<>0, cur_sec<>0);
+      dt_time := CalcStartDateTime(dtTime, nil, 0, cur_month <> 0, cur_day <> 0, cur_hour <> 0, cur_minute <> 0, cur_sec <> 0);
       log.DebugMsgFmt('Запрашиваемый диапазон. Базовое время %s. Начальное время %s', [FormatDateTime(obj_proto.DATETIME_TXT_FMT, dtTime),
                                                                                        FormatDateTime(obj_proto.DATETIME_TXT_FMT, dt_time)]);
       htStartTime.ftTime := filefunc.DateTimeToFileTime(dt_time);
       htEndTime.bString := False;
-      dt_time := CalcEndDateTime(dtTime, cur_month<>0, cur_day<>0, cur_hour<>0, cur_minute<>0, cur_sec<>0);
+      dt_time := CalcEndDateTime(dtTime, cur_month <> 0, cur_day <> 0, cur_hour <> 0, cur_minute <> 0, cur_sec <> 0);
       log.DebugMsgFmt('Запрашиваемый диапазон. Базовое время %s. Конечное время %s', [FormatDateTime(obj_proto.DATETIME_TXT_FMT, dtTime),
                                                                                       FormatDateTime(obj_proto.DATETIME_TXT_FMT, dt_time)]);
       htEndTime.ftTime := filefunc.DateTimeToFileTime(dt_time);
@@ -544,7 +541,7 @@ begin
     <EOLESysError не был произведен вызов CoInitialize> }
     HRes := CoInitialize(nil);
     try
-      FHDASyncRead := ComObj.CreateRemoteComObject(sComputer, ServerCLSID) as IOPCHDA_SyncRead;
+      FHDASyncRead := ComObj.CreateRemoteComObject(sComputer, ServerCLSID) As IOPCHDA_SyncRead;
     except
       CoUninitialize;
       FHDASyncRead := nil;
@@ -711,10 +708,10 @@ begin
     end;
   end;
 
-  log.DebugMsgFmt('<%s>', [FormatDateTime(obj_proto.DATETIME_TXT_FMT, dtEnd)]);
+  //log.DebugMsgFmt('<%s>', [FormatDateTime(obj_proto.DATETIME_TXT_FMT, dtEnd)]);
   Result := dtEnd;
   for i := 0 to iCount - 1  do
-    Result := dtTick.IncTo(Result);
+    Result := dtTick.DecTo(Result);
 end;
 
 {

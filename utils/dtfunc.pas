@@ -1,7 +1,7 @@
 {
 Модуль функция работы со временными данными
 
-Версия: 0.0.2.1
+Версия: 0.0.2.2
 }
 
 unit dtfunc;
@@ -18,7 +18,10 @@ uses
 const
   { Шаблон по умолчанию }
   DEFAULT_DT_DELTA_FMT: AnsiString = 'yyyy-mm-dd hh:nn:ss';
+  { Разделитель даты }
   DEFAULT_DATE_DELIM: Char = '-';
+  { Расчетное количество дней в месяце }
+  DEFAULT_DAYS_IN_MONTH: Integer = 30;
 
   whitespace  = [' ',#13,#10];
   hrfactor    = 1/(24);
@@ -46,6 +49,9 @@ type
       FMonth: Integer;
       { Годы }
       FYear: Integer;
+
+      { Расчетное количество дней в месяце }
+      FDaysInMonth: Integer;
 
     public
       constructor Create();
@@ -88,6 +94,7 @@ type
       property DayDelta: Integer read FDay write FDay;
       property MonthDelta: Integer read FMonth write FMonth;
       property YearDelta: Integer read FYear write FYear;
+      property DaysInMonth: Integer read FDaysInMonth write FDaysInMonth;
   end;
 
 
@@ -112,6 +119,7 @@ begin
   FDay := 0;
   FMonth := 0;
   FYear := 0;
+  FDaysInMonth := DEFAULT_DAYS_IN_MONTH;
 end;
 
 destructor TDateTimeDelta.Destroy;
@@ -787,7 +795,7 @@ begin
   if FDay <> 0 then
     Result := DateUtils.IncDay(Result, FDay);
   if FMonth <> 0 then
-    Result := DateUtils.IncDay(Result, FMonth * 30);
+    Result := DateUtils.IncDay(Result, FMonth * FDaysInMonth);
   if FYear <> 0 then
     Result := DateUtils.IncYear(Result, FYear);
 end;
@@ -808,7 +816,7 @@ begin
   if FDay <> 0 then
     Result := DateUtils.IncDay(Result, -FDay);
   if FMonth <> 0 then
-    Result := DateUtils.IncDay(Result, -(FMonth * 30));
+    Result := DateUtils.IncDay(Result, -(FMonth * FDaysInMonth));
   if FYear <> 0 then
     Result := DateUtils.IncYear(Result, -FYear);
 end;

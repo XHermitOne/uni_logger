@@ -121,7 +121,7 @@ uses
   }
   Interfaces,
   Classes, SysUtils, CustApp,
-  //memfunc,
+  memfunc,
   engine, log, settings
   { you can add units after this };
 
@@ -212,20 +212,19 @@ end;
 procedure TUniLoggerSingleApplication.WriteHelp;
 begin
   { add your help code here }
-  //PrintColorTxt('uni_logger_single - Программа регистрации данных из различных источников данных в SQL БД', CYAN_COLOR_TEXT);
-  //PrintColorTxt(Format('Версия: %s', [engine.VERSION]), CYAN_COLOR_TEXT);
-  //PrintColorTxt('Парметры коммандной строки:', CYAN_COLOR_TEXT);
-  //PrintColorTxt(Format('    Помощь: %s --help', [ExeName]), CYAN_COLOR_TEXT);
-  //PrintColorTxt(Format('    Режим вывода сообщений в консоль: %s --debug', [ExeName]), CYAN_COLOR_TEXT);
-  //PrintColorTxt(Format('    Режим вывода сообщений в журнал: %s --log', [ExeName]), CYAN_COLOR_TEXT);
-  //PrintColorTxt(Format('    Файл настройки: %s --settings=имя_файла_настройки.ini', [ExeName]), CYAN_COLOR_TEXT);
+  PrintColorTxt('uni_logger_single - Программа регистрации данных из различных источников данных в SQL БД', CYAN_COLOR_TEXT);
+  PrintColorTxt(Format('Версия: %s', [engine.VERSION]), CYAN_COLOR_TEXT);
+  PrintColorTxt('Парметры коммандной строки:', CYAN_COLOR_TEXT);
+  PrintColorTxt(Format('    Помощь: %s --help', [ExeName]), CYAN_COLOR_TEXT);
+  PrintColorTxt(Format('    Режим вывода сообщений в консоль: %s --debug', [ExeName]), CYAN_COLOR_TEXT);
+  PrintColorTxt(Format('    Режим вывода сообщений в журнал: %s --log', [ExeName]), CYAN_COLOR_TEXT);
+  PrintColorTxt(Format('    Файл настройки: %s --settings=имя_файла_настройки.ini', [ExeName]), CYAN_COLOR_TEXT);
 end;
 
 var
   Application: TUniLoggerSingleApplication;
 begin
-  //if log.DEBUG_MODE then
-  //  memfunc.InitStatusMemory();
+  memfunc.InitStatusMemory();
 
   Application := TUniLoggerSingleApplication.Create(nil);
   Application.Title := 'UniLogger single mode';
@@ -238,7 +237,7 @@ begin
   //   SetHeapTraceOutput(ChangeFileExt(ParamStr(0), '.mem'));
   //{$ifend}
 
-  //if log.DEBUG_MODE then
-  //  memfunc.PrintLostMemory();
+  if log.DEBUG_MODE then
+    memfunc.PrintLostMemory();
 end.
 
