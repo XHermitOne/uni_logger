@@ -145,7 +145,7 @@ implementation
 
 uses
   LCLIntf, // Для вычисления времени выполнения
-  log, filefunc;
+  log, filefunc, dtfunc;
 
 
 { Получить текст ошибки OPC сервера }
@@ -343,11 +343,10 @@ var
   tag_name, address, value, dt_str: AnsiString;
   dt_time: TDateTime;
   //value_variant: Variant;
-  dt: Double;
 
   new_state: TStrDictionary;
 
-  cur_year, cur_month, cur_day, cur_hour, cur_minute, cur_sec, cur_msec: Word;
+  cur_year, cur_month, cur_day, cur_hour, cur_minute, cur_sec: Word;
 
 begin
   if dtTime = 0 then
@@ -379,12 +378,15 @@ begin
       //log.DebugMsgFmt('Получение хендла сервера. Результат <%d : %d>', [HRes, iServerH]);
 
       htStartTime.bString := False;
-      SysUtils.DecodeDate(FValueTimeTick, cur_year, cur_month, cur_day);
-      cur_day := DateUtils.DayOfTheMonth(FValueTimeTick);
-      cur_month := DateUtils.MonthOf(FValueTimeTick);
-      //cur_year := DateUtils.YearOf(FValueTimeTick);
-      dt := Double(FValueTimeTick);
-      SysUtils.DecodeTime(ValueTimeTick, cur_hour, cur_minute, cur_sec, cur_msec);
+      // SysUtils.DecodeDate(FValueTimeTick, cur_year, cur_month, cur_day);
+      cur_day := dtfunc.GetDayDelta(FValueTimeTick);
+      cur_month := dtfunc.GetMonthDelta(FValueTimeTick);
+      cur_year := dtfunc.GetYearDelta(FValueTimeTick);
+      //dt := Double(FValueTimeTick);
+      cur_hour := dtfunc.GetHourDelta(FValueTimeTick);
+      cur_minute := dtfunc.GetHourDelta(FValueTimeTick);
+      cur_sec := dtfunc.GetHourDelta(FValueTimeTick);
+      // SysUtils.DecodeTime(ValueTimeTick, cur_hour, cur_minute, cur_sec, cur_msec);
       dt_time := CalcStartDateTime(dtTime, 0, 0, cur_month<>0, cur_day<>0, cur_hour<>0, cur_minute<>0, cur_sec<>0);
       log.DebugMsgFmt('Запрашиваемый диапазон. Базовое время %s. Начальное время %s', [FormatDateTime(obj_proto.DATETIME_TXT_FMT, dtTime),
                                                                                        FormatDateTime(obj_proto.DATETIME_TXT_FMT, dt_time)]);
