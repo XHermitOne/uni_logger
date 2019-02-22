@@ -1,7 +1,7 @@
 {
 Модуль узла OPC HDA сервера
 
-Версия: 0.0.1.3
+Версия: 0.0.2.1
 }
 
 unit opc_hda_node;
@@ -16,7 +16,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, DateUtils, Variants, VarUtils,
   OPCHDA, OPCtypes, OPCError,
-  obj_proto, dictionary, strfunc;
+  obj_proto, dictionary, strfunc, dtfunc;
 
 const
   OPC_HDA_NODE_TYPE: AnsiString = 'OPC_HDA';
@@ -59,7 +59,7 @@ type
     Это шаг регистрации временных данных в контроллере.
     Задется в настройках в формате <yyyy-mm-dd hh:nn:ss>
     }
-    FValueTimeTick: TDateTime;
+    FValueTimeTick: dtfunc.TDateTimeDelta;
 
     { Получить хендл сервера  }
     function GetItemServerHandle(aServerInterface: IUnknown; sItem: String; iClient: DWORD; var iServer: DWORD): HRESULT;
@@ -77,7 +77,7 @@ type
     @param bNotSecond: С точностью до секунд?
     @return Вычисленное временное значение начала диапазона
     }
-    function CalcStartDateTime(dtEnd: TDateTime=0; dtTick: TDateTime=0; iCount: Integer=0;
+    function CalcStartDateTime(dtEnd: TDateTime=0; dtTick: dtfunc.TDateTimeDelta=nil; iCount: Integer=0;
                                bNotMonth: Boolean=True; bNotDay: Boolean=True; bNotHour: Boolean=True; bNotMinute: Boolean=True; bNotSecond: Boolean=True): TDateTime;
     {
     Коррекция конечного времени запрашиваемого диапазона.
@@ -134,7 +134,7 @@ type
 
   published
     property ValueTimeCount: Integer read FValueTimeCount write FValueTimeCount;
-    property ValueTimeTick: TDateTime read FValueTimeTick write FValueTimeTick;
+    property ValueTimeTick: dtfunc.TDateTimeDelta read FValueTimeTick write FValueTimeTick;
 
 end;
 
@@ -145,7 +145,7 @@ implementation
 
 uses
   LCLIntf, // Для вычисления времени выполнения
-  log, filefunc, dtfunc;
+  log, filefunc;
 
 
 { Получить текст ошибки OPC сервера }
@@ -276,11 +276,15 @@ begin
   { Внутренние переменные для работы с OPC HDA интерфейсами }
   FHDASyncRead := nil;
   iServerH := 0;
+
+  FValueTimeTick := dtfunc.TDateTimeDelta.Create;
 end;
 
 destructor TICOPCHDANode.Destroy;
 begin
   inherited Destroy;
+
+  FValueTimeTick.Destroy;
 
   Disconnect();
 end;
@@ -379,15 +383,15 @@ begin
 
       htStartTime.bString := False;
       // SysUtils.DecodeDate(FValueTimeTick, cur_year, cur_month, cur_day);
-      cur_day := dtfunc.GetDayDelta(FValueTimeTick);
-      cur_month := dtfunc.GetMonthDelta(FValueTimeTick);
-      cur_year := dtfunc.GetYearDelta(FValueTimeTick);
+      cur_day := ValueTimeTick.DayDelta;
+      cur_month := ValueTimeTick.MonthDelta;
+      cur_year := ValueTimeTick.YearDelta;
       //dt := Double(FValueTimeTick);
-      cur_hour := dtfunc.GetHourDelta(FValueTimeTick);
-      cur_minute := dtfunc.GetMinuteDelta(FValueTimeTick);
-      cur_sec := dtfunc.GetSecondDelta(FValueTimeTick);
+      cur_hour := ValueTimeTick.HourDelta;
+      cur_minute := ValueTimeTick.MinuteDelta;
+      cur_sec := ValueTimeTick.SecondDelta;
       // SysUtils.DecodeTime(ValueTimeTick, cur_hour, cur_minute, cur_sec, cur_msec);
-      dt_time := CalcStartDateTime(dtTime, 0, 0, cur_month<>0, cur_day<>0, cur_hour<>0, cur_minute<>0, cur_sec<>0);
+      dt_time := CalcStartDateTime(dtTime, nil, 0, cur_month<>0, cur_day<>0, cur_hour<>0, cur_minute<>0, cur_sec<>0);
       log.DebugMsgFmt('Запрашиваемый диапазон. Базовое время %s. Начальное время %s', [FormatDateTime(obj_proto.DATETIME_TXT_FMT, dtTime),
                                                                                        FormatDateTime(obj_proto.DATETIME_TXT_FMT, dt_time)]);
       htStartTime.ftTime := filefunc.DateTimeToFileTime(dt_time);
@@ -500,9 +504,10 @@ begin
   begin
     value := Properties.GetStrValue('value_time_tick');
     log.DebugMsgFmt('Время одного тика регистрации данных в буфере <%s>', [value]);
-    ValueTimeTick := DateUtils.ScanDateTime(obj_proto.DATETIME_TXT_FMT, value);
+    // ValueTimeTick := DateUtils.ScanDateTime(obj_proto.DATETIME_TXT_FMT, value);
+    ValueTimeTick.Scan(obj_proto.DATETIME_TXT_FMT, value);
     log.DebugMsgFmt('Время одного тика регистрации данных в буфере <%s>. Временное значение <%s>', [value,
-                                                                                                    FormatDateTime(obj_proto.DATETIME_TXT_FMT, ValueTimeTick)]);
+                                                                                                    ValueTimeTick.ToFormat(obj_proto.DATETIME_TXT_FMT)]);
   end;
 end;
 
@@ -669,23 +674,23 @@ end;
 @param bNotSecond: С точностью до секунд?
 @return Вычисленное временное значение начала диапазона
 }
-function TICOPCHDANode.CalcStartDateTime(dtEnd: TDateTime; dtTick: TDateTime; iCount: Integer;
+function TICOPCHDANode.CalcStartDateTime(dtEnd: TDateTime; dtTick: dtfunc.TDateTimeDelta; iCount: Integer;
                                          bNotMonth: Boolean; bNotDay: Boolean; bNotHour: Boolean; bNotMinute: Boolean; bNotSecond: Boolean): TDateTime;
 var
- curYear, curMonth, curDay : Word;
- curHour, curMin, curSec, curMilli : Word;
- i: Integer;
+  curYear, curMonth, curDay : Word;
+  curHour, curMin, curSec, curMilli : Word;
+  i: Integer;
 begin
   if dtEnd = 0 then
     dtEnd := Now();
 
-  if dtTick = 0 then
+  if dtTick = nil then
     dtTick := ValueTimeTick;
   if iCount = 0 then
     iCount := ValueTimeCount;
 
   DateUtils.DecodeDateTime(dtEnd, curYear, curMonth, curDay,
-                 curHour, curMin, curSec, curMilli);
+                           curHour, curMin, curSec, curMilli);
 
   if not bNotSecond then
   begin
@@ -708,8 +713,8 @@ begin
 
   log.DebugMsgFmt('<%s>', [FormatDateTime(obj_proto.DATETIME_TXT_FMT, dtEnd)]);
   Result := dtEnd;
-  for i := 0 to iCount -1  do
-    Result := Result - dtTick;
+  for i := 0 to iCount - 1  do
+    Result := dtTick.IncTo(Result);
 end;
 
 {
@@ -726,8 +731,8 @@ end;
 function TICOPCHDANode.CalcEndDateTime(dtEnd: TDateTime;
                                        bNotMonth: Boolean; bNotDay: Boolean; bNotHour: Boolean; bNotMinute: Boolean; bNotSecond: Boolean): TDateTime;
 var
- curYear, curMonth, curDay : Word;
- curHour, curMin, curSec, curMilli : Word;
+  curYear, curMonth, curDay : Word;
+  curHour, curMin, curSec, curMilli : Word;
 begin
   if dtEnd = 0 then
     dtEnd := Now();
