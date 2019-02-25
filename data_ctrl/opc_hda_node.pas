@@ -350,8 +350,7 @@ var
 
   new_state: TStrDictionary;
 
-  cur_year, cur_month, cur_day, cur_hour, cur_minute, cur_sec: Word;
-
+  cur_month, cur_day, cur_hour, cur_minute, cur_sec: Word;
 begin
   if dtTime = 0 then
     dtTime := Now();
@@ -363,8 +362,7 @@ begin
   log.DebugMsgFmt('Читаемых тегов <%d>', [tags.Count]);
 
   // Перед началом чтения необходимо очистить буфер
-  if not TimeState.IsEmpty() then
-    TimeState.Clear;
+  ClearTimeState();
 
   Connect();
   try
@@ -381,21 +379,23 @@ begin
       end;
       //log.DebugMsgFmt('Получение хендла сервера. Результат <%d : %d>', [HRes, iServerH]);
 
-      htStartTime.bString := False;
       cur_day := ValueTimeTick.DayDelta;
       cur_month := ValueTimeTick.MonthDelta;
-      cur_year := ValueTimeTick.YearDelta;
+      // cur_year := ValueTimeTick.YearDelta;
       cur_hour := ValueTimeTick.HourDelta;
       cur_minute := ValueTimeTick.MinuteDelta;
       cur_sec := ValueTimeTick.SecondDelta;
+
       dt_time := CalcStartDateTime(dtTime, nil, 0, cur_month <> 0, cur_day <> 0, cur_hour <> 0, cur_minute <> 0, cur_sec <> 0);
       log.DebugMsgFmt('Запрашиваемый диапазон. Базовое время %s. Начальное время %s', [FormatDateTime(obj_proto.DATETIME_TXT_FMT, dtTime),
                                                                                        FormatDateTime(obj_proto.DATETIME_TXT_FMT, dt_time)]);
+      htStartTime.bString := False;
       htStartTime.ftTime := filefunc.DateTimeToFileTime(dt_time);
-      htEndTime.bString := False;
+
       dt_time := CalcEndDateTime(dtTime, cur_month <> 0, cur_day <> 0, cur_hour <> 0, cur_minute <> 0, cur_sec <> 0);
       log.DebugMsgFmt('Запрашиваемый диапазон. Базовое время %s. Конечное время %s', [FormatDateTime(obj_proto.DATETIME_TXT_FMT, dtTime),
                                                                                       FormatDateTime(obj_proto.DATETIME_TXT_FMT, dt_time)]);
+      htEndTime.bString := False;
       htEndTime.ftTime := filefunc.DateTimeToFileTime(dt_time);
 
       arrServer[0] := iServerH;
@@ -405,14 +405,12 @@ begin
       if FHDASyncRead = nil then
         log.WarningMsg('Не определен интерфейс для чтения OPC HDA сервера');
       try
-        HRes := FHDASyncRead.ReadRaw(htStartTime, htEndTime,
-                                     FValueTimeCount, False, 1,
-                                     phServer, ppItemValues, ppErrors);
+        //Sleep(2000);
+        HRes := FHDASyncRead.ReadRaw(htStartTime, htEndTime, FValueTimeCount, False, 1, phServer, ppItemValues, ppErrors);
       except
         log.FatalMsgFmt('Ошибка чтения ReadRaw <%s>', [address]);
         break;
       end;
-      // log.DebugMsgFmt('Результат чтения ReadRaw <%d>', [HRes]);
 
       if HRes <> 0 then
       begin
@@ -476,7 +474,7 @@ begin
   //TimeState.PrintContent();
 
   CoTaskMemFree(ppItemValues);
-  CoTaskMemFree(phServer);
+  //CoTaskMemFree(phServer);
   CoTaskMemFree(ppErrors);
 
   Disconnect();
@@ -541,7 +539,7 @@ begin
     <EOLESysError не был произведен вызов CoInitialize> }
     HRes := CoInitialize(nil);
     try
-      FHDASyncRead := ComObj.CreateRemoteComObject(sComputer, ServerCLSID) As IOPCHDA_SyncRead;
+      FHDASyncRead := ComObj.CreateRemoteComObject(WideString(sComputer), ServerCLSID) As IOPCHDA_SyncRead;
     except
       CoUninitialize;
       FHDASyncRead := nil;
@@ -581,7 +579,7 @@ function TICOPCHDANode.GetItemServerHandle(aServerInterface: IUnknown; sItem: St
 var
  sItemW: WideString;
  PsItemW: POleStr;
- arrPsItemW: Array [0..0] Of pointer;
+ arrPsItemW: Array [0..0] Of Pointer;
  arrClient: Array [0..0] Of DWORD;
  phClient, pphServer: POPCHANDLEARRAY;
  Errors: PResultList;
@@ -599,7 +597,7 @@ begin
 
  if ServerInterface <> nil then
  begin
-   sItemW := sItem;
+   sItemW := WideString(sItem);
    PsItemW := POleStr(sItemW);
    arrPsItemW[0] := PsItemW;
    arrClient[0] := iClient;
@@ -623,8 +621,8 @@ begin
        log.ErrorMsg(GetOPCErrorMsg(Result));
      end;
 
-     CoTaskMemFree(Errors);
      iServerH := pphServer^[0];
+     CoTaskMemFree(Errors);
      CoTaskMemFree(pphServer);
    end;
  end

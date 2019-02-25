@@ -224,7 +224,7 @@ end;
 var
   Application: TUniLoggerSingleApplication;
 begin
-  memfunc.InitStatusMemory();
+  //memfunc.InitStatusMemory();
 
   Application := TUniLoggerSingleApplication.Create(nil);
   Application.Title := 'UniLogger single mode';
@@ -237,7 +237,7 @@ begin
   //   SetHeapTraceOutput(ChangeFileExt(ParamStr(0), '.mem'));
   //{$ifend}
 
-  if log.DEBUG_MODE then
-    memfunc.PrintLostMemory();
+  //if log.DEBUG_MODE then
+  //  memfunc.PrintLostMemory();
 end.
 

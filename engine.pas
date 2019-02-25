@@ -96,6 +96,17 @@ type
       function CreateDestinations(ObjectNames: TStringList=nil): TList;
 
       {
+      Удаление объектов-источников данных
+      @return True/False
+      }
+      function DestroySources(): Boolean;
+      {
+      Удаление объектов-источников данных
+      @return True/False
+      }
+      function DestroyDestinations(): Boolean;
+
+      {
       Получить состояние тега источника данных в виде строки
       @param aSourceName Наименование источника данных
       @param aTag Наименование тега-поля источника данных
@@ -185,7 +196,7 @@ var
 implementation
 
 uses
-  log, reg_data_ctrl, strfunc;
+  log, reg_data_ctrl, strfunc, memfunc;
 
 constructor TICLoggerProto.Create(TheOwner: TComponent);
 begin
@@ -210,8 +221,8 @@ end;
 
 procedure TICLoggerProto.Free;
 begin
-  FDestinations.Free;
-  FSources.Free;
+  DestroySources();
+  DestroyDestinations();
   FSettingsManager.Free;
 
   Free;
@@ -422,6 +433,36 @@ begin
   Result := ctrl_objects;
 end;
 
+{
+Удаление объектов-источников данных
+@return True/False
+}
+function TICLoggerProto.DestroySources(): Boolean;
+begin
+  Result := False;
+  if FSources <> nil then
+  begin
+    FSources.Free;
+    FSources := nil;
+    Result := True;
+  end;
+end;
+
+{
+Удаление объектов-источников данных
+@return True/False
+}
+function TICLoggerProto.DestroyDestinations(): Boolean;
+begin
+  Result := False;
+  if FDestinations <> nil then
+  begin
+    FDestinations.Free;
+    FDestinations := nil;
+    Result := True;
+  end;
+end;
+
 { Получить состояние тега источника данных в виде строки }
 function TICLoggerProto.GetSourceStateAsString(aSourceName, aTag: AnsiString): AnsiString;
 var
@@ -567,6 +608,10 @@ end;
 procedure TICLogger.Stop;
 begin
   FRunning := False;
+  // Удаляем объекты
+  DestroySources();
+  DestroyDestinations();
+
   log.InfoMsg('Останов');
 end;
 
@@ -583,6 +628,7 @@ var
   destination: TICObjectProto;
   keys: TStringList;
   key: AnsiString;
+  values: TStringList;
 begin
   log.InfoMsg('Начало блока чтения/записи');
 
@@ -596,8 +642,12 @@ begin
       log.DebugMsgFmt('Чтение данных из источника <%s>', [key]);
       source := FSources.GetByName(key) As TICObjectProto;
       log.DebugMsg('Чтение всех данных');
-      source.ReadAll();
+
+      values := source.ReadAll();
+      values.Destroy;
+
     end;
+    keys.Destroy();
   except
     log.FatalMsg('Ошибка чтения из источников данных');
   end;
@@ -612,8 +662,26 @@ begin
       destination := FDestinations.GetByName(key) As TICObjectProto;
       destination.WriteAll();
     end;
+    keys.Destroy();
   except
     log.FatalMsg('Ошибка записи данных в объекты-получатели');
+  end;
+
+  // Очистка состояний источников данных
+  try
+    keys := FSources.GetKeys();
+    for i := 0 to keys.Count - 1 do
+    begin
+      key := FSources.GetKey(i);
+      log.DebugMsgFmt('Очистка состояний источника данных <%s>', [key]);
+      source := FSources.GetByName(key) As TICObjectProto;
+      source.ClearTimeState();
+      source.ClearState();
+      source.ClearReadValues();
+    end;
+    keys.Destroy();
+  except
+    log.FatalMsg('Ошибка чтения из источников данных');
   end;
 
   log.InfoMsg('Окончание блока чтения/записи');
@@ -635,7 +703,14 @@ begin
   if TEST_SERVICE_MODE then
      Test
   else
-     WorkTick;
+  begin
+    memfunc.InitStatusMemory();
+
+    WorkTick;
+
+    if log.DEBUG_MODE then
+      memfunc.PrintLostMemory();
+  end;
 
   // Сбросить флаг запущенного тика
   FIsTick := False;

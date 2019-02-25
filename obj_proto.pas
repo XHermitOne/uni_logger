@@ -52,6 +52,10 @@ type
     destructor Destroy; override;
     //procedure Free;
 
+    function ClearReadValues(): Boolean;
+    function ClearState(): Boolean;
+    function ClearTimeState(): Boolean;
+
     { Получить наименование объекта }
     function GetName(): AnsiString;
     { Установить наименование объекта }
@@ -200,6 +204,51 @@ end;
 //begin
 //  inherited Free;
 //end;
+
+function TICObjectProto.ClearReadValues(): Boolean;
+begin
+  Result := False;
+  if FReadValues.Count > 0 then
+  begin
+    FReadValues.Clear;
+    Result := True;
+  end;
+end;
+
+function TICObjectProto.ClearState(): Boolean;
+begin
+  Result := False;
+  if not FState.IsEmpty() then
+  begin
+    FState.Clear;
+    Result := True;
+  end;
+end;
+
+function TICObjectProto.ClearTimeState(): Boolean;
+var
+  i: Integer;
+  key: AnsiString;
+  sub_obj: TObject;
+begin
+  Result := False;
+  if not FTimeStateBuffer.IsEmpty() then
+  begin
+    for i := 0 to FTimeStateBuffer.Count -1 do
+    begin
+      key := FTimeStateBuffer.GetKey(i);
+      sub_obj := FTimeStateBuffer.GetByName(key);
+      if sub_obj.ClassName = 'TStrDictionary' then
+      begin
+        (sub_obj As TStrDictionary).Clear;
+        sub_obj.Free;
+      end;
+    end;
+    FTimeStateBuffer.Clear;
+    Result := True;
+  end;
+end;
+
 
 function TICObjectProto.GetName(): AnsiString;
 begin
