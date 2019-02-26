@@ -399,17 +399,17 @@ begin
       htEndTime.ftTime := filefunc.DateTimeToFileTime(dt_time);
 
       arrServer[0] := iServerH;
-      phServer := @arrServer;
+      phServer := Addr(arrServer);
 
       //log.DebugMsg('Начало чтения ReadRaw');
       if FHDASyncRead = nil then
         log.WarningMsg('Не определен интерфейс для чтения OPC HDA сервера');
       try
-        //Sleep(2000);
         HRes := FHDASyncRead.ReadRaw(htStartTime, htEndTime, FValueTimeCount, False, 1, phServer, ppItemValues, ppErrors);
       except
         log.FatalMsgFmt('Ошибка чтения ReadRaw <%s>', [address]);
         break;
+        //continue;
       end;
 
       if HRes <> 0 then
