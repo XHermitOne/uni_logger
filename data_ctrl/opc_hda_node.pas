@@ -61,7 +61,13 @@ type
     }
     FValueTimeTick: dtfunc.TDateTimeDelta;
 
-    { Получить хендл сервера  }
+    {
+    Получить хендлы идентификаторов интересуещенго клиента элемента с сервера
+    @param aServerInterface Интерфейс OPC сервера
+    @param sItem Адрес запрашиваемого сервера
+    @param iClient Идентификатор клиента
+    @param iServer Идентификатор сервера
+    }
     function GetItemServerHandle(aServerInterface: IUnknown; sItem: String; iClient: DWORD; var iServer: DWORD): HRESULT;
 
     {
@@ -577,14 +583,18 @@ end;
 { Получить хендл сервера  }
 function TICOPCHDANode.GetItemServerHandle(aServerInterface: IUnknown; sItem: String; iClient: DWORD; var iServer: DWORD): HRESULT;
 var
- sItemW: WideString;
- PsItemW: POleStr;
- arrPsItemW: Array [0..0] Of Pointer;
- arrClient: Array [0..0] Of DWORD;
- phClient, pphServer: POPCHANDLEARRAY;
- Errors: PResultList;
- ServerInterface: IOPCHDA_Server;
- HRes: HRESULT;
+  // ItemId элемента
+  sItemW: WideString;
+  PsItemW: POleStr;
+  arrPsItemW: Array [0..0] Of Pointer;
+
+  arrClient: Array [0..0] Of DWORD;
+  phClient: POPCHANDLEARRAY;
+  // Сюда возвращается описатель
+  pphServer: POPCHANDLEARRAY;
+  Errors: PResultList;
+  ServerInterface: IOPCHDA_Server;
+  HRes: HRESULT;
 
 begin
  Result := E_FAIL;
@@ -597,9 +607,11 @@ begin
 
  if ServerInterface <> nil then
  begin
+   // Определение ItemId - адреса элемента
    sItemW := WideString(sItem);
    PsItemW := POleStr(sItemW);
    arrPsItemW[0] := PsItemW;
+   // Идентификатор клиента
    arrClient[0] := iClient;
    phClient := @arrClient;
 
