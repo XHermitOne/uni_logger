@@ -1,7 +1,7 @@
 {
 Модуль узла OPC HDA сервера
 
-Версия: 0.0.2.1
+Версия: 0.0.2.2
 }
 
 unit opc_hda_node;
@@ -346,7 +346,8 @@ var
   pvDataValues: POleVariantArray;
   pftTimeStamps: PFileTimeArray;
   //haAggregate: DWORD;
-  //dwCount: DWORD;
+  // Количество прочитанных значений
+  dwCount: DWORD;
 
   i, i_tag: Integer;
   tags: TStrDictionary;
@@ -412,6 +413,7 @@ begin
         log.WarningMsg('Не определен интерфейс для чтения OPC HDA сервера');
       try
         HRes := FHDASyncRead.ReadRaw(htStartTime, htEndTime, FValueTimeCount, False, 1, phServer, ppItemValues, ppErrors);
+        CoTaskMemFree(ppErrors);
       except
         log.FatalMsgFmt('Ошибка чтения ReadRaw <%s>', [address]);
         break;
@@ -420,7 +422,7 @@ begin
 
       if HRes <> 0 then
       begin
-        log.ErrorMsgFmt('Ошибка чтения данных из OPC HDA сервера по адресу <%s>:', [address]);
+        log.ErrorMsgFmt('Ошибка синхронного чтения данных из OPC HDA сервера по адресу <%s>:', [address]);
         log.ErrorMsg(GetOPCErrorMsg(HRes));
         break;
       end;
@@ -430,13 +432,16 @@ begin
         break;
       end;
 
+      // Т.к. был считан 1 элемент, ppItemValues всегда с индексом 0
       ppItemValuesItem := ppItemValues^[0];
       pvDataValues := ppItemValuesItem.pvDataValues;
       pftTimeStamps := ppItemValuesItem.pftTimeStamps;
       //haAggregate := ppItemValuesItem.haAggregate;
-      //dwCount := ppItemValuesItem.dwCount;
+      // Количество прочитанных значений
+      dwCount := ppItemValuesItem.dwCount;
 
-      for i := 0 to ValueTimeCount - 1 do
+      //for i := 0 to ValueTimeCount - 1 do
+      for i := 0 to dwCount - 1 do
       begin
         try
           // value_variant := pvDataValues^[i];
@@ -469,7 +474,7 @@ begin
         // то можно потом распарсить
         Result.Add(Format('%s|%s|%s', [tag_name, dt_str, value]));
       end;
-      // Сразу очищаем память
+      // Сразу очищаем память, выделенную сервером
       CoTaskMemFree(ppItemValuesItem.pdwQualities);
       CoTaskMemFree(ppItemValuesItem.pftTimeStamps);
       CoTaskMemFree(ppItemValuesItem.pvDataValues);
@@ -479,9 +484,8 @@ begin
   end;
   //TimeState.PrintContent();
 
-  CoTaskMemFree(ppItemValues);
+  //CoTaskMemFree(ppItemValues);
   //CoTaskMemFree(phServer);
-  CoTaskMemFree(ppErrors);
 
   Disconnect();
   tags.Free();
@@ -617,6 +621,7 @@ begin
 
    //log.DebugMsgFmt('Получение хендела OPC HDA сервера по адресу <%s>', [sItem]);
    try
+     // Считываем 1 элемент-------------------V
      Result := ServerInterface.GetItemHandles(1, @arrPsItemW, phClient, pphServer, Errors);
    except
      log.FatalMsg('Ошибка получения хендела OPC HDA сервера');
@@ -629,14 +634,17 @@ begin
 
      if Result <> 0 then
      begin
-       log.ErrorMsg('Ошибка получение хендла OPC HDA сервера:');
+       log.ErrorMsg('Ошибка получение описателя элемента OPC HDA сервера:');
        log.ErrorMsg(GetOPCErrorMsg(Result));
      end;
 
      iServerH := pphServer^[0];
-     CoTaskMemFree(Errors);
-     CoTaskMemFree(pphServer);
+     // Возможно причина Access violation в этом блоке
+     // vvvvvvvvvvvvvvvvvvvvvvvvv
+     // CoTaskMemFree(pphServer);
+     // ^^^^^^^^^^^^^^^^^^^^^^^^^
    end;
+   CoTaskMemFree(Errors);
  end
  else
    log.ErrorMsg('Не определен интерфейс OPC HDA сервера');
