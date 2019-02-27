@@ -123,8 +123,8 @@
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
         <IsPartOfProject Value="True"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="583"/>
-        <CursorPos X="89" Y="587"/>
+        <TopLine Value="399"/>
+        <CursorPos Y="415"/>
         <UsageCount Value="135"/>
         <Loaded Value="True"/>
       </Unit13>
@@ -397,137 +397,138 @@
         <UsageCount Value="10"/>
       </Unit45>
     </Units>
-    <JumpHistory Count="28" HistoryIndex="27">
+    <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="401" Column="50" TopLine="323"/>
+        <Caret Line="341" Column="5" TopLine="329"/>
       </Position1>
       <Position2>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="402" Column="34" TopLine="384"/>
+        <Caret Line="340" Column="3" TopLine="328"/>
       </Position2>
       <Position3>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="341" Column="5" TopLine="329"/>
+        <Caret Line="339" Column="46" TopLine="337"/>
       </Position3>
       <Position4>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="340" Column="3" TopLine="328"/>
+        <Caret Line="338" Column="32" TopLine="334"/>
       </Position4>
       <Position5>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="339" Column="46" TopLine="337"/>
+        <Caret Line="409" TopLine="383"/>
       </Position5>
       <Position6>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="338" Column="32" TopLine="334"/>
+        <Caret Line="365" TopLine="348"/>
       </Position6>
       <Position7>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="409" TopLine="383"/>
+        <Caret Line="408" Column="49" TopLine="344"/>
       </Position7>
       <Position8>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="365" TopLine="348"/>
+        <Caret Line="365" TopLine="344"/>
       </Position8>
       <Position9>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="408" Column="49" TopLine="344"/>
+        <Caret Line="367" TopLine="344"/>
       </Position9>
       <Position10>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="365" TopLine="344"/>
+        <Caret Line="368" TopLine="344"/>
       </Position10>
       <Position11>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="367" TopLine="344"/>
+        <Caret Line="369" TopLine="344"/>
       </Position11>
       <Position12>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="368" TopLine="344"/>
+        <Caret Line="371" TopLine="344"/>
       </Position12>
       <Position13>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="369" TopLine="344"/>
+        <Caret Line="372" TopLine="344"/>
       </Position13>
       <Position14>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="371" TopLine="344"/>
+        <Caret Line="374" TopLine="346"/>
       </Position14>
       <Position15>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="372" TopLine="344"/>
+        <Caret Line="375" TopLine="347"/>
       </Position15>
       <Position16>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="374" TopLine="346"/>
+        <Caret Line="415" Column="49" TopLine="392"/>
       </Position16>
       <Position17>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="375" TopLine="347"/>
+        <Caret Line="416" Column="35" TopLine="392"/>
       </Position17>
       <Position18>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="415" Column="49" TopLine="392"/>
+        <Caret Line="414" Column="80" TopLine="392"/>
       </Position18>
       <Position19>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="416" Column="35" TopLine="392"/>
+        <Caret Line="409" Column="63" TopLine="392"/>
       </Position19>
       <Position20>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="414" Column="80" TopLine="392"/>
+        <Caret Line="363" Column="91" TopLine="348"/>
       </Position20>
       <Position21>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="409" Column="63" TopLine="392"/>
+        <Caret Line="406" Column="122" TopLine="392"/>
       </Position21>
       <Position22>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="363" Column="91" TopLine="348"/>
+        <Caret Line="404" Column="101" TopLine="392"/>
       </Position22>
       <Position23>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="406" Column="122" TopLine="392"/>
+        <Caret Line="408" TopLine="392"/>
       </Position23>
       <Position24>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="404" Column="101" TopLine="392"/>
+        <Caret Line="368" Column="95" TopLine="348"/>
       </Position24>
       <Position25>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="408" TopLine="392"/>
+        <Caret Line="336" Column="18" TopLine="327"/>
       </Position25>
       <Position26>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="368" Column="95" TopLine="348"/>
+        <Caret Line="629" Column="60" TopLine="583"/>
       </Position26>
       <Position27>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="336" Column="18" TopLine="327"/>
+        <Caret Line="371" TopLine="362"/>
       </Position27>
       <Position28>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
-        <Caret Line="629" Column="60" TopLine="583"/>
+        <Caret Line="421" Column="42" TopLine="398"/>
       </Position28>
+      <Position29>
+        <Filename Value="data_ctrl\opc_hda_node.pas"/>
+        <Caret Line="422" Column="52" TopLine="398"/>
+      </Position29>
+      <Position30>
+        <Filename Value="data_ctrl\opc_hda_node.pas"/>
+        <Caret Line="419" Column="56" TopLine="398"/>
+      </Position30>
     </JumpHistory>
   </ProjectSession>
   <Debugging>
-    <BreakPoints Count="2">
+    <BreakPoints Count="1">
       <Item1>
         <Kind Value="bpkSource"/>
         <WatchScope Value="wpsLocal"/>
         <WatchKind Value="wpkWrite"/>
         <Source Value="data_ctrl\opc_hda_node.pas"/>
-        <Line Value="371"/>
+        <Line Value="415"/>
       </Item1>
-      <Item2>
-        <Kind Value="bpkSource"/>
-        <WatchScope Value="wpsLocal"/>
-        <WatchKind Value="wpkWrite"/>
-        <Source Value="data_ctrl\opc_hda_node.pas"/>
-        <Line Value="414"/>
-      </Item2>
     </BreakPoints>
   </Debugging>
 </CONFIG>
