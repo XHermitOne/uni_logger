@@ -1,7 +1,7 @@
 {
 Модуль узла OPC HDA сервера
 
-Версия: 0.0.2.2
+Версия: 0.0.3.2
 }
 
 unit opc_hda_node;
@@ -45,6 +45,7 @@ type
     FComputerName: AnsiString;
 
     { Внутренние переменные для работы с OPC HDA интерфейсами }
+    FHDAServer: IOPCHDA_Server;
     FHDASyncRead: IOPCHDA_SyncRead;
     iServerH: DWORD;
 
@@ -144,8 +145,14 @@ type
 
 end;
 
+  //ONE_OPCHDA_ITEMARRAY = array[0..0] of OPCHDA_ITEM;
+  //ONE_POPCHDA_ITEMARRAY = ^OPCHDA_ITEMARRAY;
+
 { Получить текст ошибки OPC сервера }
 function GetOPCErrorMsg(aHResult: HRESULT): AnsiString;
+
+{ Вывести ошибку по HRESULT }
+procedure PrintIfErrorMsg(aHResult: HRESULT; sMsg: AnsiString);
 
 implementation
 
@@ -269,8 +276,19 @@ begin
     Result := '  OPC Security: Server requires higher impersonation level to access secured data.'
   else if aHResult = OPCError.OPC_S_LOW_AUTHN_LEVEL then
     Result := '  OPC Security: Server expected higher level of package privacy.'
+  else if aHResult = HResult($80004002) then
+    Result := '  Интерфейс не поддерживается.'
   else
-    Result := '  Не известная ошибка OPC';
+    Result := Format('  Не известная ошибка [%x]', [aHResult]);
+end;
+
+procedure PrintIfErrorMsg(aHResult: HRESULT; sMsg: AnsiString);
+begin
+  if aHResult <> 0 then
+  begin
+    log.ErrorMsg(sMsg);
+    log.ErrorMsg(GetOPCErrorMsg(aHResult));
+  end;
 end;
 
 constructor TICOPCHDANode.Create;
@@ -340,6 +358,7 @@ var
   arrServer: Array [0..0] of DWORD;
   phServer: POPCHANDLEARRAY;
   ppErrors: PResultList;
+  iClient: DWORD = 1;
 
   ppItemValues: POPCHDA_ITEMARRAY;
   ppItemValuesItem: OPCHDA_ITEM;
@@ -379,7 +398,9 @@ begin
       address := tags.GetStrValue(tag_name);
       //log.DebugMsgFmt('Чтение данных тега <%s> по адресу <%s>', [tag_name, address]);
       try
-        HRes := GetItemServerHandle(FHDASyncRead , address, 1, iServerH);
+        // HRes := GetItemServerHandle(FHDASyncRead , address, 1, iServerH);
+        HRes := GetItemServerHandle(FHDAServer , address, iClient, iServerH);
+        PrintIfErrorMsg(HRes, Format('Ошибка получения хендла сервера по адресу тега <%s>', [address]));
       except
         log.FatalMsgFmt('Ошибка получения хендла сервера по адресу тега <%s>', [address]);
         break;
@@ -411,21 +432,16 @@ begin
       //log.DebugMsg('Начало чтения ReadRaw');
       if FHDASyncRead = nil then
         log.WarningMsg('Не определен интерфейс для чтения OPC HDA сервера');
+
       try
         HRes := FHDASyncRead.ReadRaw(htStartTime, htEndTime, FValueTimeCount, False, 1, phServer, ppItemValues, ppErrors);
         CoTaskMemFree(ppErrors);
       except
         log.FatalMsgFmt('Ошибка чтения ReadRaw <%s>', [address]);
         break;
-        //continue;
       end;
 
-      if HRes <> 0 then
-      begin
-        log.ErrorMsgFmt('Ошибка синхронного чтения данных из OPC HDA сервера по адресу <%s>:', [address]);
-        log.ErrorMsg(GetOPCErrorMsg(HRes));
-        break;
-      end;
+      PrintIfErrorMsg(HRes, Format('Ошибка синхронного чтения данных из OPC HDA сервера по адресу <%s>:', [address]));
       if ppItemValues = nil then
       begin
         log.ErrorMsgFmt('Ошибка чтения значения по адресу <%s> из OPC HDA сервера <%s>', [address, FOPCServerName]);
@@ -522,8 +538,9 @@ var
   HRes: HRESULT;
   ServerProgID: POLeStr;
   ServerCLSID: TCLSID;
+  //HDAServer: IOPCHDA_Server;
 
-  Container: IConnectionPointContainer;
+  //Container: IConnectionPointContainer;
 begin
   if sComputer = '' then
     sComputer := FComputerName;
@@ -538,25 +555,42 @@ begin
     ServerProgID := StringToOleStr(sOPCServerName);
     // log.InfoMsgFmt('ServerProgID: <%s>', [ServerProgID]);
     HRes := CLSIDFromProgID(ServerProgID, ServerCLSID);
-
-    //if HRes <> 0 then
-    //begin
-    //  log.ErrorMsg('Ошибка определение идентификатора класса:');
-    //  log.ErrorMsg(GetOPCErrorMsg(HRes));
-    //end;
+    PrintIfErrorMsg(HRes, 'Ошибка определение идентификатора класса:');
     { ВНИМАНИЕ! Необходимо производить CoInitialize и CoUnintialize
     иначе будет возникать исключение:
     <EOLESysError не был произведен вызов CoInitialize> }
-    HRes := CoInitialize(nil);
+    //HRes := CoInitialize(nil);
+    //if HRes = S_FALSE then
+    //  PrintIfErrorMsg(HRes, 'Ошибка CoInitialize:');
     try
-      FHDASyncRead := ComObj.CreateRemoteComObject(WideString(sComputer), ServerCLSID) As IOPCHDA_SyncRead;
+      //HDAServer := ComObj.CreateRemoteComObject(WideString(sComputer), ServerCLSID) As IOPCHDA_Server;
+      //FHDAServer := ComObj.CreateRemoteComObject(WideString(sComputer), ServerCLSID) As IOPCHDA_Server;
+      FHDAServer := ComObj.CreateComObject(ServerCLSID) As IOPCHDA_Server;
+      //HRes := FHDAServer.QueryInterface(OPCHDA.IID_IOPCHDA_Server, Container);
+      //PrintIfErrorMsg(HRes, Format('Ошибка определения интерфейса сервера <%s>:', [OPCHDA.IID_IOPCHDA_Server.ToString()]));
     except
-      CoUninitialize;
-      FHDASyncRead := nil;
-      log.FatalMsg('Класс не зарегистрирован');
+      //CoUninitialize;
+      FHDAServer := nil;
+      log.FatalMsgFmt('Класс <%s> не зарегистрирован', [ServerCLSID.ToString()]);
       Exit;
     end;
-    FHDASyncRead.QueryInterface(ServerCLSID, Container);
+
+    try
+      //FHDASyncRead := ComObj.CreateRemoteComObject(WideString(sComputer), ServerCLSID) As IOPCHDA_SyncRead;
+      FHDASyncRead := ComObj.CreateComObject(ServerCLSID) As IOPCHDA_SyncRead;
+      //HRes := FHDASyncRead.QueryInterface(OPCHDA.IID_IOPCHDA_SyncRead, Container);
+      //PrintIfErrorMsg(HRes, Format('Ошибка определения интерфейса синхронного чтения <%s>:', [OPCHDA.IID_IOPCHDA_SyncRead.ToString()]));
+    except
+      //CoUninitialize;
+      FHDASyncRead := nil;
+      log.FatalMsgFmt('Класс <%s> не зарегистрирован', [ServerCLSID.ToString()]);
+      Exit;
+    end;
+
+    //HRes := HDAServer.QueryInterface(OPCHDA.IID_IOPCHDA_SyncRead, Container);
+    //PrintIfErrorMsg(HRes, Format('Ошибка определения интерфейса <%s>:', [OPCHDA.IID_IOPCHDA_SyncRead.ToString()]));
+    //FHDASyncRead := Container.;
+
     Result := True;
   end;
 end;
@@ -571,17 +605,32 @@ begin
   begin
     FHDASyncRead._AddRef;
     HRes := FHDASyncRead._Release;
+    PrintIfErrorMsg(HRes, 'Ошибка освобождения интерфейса:');
 
     { ВНИМАНИЕ! Необходимо производить CoInitialize и CoUnintialize
     иначе будет возникать исключение:
     <EOLESysError не был произведен вызов CoInitialize> }
-    CoUninitialize;
-
-    log.InfoMsg('Разрыв связи');
+    //CoUninitialize;
 
     FHDASyncRead := nil;
     Result := True;
   end;
+  if FHDAServer <> nil then
+  begin
+    FHDAServer._AddRef;
+    HRes := FHDAServer._Release;
+    PrintIfErrorMsg(HRes, 'Ошибка освобождения интерфейса:');
+
+    { ВНИМАНИЕ! Необходимо производить CoInitialize и CoUnintialize
+    иначе будет возникать исключение:
+    <EOLESysError не был произведен вызов CoInitialize> }
+    //CoUninitialize;
+
+    FHDAServer := nil;
+    Result := True;
+  end;
+
+  log.InfoMsg('Разрыв связи');
 end;
 
 { Получить хендл сервера  }
@@ -596,58 +645,55 @@ var
   phClient: POPCHANDLEARRAY;
   // Сюда возвращается описатель
   pphServer: POPCHANDLEARRAY;
-  Errors: PResultList;
+  ppErrors: PResultList;
   ServerInterface: IOPCHDA_Server;
   HRes: HRESULT;
 
 begin
- Result := E_FAIL;
- iServerH := 0;
- try
-   ServerInterface := aServerInterface As IOPCHDA_Server;
- except
-   ServerInterface := nil;
- end;
+  Result := E_FAIL;
+  iServerH := 0;
+  try
+    ServerInterface := aServerInterface As IOPCHDA_Server;
+  except
+    ServerInterface := nil;
+  end;
 
- if ServerInterface <> nil then
- begin
-   // Определение ItemId - адреса элемента
-   sItemW := WideString(sItem);
-   PsItemW := POleStr(sItemW);
-   arrPsItemW[0] := PsItemW;
-   // Идентификатор клиента
-   arrClient[0] := iClient;
-   phClient := @arrClient;
+  if ServerInterface <> nil then
+  begin
+    // Определение ItemId - адреса элемента
+    sItemW := WideString(sItem);
+    PsItemW := POleStr(sItemW);
+    arrPsItemW[0] := PsItemW;
+    // Идентификатор клиента
+    arrClient[0] := iClient;
+    phClient := Addr(arrClient);
 
-   //log.DebugMsgFmt('Получение хендела OPC HDA сервера по адресу <%s>', [sItem]);
-   try
-     // Считываем 1 элемент-------------------V
-     Result := ServerInterface.GetItemHandles(1, @arrPsItemW, phClient, pphServer, Errors);
-   except
-     log.FatalMsg('Ошибка получения хендела OPC HDA сервера');
-   end;
-   // log.DebugMsgFmt('Результат выполнения <%d : %d>', [Result, E_FAIL]);
+    //log.DebugMsgFmt('Получение хендела OPC HDA сервера по адресу <%s>', [sItem]);
+    try
+      // Считываем 1 элемент-----------------V
+      HRes := ServerInterface.GetItemHandles(1, Addr(arrPsItemW), phClient, pphServer, ppErrors);
+      PrintIfErrorMsg(HRes, 'Ошибка получение хендла элемента OPC HDA сервера:');
+    except
+      log.FatalMsg('Ошибка получения хендела OPC HDA сервера');
+    end;
+    // log.DebugMsgFmt('Результат выполнения <%d : %d>', [Result, E_FAIL]);
 
-   if Succeeded(Result) then
-   begin
-     Result := Errors^[0];
+    if Succeeded(HRes) then
+    begin
+      HRes := ppErrors^[0];
+      PrintIfErrorMsg(HRes, 'Ошибка получение описателя элемента OPC HDA сервера:');
 
-     if Result <> 0 then
-     begin
-       log.ErrorMsg('Ошибка получение описателя элемента OPC HDA сервера:');
-       log.ErrorMsg(GetOPCErrorMsg(Result));
-     end;
-
-     iServerH := pphServer^[0];
-     // Возможно причина Access violation в этом блоке
-     // vvvvvvvvvvvvvvvvvvvvvvvvv
-     // CoTaskMemFree(pphServer);
-     // ^^^^^^^^^^^^^^^^^^^^^^^^^
-   end;
-   CoTaskMemFree(Errors);
- end
- else
-   log.ErrorMsg('Не определен интерфейс OPC HDA сервера');
+      iServerH := pphServer^[0];
+      // Возможно причина Access violation в этом блоке
+      // vvvvvvvvvvvvvvvvvvvvvvvvv
+      // CoTaskMemFree(pphServer);
+      // ^^^^^^^^^^^^^^^^^^^^^^^^^
+      Result := HRes;
+    end;
+    CoTaskMemFree(ppErrors);
+  end
+  else
+    log.ErrorMsg('Не определен интерфейс OPC HDA сервера');
 end;
 
 { Выбрать описания тегов из свойств }
