@@ -97,6 +97,9 @@ type
       property DaysInMonth: Integer read FDaysInMonth write FDaysInMonth;
   end;
 
+  // Список даты-времени
+  DATETIME_ARRAY = Array[0..65535] of TDateTime;
+  PDATETIME_ARRAY = ^DATETIME_ARRAY;
 
 implementation
 

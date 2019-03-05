@@ -161,7 +161,7 @@ end;
 implementation
 
 uses
-  log;
+  log, memfunc;
 
 constructor TICObjectProto.Create;
 begin
@@ -234,17 +234,27 @@ begin
   Result := False;
   if not FTimeStateBuffer.IsEmpty() then
   begin
-    for i := 0 to FTimeStateBuffer.Count -1 do
+    for i := FTimeStateBuffer.Count - 1 downto 0 do
     begin
       key := FTimeStateBuffer.GetKey(i);
       sub_obj := FTimeStateBuffer.GetByName(key);
+      FTimeStateBuffer.Delete(i);
+
+      //log.DebugMsgFmt('Очистка <%s>', [sub_obj.ClassName]);
+      //memfunc.InitStatusMemory();
+
       if sub_obj.ClassName = 'TStrDictionary' then
       begin
-        (sub_obj As TStrDictionary).Clear;
+        //(sub_obj As TStrDictionary).Clear;
         sub_obj.Free;
       end;
+      //else
+      //  sub_obj.Free;
+
+      //if log.DEBUG_MODE then
+      //  memfunc.PrintLostMemory();
     end;
-    FTimeStateBuffer.Clear;
+    // FTimeStateBuffer.Clear;
     Result := True;
   end;
 end;

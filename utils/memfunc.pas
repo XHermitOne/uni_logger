@@ -1,7 +1,7 @@
 {
 Функции отладки утечек памяти.
 
-Версия: 0.0.2.1
+Версия: 0.0.2.2
 }
 unit memfunc;
 
@@ -90,6 +90,8 @@ begin
   lost_memory := GetLost();
   if lost_memory > 0 then
     log.WarningMsg(Format('Обнаружена утечка памяти <%d>', [lost_memory]), True)
+  else if lost_memory < 0 then
+    log.WarningMsg(Format('Обнаружено освобождение памяти <%d>', [lost_memory]), True)
   else
     log.ServiceMsg('Утечек памяти не обнаружено', True);
 end;

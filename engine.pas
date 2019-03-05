@@ -643,9 +643,13 @@ begin
       source := FSources.GetByName(key) As TICObjectProto;
       log.DebugMsg('Чтение всех данных');
 
+      //memfunc.InitStatusMemory();
+
       values := source.ReadAll();
       values.Destroy;
 
+      //if log.DEBUG_MODE then
+      //  memfunc.PrintLostMemory();
     end;
     keys.Destroy();
   except
@@ -668,6 +672,7 @@ begin
   end;
 
   // Очистка состояний источников данных
+  //memfunc.InitStatusMemory();
   try
     keys := FSources.GetKeys();
     for i := 0 to keys.Count - 1 do
@@ -683,6 +688,8 @@ begin
   except
     log.FatalMsg('Ошибка чтения из источников данных');
   end;
+  //if log.DEBUG_MODE then
+  //  memfunc.PrintLostMemory();
 
   log.InfoMsg('Окончание блока чтения/записи');
 end;

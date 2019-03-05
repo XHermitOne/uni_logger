@@ -34,7 +34,7 @@
         <PackageName Value="FCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="35">
+    <Units Count="37">
       <Unit0>
         <Filename Value="uni_logger_single.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -176,6 +176,14 @@
         <Filename Value="utils\dtfunc.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit34>
+      <Unit35>
+        <Filename Value="data_ctrl\opc_wt_hda_node.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit35>
+      <Unit36>
+        <Filename Value="wthdaclient\WtHDAClientAPI.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit36>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -186,7 +194,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="utils;data_ctrl;opc_client;opcdelphi"/>
+      <OtherUnitFiles Value="utils;data_ctrl;opc_client;opcdelphi;wthdaclient"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
   </CompilerOptions>

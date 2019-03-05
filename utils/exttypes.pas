@@ -18,6 +18,13 @@ type
   { Массив строк }
   TArrayOfString = Array Of String;
 
+  STRING_ARRAY = Array[0..65535] of String;
+  PSTRING_ARRAY = ^STRING_ARRAY;
+
+  { Массив вариантов }
+  VARIANT_ARRAY = Array[0..65535] of Variant;
+  PVARIANT_ARRAY = ^VARIANT_ARRAY;
+
   { Запись строковых значений }
   TMemRecord = class(TStringList)
     public

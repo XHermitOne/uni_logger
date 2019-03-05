@@ -1,7 +1,7 @@
 {
 Функции регистрации объектов источников данных
 
-Версия: 0.0.2.2
+Версия: 0.0.3.1
 }
 unit reg_data_ctrl;
 
@@ -42,7 +42,7 @@ implementation
 uses
   log,
   // Компоненты - источники данных
-  opc_da_node, opc_hda_node,
+  opc_da_node, opc_hda_node, opc_wt_hda_node,
   // Компоненты - приемники данных
   postgresql_tab_wide;
 
@@ -64,6 +64,11 @@ begin
   begin
     { Создание и инициализация OPC DA сервера }
     Result := TICOPCHDANode.Create;
+  end
+  else if sTypeName = opc_wt_hda_node.OPC_WT_HDA_NODE_TYPE then
+  begin
+    { Создание и инициализация OPC DA сервера }
+    Result := TICWtOPCHDANode.Create;
   end
   //else if sTypeName = remoute_opc_node.REMOUTE_OPC_NODE_TYPE then
   //begin

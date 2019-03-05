@@ -160,7 +160,7 @@ type
 implementation
 
 uses
-  log;
+  log, memfunc;
 
 
 constructor TStrDictionary.Create();
@@ -170,7 +170,7 @@ end;
 
 destructor TStrDictionary.Destroy;
 begin
-  // Free;
+  //Free;
   inherited Destroy;
 end;
 
@@ -179,10 +179,15 @@ var
   i: Integer;
   obj: TObject;
 begin
-  for i := 0 to Count - 1 do
+  for i := Count - 1 downto 0 do
   begin
     obj := GetObject(i);
-    obj.Free;
+    Delete(i);
+    if obj <> nil then
+    begin
+      obj.Free;
+      obj := nil;
+    end;
   end;
   inherited Free;
 end;

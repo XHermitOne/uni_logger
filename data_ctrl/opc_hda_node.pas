@@ -364,7 +364,6 @@ var
   ppItemValuesItem: OPCHDA_ITEM;
   pvDataValues: POleVariantArray;
   pftTimeStamps: PFileTimeArray;
-  //haAggregate: DWORD;
   // Количество прочитанных значений
   dwCount: DWORD;
 
@@ -372,7 +371,6 @@ var
   tags: TStrDictionary;
   tag_name, address, value, dt_str: AnsiString;
   dt_time: TDateTime;
-  //value_variant: Variant;
 
   new_state: TStrDictionary;
 
@@ -398,7 +396,6 @@ begin
       address := tags.GetStrValue(tag_name);
       //log.DebugMsgFmt('Чтение данных тега <%s> по адресу <%s>', [tag_name, address]);
       try
-        // HRes := GetItemServerHandle(FHDASyncRead , address, 1, iServerH);
         HRes := GetItemServerHandle(FHDAServer , address, iClient, iServerH);
         PrintIfErrorMsg(HRes, Format('Ошибка получения хендла сервера по адресу тега <%s>', [address]));
       except
@@ -409,7 +406,6 @@ begin
 
       cur_day := ValueTimeTick.DayDelta;
       cur_month := ValueTimeTick.MonthDelta;
-      // cur_year := ValueTimeTick.YearDelta;
       cur_hour := ValueTimeTick.HourDelta;
       cur_minute := ValueTimeTick.MinuteDelta;
       cur_sec := ValueTimeTick.SecondDelta;
@@ -433,6 +429,14 @@ begin
       if FHDASyncRead = nil then
         log.WarningMsg('Не определен интерфейс для чтения OPC HDA сервера');
 
+      //ВНИМАНИЕ! Для функций чтения необходимо выделять память ОБЯЗАТЕЛЬНО
+      //ppItemValues := POPCHDA_ITEMARRAY(CoTaskMemAlloc(SizeOf(OPCHDA_ITEM)));
+      //ppItemValuesItem := ppItemValues^[0];
+      //ppItemValuesItem.pvDataValues := POleVariantArray(CoTaskMemAlloc(FValueTimeCount * SizeOf(OleVariant)));
+      //ppItemValuesItem.pftTimeStamps := PFileTimeArray(CoTaskMemAlloc(FValueTimeCount * SizeOf(FileTime)));
+      //ppItemValuesItem.pdwQualities := PDWORDARRAY(CoTaskMemAlloc(FValueTimeCount * SizeOf(DWORD)));
+      //ppErrors := PResultList(CoTaskMemAlloc(FValueTimeCount * SizeOf(TResultList)));
+
       try
         HRes := FHDASyncRead.ReadRaw(htStartTime, htEndTime, FValueTimeCount, False, 1, phServer, ppItemValues, ppErrors);
         CoTaskMemFree(ppErrors);
@@ -452,15 +456,12 @@ begin
       ppItemValuesItem := ppItemValues^[0];
       pvDataValues := ppItemValuesItem.pvDataValues;
       pftTimeStamps := ppItemValuesItem.pftTimeStamps;
-      //haAggregate := ppItemValuesItem.haAggregate;
       // Количество прочитанных значений
       dwCount := ppItemValuesItem.dwCount;
 
-      //for i := 0 to ValueTimeCount - 1 do
       for i := 0 to dwCount - 1 do
       begin
         try
-          // value_variant := pvDataValues^[i];
           value := Variants.VarToStr(pvDataValues^[i]);
           // Сразу очищаем память
           VarUtils.VariantClear(TVarData(ppItemValuesItem.pvDataValues^[i]));
@@ -499,9 +500,6 @@ begin
     log.FatalMsgFmt('Ошибка чтения всех данных из источника данных <%s>', [Name]);
   end;
   //TimeState.PrintContent();
-
-  //CoTaskMemFree(ppItemValues);
-  //CoTaskMemFree(phServer);
 
   Disconnect();
   tags.Free();
