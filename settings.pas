@@ -1,7 +1,7 @@
 {
 Модуль поддержки настроек программы
 
-Версия: 0.0.2.3
+Версия: 0.0.2.4
 }
 unit settings;
 
@@ -111,13 +111,13 @@ end;
 
 destructor TICSettingsManager.Destroy;
 begin
+  Free;
   inherited Destroy;
 end;
 
 procedure TICSettingsManager.Free;
 begin
-  FContent.Free;
-  inherited Free;
+  FContent.Destroy;
 end;
 
 {

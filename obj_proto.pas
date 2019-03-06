@@ -50,11 +50,22 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    //procedure Free;
 
-    function ClearReadValues(): Boolean;
-    function ClearState(): Boolean;
-    function ClearTimeState(): Boolean;
+    {
+    Функция очистки читаемых значений
+    @param bAutoFree Автоматическое удаление элементов из памяти
+    }
+    function ClearReadValues(bAutoFree: Boolean = True): Boolean;
+    {
+    Функция очистки текущего состояния
+    @param bAutoFree Автоматическое удаление элементов из памяти
+    }
+    function ClearState(bAutoFree: Boolean = True): Boolean;
+    {
+    Функция очистки буфера изменения состояния
+    @param bAutoFree Автоматическое удаление элементов из памяти
+    }
+    function ClearTimeState(bAutoFree: Boolean = True): Boolean;
 
     { Получить наименование объекта }
     function GetName(): AnsiString;
@@ -169,6 +180,7 @@ begin
   FParent := nil;
   FName := 'Unknown';
   FDescription := '';
+
   FReadValues := TStringList.Create;
   FState := TStrDictionary.Create;
   FTimeStateBuffer := TStrDictionary.Create;
@@ -178,85 +190,57 @@ destructor TICObjectProto.Destroy;
 begin
   if FReadValues <> nil then
   begin
-    FReadValues.Free;
+    FReadValues.Destroy;
     FReadValues := nil;
   end;
   if FState <> nil then
   begin
-    FState.Free;
+    FState.Destroy;
     FState := nil;
   end;
   if FTimeStateBuffer <> nil then
   begin
-    FTimeStateBuffer.Free;
+    FTimeStateBuffer.Destroy;
     FTimeStateBuffer := nil;
   end;
 
   if FProperties <> nil then
   begin
-    FProperties.Free;
+    FProperties.Destroy;
     FProperties := nil;
   end;
   inherited Destroy;
 end;
 
-//procedure TICObjectProto.Free;
-//begin
-//  inherited Free;
-//end;
-
-function TICObjectProto.ClearReadValues(): Boolean;
+function TICObjectProto.ClearReadValues(bAutoFree: Boolean): Boolean;
+var
+  i: Integer;
 begin
   Result := False;
   if FReadValues.Count > 0 then
-  begin
-    FReadValues.Clear;
-    Result := True;
-  end;
-end;
-
-function TICObjectProto.ClearState(): Boolean;
-begin
-  Result := False;
-  if not FState.IsEmpty() then
-  begin
-    FState.Clear;
-    Result := True;
-  end;
-end;
-
-function TICObjectProto.ClearTimeState(): Boolean;
-var
-  i: Integer;
-  key: AnsiString;
-  sub_obj: TObject;
-begin
-  Result := False;
-  if not FTimeStateBuffer.IsEmpty() then
-  begin
-    for i := FTimeStateBuffer.Count - 1 downto 0 do
+    if not bAutoFree then
     begin
-      key := FTimeStateBuffer.GetKey(i);
-      sub_obj := FTimeStateBuffer.GetByName(key);
-      FTimeStateBuffer.Delete(i);
-
-      //log.DebugMsgFmt('Очистка <%s>', [sub_obj.ClassName]);
-      //memfunc.InitStatusMemory();
-
-      if sub_obj.ClassName = 'TStrDictionary' then
+      FReadValues.Clear;
+      Result := True;
+    end
+    else
+    begin
+      for i := FReadValues.Count - 1 downto 0 do
       begin
-        //(sub_obj As TStrDictionary).Clear;
-        sub_obj.Free;
+        FReadValues.Objects[i].Destroy;
+        FReadValues.Delete(i);
       end;
-      //else
-      //  sub_obj.Free;
-
-      //if log.DEBUG_MODE then
-      //  memfunc.PrintLostMemory();
     end;
-    // FTimeStateBuffer.Clear;
-    Result := True;
-  end;
+end;
+
+function TICObjectProto.ClearState(bAutoFree: Boolean): Boolean;
+begin
+  Result := FState.ClearContent(bAutoFree);
+end;
+
+function TICObjectProto.ClearTimeState(bAutoFree: Boolean): Boolean;
+begin
+  Result := FTimeStateBuffer.ClearContent(bAutoFree);
 end;
 
 

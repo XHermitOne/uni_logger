@@ -1,7 +1,7 @@
 {
 Классы работы с INI файлами
 
-Версия: 0.0.1.2
+Версия: 0.0.2.2
 }
 unit inifunc;
 
@@ -59,13 +59,13 @@ end;
 
 destructor TIniDictionary.Destroy;
 begin
-  // Free;
+  Free;
   inherited Destroy;
 end;
 
 procedure TIniDictionary.Free;
 begin
-  inherited Free;
+  ClearContent(True);
 end;
 
 {
@@ -128,8 +128,8 @@ begin
     log.FatalMsg('Ошибка загрузки настроек программы');
   end;
   // ВНИМАНИЕ! В конце обязательно освободить память
-  options.Free;
-  sections.Free;
+  options.Destroy;
+  sections.Destroy;
 end;
 
 {

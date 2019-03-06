@@ -242,7 +242,7 @@ begin
   if dtTime = 0 then
     dtTime := Now();
 
-  Result := TStringList.Create;
+  Result := nil; //TStringList.Create;
 
   // Список читаемых тегов
   tags := CreateTags();
@@ -315,7 +315,7 @@ begin
         end;
         // Записываем в выходной список, если необходимо ,
         // то можно потом распарсить
-        Result.Add(Format('%s|%s|%s', [tag_name, dt_str, value]));
+        //Result.Add(Format('%s|%s|%s', [tag_name, dt_str, value]));
       end;
       // Освобождение хендла
       ReleaseItemHandle(item_handle);
@@ -326,7 +326,7 @@ begin
   //TimeState.PrintContent();
 
   Disconnect();
-  tags.Free();
+  tags.Destroy();
 end;
 
 procedure TICWtOPCHDANode.SetProperties(dProperties: TStrDictionary);
@@ -431,7 +431,7 @@ begin
     log.InfoMsgFmt('Разрыв связи с DLL <%s>', [DLL_NAME]);
     Result := True;
   end;
-  log.InfoMsg('Разрыв связи');
+  //log.InfoMsg('Разрыв связи');
 end;
 
 { Получить хендл сервера  }
@@ -647,11 +647,7 @@ begin
       else
         value := Properties.GetStrValue(key);
       //log.DebugMsgFmt('Тег <%s : %s>', [key, value]);
-      //memfunc.InitStatusMemory();
       tags.AddStrValue(key, value);
-      //if log.DEBUG_MODE then
-      //  memfunc.PrintLostMemory();
-
     end;
   end;
   Result := tags;

@@ -87,13 +87,13 @@ type
       @param ObjectNames Список имен объектов
       @return Список созданных объектов
       }
-      function CreateSources(ObjectNames: TStringList=nil): TList;
+      function CreateSources(ObjectNames: TStringList=nil): Boolean;
       {
       Создание объектов-источников данных по именам
       @param ObjectNames Список имен объектов
       @return Список созданных объектов
       }
-      function CreateDestinations(ObjectNames: TStringList=nil): TList;
+      function CreateDestinations(ObjectNames: TStringList=nil): Boolean;
 
       {
       Удаление объектов-источников данных
@@ -139,7 +139,6 @@ type
       { Конструктор }
       constructor Create(TheOwner: TComponent);
       destructor Destroy; override;
-      procedure Free;
 
       {
       Прочитать значение из источника данных
@@ -216,6 +215,7 @@ end;
 
 destructor TICLoggerProto.Destroy;
 begin
+  Free;
   inherited Destroy;
 end;
 
@@ -223,9 +223,7 @@ procedure TICLoggerProto.Free;
 begin
   DestroySources();
   DestroyDestinations();
-  FSettingsManager.Free;
-
-  Free;
+  FSettingsManager.Destroy;
 end;
 
 {
@@ -348,9 +346,9 @@ end;
 {
 Создание объектов-источников данных по именам
 }
-function TICLoggerProto.CreateSources(ObjectNames: TStringList): TList;
+function TICLoggerProto.CreateSources(ObjectNames: TStringList): Boolean;
 var
-  ctrl_objects: TList;
+  //ctrl_objects: TList;
   obj: TICObjectProto;
   obj_names_str: AnsiString;
   i: Integer;
@@ -358,8 +356,9 @@ var
   is_obj_names_options: Boolean;
 
 begin
+  Result := False;
   log.InfoMsg('Создание объектов-источников...');
-  ctrl_objects := TList.Create;
+
   is_obj_names_options := False;
   if ObjectNames = nil then
   begin
@@ -378,7 +377,6 @@ begin
     begin
       // Регистрируем новый объект в словаре внутренних объектов
       RegSource(obj);
-      ctrl_objects.Add(obj)
     end;
   end;
 
@@ -386,15 +384,14 @@ begin
   if is_obj_names_options then
     ObjectNames.Free;
 
-  Result := ctrl_objects;
+  Result := True;
 end;
 
 {
 Создание объектов-получателей данных по именам
 }
-function TICLoggerProto.CreateDestinations(ObjectNames: TStringList): TList;
+function TICLoggerProto.CreateDestinations(ObjectNames: TStringList): Boolean;
 var
-  ctrl_objects: TList;
   obj: TICObjectProto;
   obj_names_str: AnsiString;
   i: Integer;
@@ -402,8 +399,9 @@ var
   is_obj_names_options: Boolean;
 
 begin
+  Result := False;
   log.InfoMsg('Создание объектов-получателей...');
-  ctrl_objects := TList.Create;
+
   is_obj_names_options := False;
   if ObjectNames = nil then
   begin
@@ -422,7 +420,6 @@ begin
     begin
       // Регистрируем новый объект в словаре внутренних объектов
       RegDestination(obj);
-      ctrl_objects.Add(obj)
     end;
   end;
 
@@ -430,7 +427,7 @@ begin
   if is_obj_names_options then
     ObjectNames.Free;
 
-  Result := ctrl_objects;
+  Result := True;
 end;
 
 {
@@ -442,7 +439,7 @@ begin
   Result := False;
   if FSources <> nil then
   begin
-    FSources.Free;
+    FSources.Destroy;
     FSources := nil;
     Result := True;
   end;
@@ -457,7 +454,7 @@ begin
   Result := False;
   if FDestinations <> nil then
   begin
-    FDestinations.Free;
+    FDestinations.Destroy;
     FDestinations := nil;
     Result := True;
   end;
@@ -532,11 +529,6 @@ end;
 destructor TICLogger.Destroy;
 begin
   inherited Destroy;
-end;
-
-procedure TICLogger.Free;
-begin
-  inherited Free;
 end;
 
 { Прочитать значение из источника данных }
@@ -643,13 +635,10 @@ begin
       source := FSources.GetByName(key) As TICObjectProto;
       log.DebugMsg('Чтение всех данных');
 
-      //memfunc.InitStatusMemory();
-
       values := source.ReadAll();
-      values.Destroy;
+      if values <> nil then
+        values.Destroy;
 
-      //if log.DEBUG_MODE then
-      //  memfunc.PrintLostMemory();
     end;
     keys.Destroy();
   except
@@ -672,7 +661,6 @@ begin
   end;
 
   // Очистка состояний источников данных
-  //memfunc.InitStatusMemory();
   try
     keys := FSources.GetKeys();
     for i := 0 to keys.Count - 1 do
@@ -688,8 +676,6 @@ begin
   except
     log.FatalMsg('Ошибка чтения из источников данных');
   end;
-  //if log.DEBUG_MODE then
-  //  memfunc.PrintLostMemory();
 
   log.InfoMsg('Окончание блока чтения/записи');
 end;
@@ -711,12 +697,12 @@ begin
      Test
   else
   begin
-    memfunc.InitStatusMemory();
+    //memfunc.InitStatusMemory();
 
     WorkTick;
 
-    if log.DEBUG_MODE then
-      memfunc.PrintLostMemory();
+    //if log.DEBUG_MODE then
+    //  memfunc.PrintLostMemory();
   end;
 
   // Сбросить флаг запущенного тика

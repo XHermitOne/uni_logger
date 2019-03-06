@@ -1,7 +1,7 @@
 {
 Модуль поддержки словарей
 
-Версия: 0.0.1.2
+Версия: 0.0.2.3
 }
 unit dictionary;
 
@@ -56,6 +56,12 @@ type
       destructor Destroy; override;
       procedure Free;
 
+      {
+      Функция очистки содержимого словаря
+      @param bAutoFree Автоматическое удаление элементов из памяти
+      }
+      function ClearContent(bAutoFree: Boolean = True): Boolean;
+
       {Распечатать содержимое словаря}
       procedure PrintContent(aDictionary: TStrDictionary = nil);
 
@@ -94,7 +100,7 @@ type
       Функция обновления словаря по другому словарю
       @param Dictionary Объект словаря
       }
-      function Update(Dictionary: TStrDictionary): Boolean;
+      function Update(Dictionary: TStrDictionary; bAutoFree: Boolean = False): Boolean;
       {
       Функция удаления элемента словаря по ключу
       @param sKey Ключ
@@ -170,26 +176,43 @@ end;
 
 destructor TStrDictionary.Destroy;
 begin
-  //Free;
+  // ВНИМАНИЕ! Из Destroy необходимо вызывать Free.
+  // В Free не должно быть вызова inherited Free.
+  // Тогда не происходит утечки памяти
+  Free;
   inherited Destroy;
 end;
 
 procedure TStrDictionary.Free;
+begin
+  ClearContent(True);
+end;
+
+{
+Функция очистки содержимого словаря
+@param bAutoFree Автоматическое удаление элементов из памяти
+}
+function TStrDictionary.ClearContent(bAutoFree: Boolean = True): Boolean;
 var
   i: Integer;
   obj: TObject;
 begin
-  for i := Count - 1 downto 0 do
-  begin
-    obj := GetObject(i);
-    Delete(i);
-    if obj <> nil then
+  Result := False;
+  if Count > 0 then
+    if not bAutoFree then
     begin
-      obj.Free;
-      obj := nil;
+      Clear;
+      Result := True;
+    end
+    else
+    begin
+      for i := Count - 1 downto 0 do
+      begin
+        obj := Objects[i];
+        obj.Destroy;
+        Delete(i);
+      end;
     end;
-  end;
-  inherited Free;
 end;
 
 {
@@ -366,13 +389,13 @@ end;
 {
 Функция обновления словаря по другому словарю.
 }
-function TStrDictionary.Update(Dictionary: TStrDictionary): Boolean;
+function TStrDictionary.Update(Dictionary: TStrDictionary; bAutoFree: Boolean): Boolean;
 var
   i: Integer;
   key: AnsiString;
   obj: TObject;
 begin
-  if (Dictionary = nil) or (Dictionary.IsEmpty) then
+  if Dictionary = nil then
   begin
     Result := False;
     Exit;
@@ -383,12 +406,19 @@ begin
     key := Dictionary.GetKey(i);
     obj := Dictionary.GetObject(i);
     if obj.ClassName = 'TObjString' then
-      // Добавление строкового объекта
-      AddStrValue(key, (obj As TObjString).Value)
+      if HasKey(key) then
+        SetStrValue(key, (obj As TObjString).Value)
+      else
+        // Добавление строкового объекта
+        AddStrValue(key, (obj As TObjString).Value)
     else
-      // Добавление объекта
+      //Добавление объекта
       AddObject(key, obj);
   end;
+
+  if bAutoFree then
+    Dictionary.Destroy;
+
   Result := True;
 end;
 

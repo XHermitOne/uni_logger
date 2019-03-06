@@ -1,7 +1,13 @@
 {
 Функции отладки утечек памяти.
 
-Версия: 0.0.2.2
+ВНИМАНИЕ! Из Destroy необходимо вызывать Free.
+В Free не должно быть вызова inherited Free.
+Тогда не происходит утечки памяти.
+Везде необходимо использовать функцию Destroy
+для освобождения памяти!!!
+
+Версия: 0.0.3.1
 }
 unit memfunc;
 
@@ -14,6 +20,8 @@ uses
 
 type
   {
+  Класс отслеживания памяти.
+  Применяется для отлавливания утечек памяти.
   }
   TMemoryStatus = class(TObject)
     private
@@ -34,6 +42,8 @@ type
 
       //
       property Lost: LongInt read FLost;
+      property MemStart: THeapStatus read FHPStart;
+      property MemEnd: THeapStatus read FHPEnd;
   end;
 
 { Инициализировать состояние памяти на данный момент }
@@ -99,11 +109,12 @@ end;
 { Инициализировать состояние памяти на данный момент }
 function InitStatusMemory(): Boolean;
 begin
+  log.InfoMsgFmt('Создание глобального объекта состояния памяти. Память [%d]', [GetHeapStatus().TotalAllocated]);
+
   Result := False;
   if GlobMemoryStatus = nil then
   begin
     GlobMemoryStatus := TMemoryStatus.Create();
-    log.InfoMsg('Проинициализирован глобальный объект состояния памяти');
     Result := True;
   end;
 end;
@@ -125,7 +136,9 @@ begin
     if bAutoDestroy then
     begin
        GlobMemoryStatus.Destroy();
-        GlobMemoryStatus := nil;
+       GlobMemoryStatus := nil;
+
+       log.InfoMsgFmt('Удаление глобального объекта состояния памяти. Память [%d]', [GetHeapStatus().TotalAllocated]);
     end;
   end
   else

@@ -224,20 +224,20 @@ end;
 var
   Application: TUniLoggerSingleApplication;
 begin
-  //memfunc.InitStatusMemory();
+  memfunc.InitStatusMemory();
 
   Application := TUniLoggerSingleApplication.Create(nil);
   Application.Title := 'UniLogger single mode';
   Application.Run;
   Application.Free;
 
-  // Учет утечек памяти. Вывод делаем в текстовый файл *.mem
-  //{$if declared(UseHeapTrace)}
-  //if UseHeapTrace then // Test if reporting is on
-  //   SetHeapTraceOutput(ChangeFileExt(ParamStr(0), '.mem'));
-  //{$ifend}
+  if log.DEBUG_MODE then
+    memfunc.PrintLostMemory();
 
-  //if log.DEBUG_MODE then
-  //  memfunc.PrintLostMemory();
+  // Учет утечек памяти. Вывод делаем в текстовый файл *.mem
+  {$if declared(UseHeapTrace)}
+  if UseHeapTrace then // Test if reporting is on
+     SetHeapTraceOutput(ChangeFileExt(ParamStr(0), '.mem'));
+  {$ifend}
 end.
 
