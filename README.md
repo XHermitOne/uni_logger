@@ -83,7 +83,8 @@ value_time_tick = 0000-00-00 01:00:00
 
 Поддерживаемые типы источников данных :
 1. OPC_DA - OPC Data Access сервера.
-2. OPC_HDA - Historical Data Access сервера
+2. OPC_HDA - Historical Data Access сервера (В настоящее время не работает)
+3. OPC_WT_HDA - Historical Data Access сервера. Взаимодействие через WtHDAClient.dll
 
 Наименование сервера - наименование COM сервера OPC.
 
@@ -91,6 +92,8 @@ value_time_tick = 0000-00-00 01:00:00
 1. value_time_count - Количество считываемых записей
 2. value_time_tick - Период регистрации контроллера в формате yyyy-mm-dd hh:nn:ss
 
+## Дополнения
+Для доступа к OPC серверу через WtHDAClient.dll необходимо скопировать DLL из папки wthdaclient в %SYSTEMROOT%\System32
 
 Описание приемника данных:
 
