@@ -298,7 +298,7 @@ begin
         end;
         dt_time := pTimeStamps[i];
         dt_str := FormatDateTime(obj_proto.DATETIME_TXT_FMT, dt_time);
-        //log.DebugMsgFmt('Источник <%s>. OPC HDA. Прочитаны данные <%s> тега <%s> за <%s>', [Name, value, tag_name, dt_str]);
+        log.DebugMsgFmt('Источник <%s>. OPC HDA. Прочитаны данные <%s> тега <%s> за <%s>', [Name, value, tag_name, dt_str]);
         // Записать в буфер
         if TimeState.HasKey(dt_str) then
         begin
@@ -315,7 +315,7 @@ begin
         end;
         // Записываем в выходной список, если необходимо ,
         // то можно потом распарсить
-        //Result.Add(Format('%s|%s|%s', [tag_name, dt_str, value]));
+        // Result.Add(Format('%s|%s|%s', [tag_name, dt_str, value]));
       end;
       // Освобождение хендла
       ReleaseItemHandle(item_handle);

@@ -5,7 +5,7 @@
           'ИМЯ_ИСТОЧНИКА_ДАННЫХ.имя_тега:Тип_поля_в_PostgreSQL'.
           Например: 'SOURCE_FIRST.tag_mode:Varchar(20)'
 
-Версия: 0.0.1.2
+Версия: 0.0.1.3
 }
 unit postgresql_tab_wide;
 
@@ -98,6 +98,7 @@ type
 
   public
     constructor Create;
+    destructor Destroy; override;
     procedure Free;
 
     { Выбрать описания тегов из свойств }
@@ -117,25 +118,34 @@ implementation
 
 uses
     LCLIntf, // Для вычисления времени выполнения
-    log,
+    log, memfunc,
     engine;
 
 constructor TICPostgreSQLTableWide.Create;
 begin
+  inherited Create;
+
   FSQLQuery := TSQLQuery.Create(nil);
   FSQLTransaction := TSQLTransaction.Create(nil);
   FPQConnection := TPQConnection.Create(nil);
-  inherited Create;
+end;
+
+
+destructor TICPostgreSQLTableWide.Destroy;
+begin
+  Free;
+
+  inherited Destroy;
 end;
 
 procedure TICPostgreSQLTableWide.Free;
 begin
-  FPQConnection.Close;
+  Disconnect();
   FSQLQuery.Free;
   FSQLTransaction.Free;
   FPQConnection.Free;
 
-  inherited Free;
+  // inherited Free;
 end;
 
 { Настроить параметры соединения с БД }
@@ -232,7 +242,7 @@ function TICPostgreSQLTableWide.WriteAll(dtTime: TDateTime): Boolean;
 var
   values: Array Of String;
   time_values: TMemRecordSet;
-
+  fields: TStringList;
 begin
   log.DebugMsgFmt('Запись всех внутренних данных. Объект <%s>', [Name]);
 
@@ -253,8 +263,9 @@ begin
   // Если таблицы не существует, то создать ее
   if not ExistsTable(Properties.GetStrValue('table_name')) then
   begin
-    CreateTable(Properties.GetStrValue('table_name'),
-                strfunc.ParseStrList(Properties.GetStrValue('fields')));
+    fields := strfunc.ParseStrList(Properties.GetStrValue('fields'));
+    CreateTable(Properties.GetStrValue('table_name'), fields);
+    fields.Destroy;
   end;
 
   // Добавить запись
@@ -359,46 +370,67 @@ end;
 function TICPostgreSQLTableWide.GetFieldNames(aFields: TStringList): TArrayOfString;
 var
   i: Integer;
+  bFreeFields: Boolean = False;
 begin
   if aFields = nil then
+  begin
     // Если не указано описание полей, то берем его из свойств
     aFields := strfunc.ParseStrList(Properties.GetStrValue('fields'));
+    bFreeFields := True;
+  end;
 
   SetLength(Result, aFields.Count);
   // Result[0] := DATETIME_FIELD_NAME;
 
   for i := 0 to aFields.Count - 1 do
     Result[i] := strfunc.SplitStr(strfunc.SplitStr(aFields[i], ':')[0], '.')[1];
+
+  if bFreeFields then
+    aFields.Destroy;
 end;
 
 { Получить список типов полей из описания }
 function TICPostgreSQLTableWide.GetFieldTypes(aFields: TStringList): TArrayOfString;
 var
   i: Integer;
+  bFreeFields: Boolean = False;
 begin
   if aFields = nil then
+  begin
     // Если не указано описание полей, то берем его из свойств
     aFields := strfunc.ParseStrList(Properties.GetStrValue('fields'));
+    bFreeFields := True;
+  end;
 
   SetLength(Result, aFields.Count);
   // Result[0] := 'timestamp';
 
   for i := 0 to aFields.Count-1 do
     Result[i] := strfunc.SplitStr(aFields[i], ':')[1];
+
+  if bFreeFields then
+    aFields.Destroy;
 end;
 
 { Получить список Источник_данных.тег из описания }
 function TICPostgreSQLTableWide.GetSrcTagList(aFields: TStringList): TStringList;
 var
   i: Integer;
+  bFreeFields: Boolean = False;
 begin
   if aFields = nil then
+  begin
     // Если не указано описание полей, то берем его из свойств
     aFields := strfunc.ParseStrList(Properties.GetStrValue('fields'));
+    bFreeFields := True;
+  end;
 
   Result := TStringList.Create;
   for i := 0 to aFields.Count - 1 do
     Result.Append(strfunc.SplitStr(aFields[i], ':')[0]);
+
+  if bFreeFields then
+    aFields.Destroy;
 end;
 
 { Функция добавления записи }

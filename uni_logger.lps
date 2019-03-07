@@ -247,10 +247,10 @@
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
         <IsPartOfProject Value="True"/>
         <IsVisibleTab Value="True"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="398"/>
         <CursorPos Y="415"/>
         <UsageCount Value="200"/>
-        <Loaded Value="True"/>
       </Unit28>
       <Unit29>
         <Filename Value="opcdelphi\OPC_AE.pas"/>
@@ -336,10 +336,13 @@
         <UsageCount Value="59"/>
       </Unit38>
     </Units>
+    <General>
+      <ActiveWindowIndexAtStart Value="-1"/>
+    </General>
     <JumpHistory HistoryIndex="-1"/>
   </ProjectSession>
   <Debugging>
-    <BreakPoints Count="2">
+    <BreakPoints Count="1">
       <Item1>
         <Kind Value="bpkSource"/>
         <WatchScope Value="wpsLocal"/>
@@ -347,13 +350,6 @@
         <Source Value="uni_daemonunit.pas"/>
         <Line Value="84"/>
       </Item1>
-      <Item2>
-        <Kind Value="bpkSource"/>
-        <WatchScope Value="wpsLocal"/>
-        <WatchKind Value="wpkWrite"/>
-        <Source Value="data_ctrl\opc_hda_node.pas"/>
-        <Line Value="415"/>
-      </Item2>
     </BreakPoints>
   </Debugging>
 </CONFIG>
