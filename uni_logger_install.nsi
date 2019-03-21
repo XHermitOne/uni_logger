@@ -142,13 +142,13 @@ SectionEnd
 
 Section "Системные библиотеки"
   ; Скопировать *.dll в system32
-  CopyFiles "packages\*.dll" "$SYSDIR"
+  CopyFiles /FILESONLY "$EXEDIR\packages\*.dll" "$SYSDIR"
 SectionEnd
 
 
 Section "Cygwin"
   ; Запустить инсталляцию Cygwin
-  ExecWait "packages\setup-x86.exe"
+  ExecWait "$EXEDIR\packages\setup-x86.exe"
 SectionEnd
 
 ; необязательный раздел (может быть отключен пользователем)
