@@ -8,10 +8,11 @@
       <Unit0>
         <Filename Value="uni_logger_single.lpr"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
+        <IsVisibleTab Value="True"/>
         <TopLine Value="213"/>
         <CursorPos X="85" Y="227"/>
         <UsageCount Value="191"/>
+        <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="utils\dictionary.pas"/>
@@ -122,8 +123,8 @@
       <Unit14>
         <Filename Value="data_ctrl\postgresql_tab_wide.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="-1"/>
+        <WindowIndex Value="-1"/>
         <TopLine Value="247"/>
         <CursorPos X="41" Y="272"/>
         <UsageCount Value="191"/>
@@ -426,9 +427,6 @@
         <UsageCount Value="8"/>
       </Unit51>
     </Units>
-    <General>
-      <ActiveWindowIndexAtStart Value="-1"/>
-    </General>
     <JumpHistory HistoryIndex="-1"/>
   </ProjectSession>
   <Debugging>

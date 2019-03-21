@@ -302,13 +302,13 @@ begin
         // Записать в буфер
         if TimeState.HasKey(dt_str) then
         begin
-          //log.DebugMsgFmt('Добавление тега <%s> значение: <%s> к существующей записи буфера за <%s>', [tag_name, value, dt_str]);
+          log.DebugMsgFmt('Установка тега <%s> значение: <%s> запись буфера за <%s>', [tag_name, value, dt_str]);
           new_state := TimeState.GetByName(dt_str) As TStrDictionary;
           new_state.SetStrValue(tag_name, value);
         end
         else
         begin
-          //log.DebugMsgFmt('Добавление тега <%s> значение: <%s>. Создание новой записи буфера за <%s>', [tag_name, value, dt_str]);
+          log.DebugMsgFmt('Добавление тега <%s> значение: <%s>. Создание новой записи буфера за <%s>', [tag_name, value, dt_str]);
           new_state := CreateTags(True);
           new_state.SetStrValue(tag_name, value);
           TimeState.AddObject(dt_str, new_state);
