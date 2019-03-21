@@ -288,6 +288,9 @@ begin
         break;
       end;
 
+      if dwCount = 0 then
+        log.WarningMsg('Нет данных. Возможно нет связи с контроллером');
+
       for i := 0 to dwCount - 1 do
       begin
         try

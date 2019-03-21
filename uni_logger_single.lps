@@ -8,8 +8,7 @@
       <Unit0>
         <Filename Value="uni_logger_single.lpr"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
-        <TopLine Value="213"/>
+        <TopLine Value="210"/>
         <CursorPos X="85" Y="227"/>
         <UsageCount Value="191"/>
         <Loaded Value="True"/>
@@ -305,10 +304,12 @@
       <Unit35>
         <Filename Value="data_ctrl\opc_wt_hda_node.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="155"/>
-        <CursorPos Y="185"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="276"/>
+        <CursorPos X="70" Y="292"/>
         <UsageCount Value="61"/>
+        <Loaded Value="True"/>
       </Unit35>
       <Unit36>
         <Filename Value="wthdaclient\WtHDAClientAPI.pas"/>
@@ -450,7 +451,7 @@
         <WatchScope Value="wpsLocal"/>
         <WatchKind Value="wpkWrite"/>
         <Source Value="data_ctrl\opc_wt_hda_node.pas"/>
-        <Line Value="607"/>
+        <Line Value="610"/>
       </Item3>
     </BreakPoints>
   </Debugging>
