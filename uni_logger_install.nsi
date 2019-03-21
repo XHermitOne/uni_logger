@@ -62,25 +62,25 @@ Function nsDialogsPage
     ${NSD_CreateLabel} 0 0 100% 12u "Хост:"
     Pop $LABEL_HOST
     
-    ${NSD_CreateText} 0 20 100% 12u localhost
+    ${NSD_CreateText} 0 20 100% 12u PDC
     Pop $EDIT_HOST
 
     ${NSD_CreateLabel} 0 50 100% 12u "Имя БД:"
     Pop $LABEL_DBNAME
 
-    ${NSD_CreateText} 0 70 100% 12u registr
+    ${NSD_CreateText} 0 70 100% 12u testing
     Pop $EDIT_DBNAME
     
     ${NSD_CreateLabel} 0 100 100% 12u "Пользователь:"
     Pop $LABEL_USER
 
-    ${NSD_CreateText} 0 120 100% 12u registr
+    ${NSD_CreateText} 0 120 100% 12u xhermit
     Pop $EDIT_USER
     
     ${NSD_CreateLabel} 0 150 100% 12u "Пароль:"
     Pop $LABEL_PASSWORD
 
-    ${NSD_CreatePassword} 0 170 100% 12u ""
+    ${NSD_CreatePassword} 0 170 100% 12u xhermit
     Pop $EDIT_PASSWORD
 
     nsDialogs::Show
