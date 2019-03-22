@@ -133,7 +133,15 @@ Section "Система журналирования данных <UNI_LOGGER>"
 
   ; Скопировать иконку
   File "logger.ico"
-  
+
+  ; Записать в BAT запуск программы
+  ClearErrors
+  FileOpen $0 $INSTDIR\uni_logger_single_start.bat w
+  IfErrors done
+  FileWrite $0 "$INSTDIR\uni_logger_single.exe$\r$\n"
+  FileClose $0
+  done:
+
   ; Создать программу деинсталяции
   WriteUninstaller $INSTDIR\uninstall.exe
 
