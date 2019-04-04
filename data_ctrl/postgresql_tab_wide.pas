@@ -339,7 +339,7 @@ begin
   Result := False;
   // Формирование строки параметров SQL выражения создания таблицы
   try
-    sql_params := Format('%s timestamp WITH TIME ZONE DEFAULT NOW(), ', [DATETIME_FIELD_NAME]);
+    sql_params := Format('%s timestamp DEFAULT NOW(), ', [DATETIME_FIELD_NAME]);
     for i := 0 to aFields.Count - 1 do
     begin
       field_name := strfunc.SplitStr(strfunc.SplitStr(aFields[i], ':')[0], '.')[1];
