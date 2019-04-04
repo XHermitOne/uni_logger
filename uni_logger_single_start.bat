@@ -1,1 +1,1 @@
-uni_logger_single.exe --debug
+uni_logger_single.exe
