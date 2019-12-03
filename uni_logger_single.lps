@@ -13,8 +13,8 @@
       <Unit1>
         <Filename Value="utils\dictionary.pas"/>
         <IsPartOfProject Value="True"/>
+        <EditorIndex Value="-1"/>
         <UsageCount Value="20"/>
-        <Loaded Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="utils\exttypes.pas"/>
@@ -80,11 +80,10 @@
         <Filename Value="data_ctrl\postgresql_tab_wide.pas"/>
         <IsPartOfProject Value="True"/>
         <IsVisibleTab Value="True"/>
-        <EditorIndex Value="1"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="323"/>
         <CursorPos X="5" Y="342"/>
         <UsageCount Value="20"/>
-        <Loaded Value="True"/>
       </Unit14>
       <Unit15>
         <Filename Value="data_ctrl\reg_data_ctrl.pas"/>
@@ -198,15 +197,9 @@
         <UsageCount Value="20"/>
       </Unit36>
     </Units>
-    <JumpHistory Count="2" HistoryIndex="1">
-      <Position1>
-        <Filename Value="data_ctrl\postgresql_tab_wide.pas"/>
-        <Caret TopLine="19"/>
-      </Position1>
-      <Position2>
-        <Filename Value="data_ctrl\postgresql_tab_wide.pas"/>
-        <Caret Line="30" Column="15" TopLine="19"/>
-      </Position2>
-    </JumpHistory>
+    <General>
+      <ActiveWindowIndexAtStart Value="-1"/>
+    </General>
+    <JumpHistory HistoryIndex="-1"/>
   </ProjectSession>
 </CONFIG>

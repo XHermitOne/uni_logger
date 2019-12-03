@@ -35,7 +35,7 @@
         <PackageName Value="FCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="37">
+    <Units Count="39">
       <Unit0>
         <Filename Value="uni_logger.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -189,6 +189,14 @@
         <Filename Value="utils\exttypes.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit36>
+      <Unit37>
+        <Filename Value="data_ctrl\db_mysql_node.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit37>
+      <Unit38>
+        <Filename Value="data_ctrl\opc_wt_hda_node.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit38>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

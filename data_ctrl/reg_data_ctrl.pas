@@ -42,7 +42,7 @@ implementation
 uses
   log,
   // Компоненты - источники данных
-  opc_da_node, opc_hda_node, opc_wt_hda_node,
+  opc_da_node, opc_hda_node, opc_wt_hda_node, db_mysql_node,
   // Компоненты - приемники данных
   postgresql_tab_wide;
 
@@ -58,27 +58,32 @@ begin
   if sTypeName = opc_da_node.OPC_DA_NODE_TYPE then
   begin
     { Создание и инициализация OPC DA сервера }
-    Result := TICOPCDANode.Create;
+    Result := opc_da_node.TICOPCDANode.Create;
   end
   else if sTypeName = opc_hda_node.OPC_HDA_NODE_TYPE then
   begin
     { Создание и инициализация OPC DA сервера }
-    Result := TICOPCHDANode.Create;
+    Result := opc_hda_node.TICOPCHDANode.Create;
   end
   else if sTypeName = opc_wt_hda_node.OPC_WT_HDA_NODE_TYPE then
   begin
     { Создание и инициализация OPC DA сервера }
-    Result := TICWtOPCHDANode.Create;
+    Result := opc_wt_hda_node.TICWtOPCHDANode.Create;
   end
   //else if sTypeName = remoute_opc_node.REMOUTE_OPC_NODE_TYPE then
   //begin
   //  { Создание и инициализация OPC DA сервера }
   //  Result := TICRemouteOPCNode.Create;
   //end
+  else if sTypeName = db_mysql_node.DB_MYSQL_NODE_TYPE then
+  begin
+    { Создание и инициализация OPC DA сервера }
+    Result := db_mysql_node.TICMySQLDBNode.Create;
+  end
   else if sTypeName = postgresql_tab_wide.POSTGRESQL_TAB_WIDE_TYPE then
   begin
     { Создание и инициализация журнала таблицы PostgreSQL широкого формата }
-    Result := TICPostgreSQLTableWide.Create;
+    Result := postgresql_tab_wide.TICPostgreSQLTableWide.Create;
   end
   else
   begin
