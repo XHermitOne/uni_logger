@@ -44,6 +44,14 @@ function CreateEmptyFileIfNotExists(sPath: AnsiString): Boolean;
 { Нормализовать путь до файла }
 function NormalPathFileName(sPath: AnsiString): AnsiString;
 
+{
+Чтение текстового файла как строки
+@param sTxtFileName: Полное имя текстового файла.
+@return: Текст, содержащийся внутри файла в виде строки
+или пустая строка в случае ошибки.
+}
+function ReadTxtFile(sTxtFileName: AnsiString): AnsiString;
+
 { Преобразование Даты-времени }
 {$IFDEF windows}
 function DateTimeToFileTime(dtFileTime: TDateTime): TFileTime;
@@ -188,6 +196,49 @@ begin
   // Замена двойных слешей
   sPath := StringReplace(sPath, PathDelim + PathDelim, PathDelim, [rfReplaceAll]);
   Result := ExpandFileName(sPath);
+end;
+
+{
+Чтение текстового файла как строки
+@param sTxtFileName: Полное имя текстового файла.
+@return: Текст, содержащийся внутри файла в виде строки
+или пустая строка в случае ошибки.
+}
+function ReadTxtFile(sTxtFileName: AnsiString): AnsiString;
+var
+  txt_file: file of Char;
+  symbol: Char;
+
+begin
+  Result := '';
+  if sTxtFileName = '' then
+  begin
+    log.WarningMsg('Не определен текстовый файл');
+    Exit;
+  end;
+
+  if not FileExists(sTxtFileName) then
+  begin
+    log.WarningMsgFmt('Текстовый файл <%s> не найден', [sTxtFileName]);
+    Exit;
+  end;
+
+  try
+    Assign (txt_file, sTxtFileName);
+    Reset(txt_file);
+
+    while not eof(txt_file) do
+    begin
+      Read(txt_file, symbol);
+      Result := Result + symbol;
+    end;
+
+    Close(txt_file);
+  except
+    Close(txt_file);
+    log.FatalMsgFmt('Ошибка чтения файла <%s>', [sTxtFileName]);
+    Result := '';
+  end;
 end;
 
 {$IFDEF windows}

@@ -1,7 +1,7 @@
 {
 Классы работы с INI файлами
 
-Версия: 0.0.2.2
+Версия: 0.0.3.1
 }
 unit inifunc;
 
@@ -12,12 +12,19 @@ interface
 uses
     Classes, SysUtils, INIFiles, StrUtils, dictionary;
 
+const
+  MEMO_SIGNATURE: AnsiString = 'MEMO: ';
+
 type
     {
     TIniDictionary - Словарь словарей для хранения содержимого INI файла
     с разделением данных по секциям.
     }
     TIniDictionary = class(TStrDictionary)
+    private
+      { Полное наименование последнего загруженного INI файла }
+      FINIFileName: AnsiString;
+
     public
 
       constructor Create();
@@ -39,12 +46,27 @@ type
       }
       function GetOptionValue(sSectionName: AnsiString; sOptionName: AnsiString): AnsiString;
 
+      {
+      Загрузить текст из текстового файла.
+      Связь с текстовыми файлами используется для вынесения многострочного текста
+      за пределы INI файла.
+      Текстовый файл должен находиться в той же папке что и INI файл.
+      Загрузка производиться по сигнатуре MEMO:
+      @param sTxtFileName: Полное имя текстового файла.
+      @return: Текст, содержащийся внутри файла в виде строки
+      или пустая строка в случае ошибки.
+      }
+      function ReadTxtFile(sTxtFileName: AnsiString): AnsiString;
+
+    published
+      property INIFileName: AnsiString read FINIFileName;
+
     end;
 
 implementation
 
 uses
-  log;
+  log, filefunc, strfunc;
 
 constructor TIniDictionary.Create();
 begin
@@ -78,6 +100,7 @@ var
   sections, options: TStringList;
   section_name, option, option_name, option_value: AnsiString;
   section_dict: TStrDictionary;
+
 begin
   Result := False;
   if sIniFileName = '' then
@@ -90,6 +113,9 @@ begin
     log.WarningMsgFmt('Файл INI <%s> не найден', [sIniFileName]);
     Exit;
   end;
+
+  // Запомнить полное имя последнего открытого INI файла
+  FINIFileName := sINIFileName;
 
   ini_file := TIniFile.Create(sIniFileName);
 
@@ -116,6 +142,15 @@ begin
           idx := Pos('=', option);
           option_name := Copy(option, 0, idx - 1);
           option_value := Copy(option, idx + 1, Length(option)-idx);
+
+          // Значение опции может начинаться с сигнатуры.
+          // Такие случаи необходимо обрабатывать отдельно
+          if strfunc.IsStartsWith(option_value, MEMO_SIGNATURE) then
+          begin
+            // Значение опции храниться в отдельном текстовом многострочном файле
+            option_value := filefunc.ReadTxtFile(strfunc.ReplaceStart(option_value, MEMO_SIGNATURE, ''));
+          end;
+
           section_dict.AddStrValue(option_name, option_value);
         end;
         AddObject(section_name, section_dict);
@@ -146,6 +181,43 @@ begin
     if section <> nil then
       Result := section.GetStrValue(sOptionName);
   end;
+end;
+
+{
+Загрузить текст из текстового файла.
+Связь с текстовыми файлами используется для вынесения многострочного текста
+за пределы INI файла.
+Текстовый файл должен находиться в той же папке что и INI файл.
+Загрузка производиться по сигнатуре TXT:
+@param sTxtFileName: Краткое имя текстового файла.
+@return: Текст, содержащийся внутри файла в виде строки
+или пустая строка в случае ошибки.
+}
+function TIniDictionary.ReadTxtFile(sTxtFileName: AnsiString): AnsiString;
+var
+  txt_filename: AnsiString;
+  parent_path: AnsiString;
+
+begin
+  Result := '';
+
+  if sTxtFileName = '' then
+  begin
+    log.WarningMsg('Не определен текстовый файл многострочных данных');
+    Exit;
+  end;
+
+  // Получить полное имя файла
+  parent_path := ExtractFileDir(INIFileName);
+  txt_filename := parent_path + PathDelim + sTxtFileName;
+
+  if not FileExists(txt_filename) then
+  begin
+    log.WarningMsgFmt('Текстовый файл многострочных данных <%s> не найден', [txt_filename]);
+    Exit;
+  end;
+
+  Result := filefunc.ReadTxtFile(txt_filename);
 end;
 
 end.

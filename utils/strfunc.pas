@@ -1,7 +1,7 @@
 {
 Функции работы со строками
 
-Версия: 0.0.4.4
+Версия: 0.0.5.1
 }
 unit strfunc;
 
@@ -116,6 +116,40 @@ function ToUTF8(var sStr: AnsiString): AnsiString;
 @return Перекодированный текст
 }
 function EncodeString(sTxt: AnsiString; sFromEncoding: AnsiString; sToEncoding: AnsiString): AnsiString;
+
+{
+Проверка на начало строки с подстроки.
+@param sTxt Проверяемый текст
+@param sSubStr Проверяемая подстрока
+@return True - sTxt начинается с sSubStr, False - нет.
+}
+function IsStartsWith(sTxt: AnsiString; sSubStr: AnsiString): Boolean;
+
+{
+Проверка на окончание строки с подстроки.
+@param sTxt Проверяемый текст
+@param sSubStr Проверяемая подстрока
+@return True - sTxt оканчивается на sSubStr, False - нет.
+}
+function IsEndsWith(sTxt: AnsiString; sSubStr: AnsiString): Boolean;
+
+{
+Заменить подстроку sSrcStr в начале sTxt на sDstStr.
+@param sTxt Исходный текст
+@param sSrcStr Исходная подстрока
+@param sDstStr Результирующая подстрока. По умолчанию пустая строка.
+@return Строка с произведенными заменами
+}
+function ReplaceStart(sTxt: AnsiString; sSrcStr: AnsiString; sDstStr: AnsiString = ''): AnsiString;
+
+{
+Заменить подстроку sSrcStr в конце sTxt на sDstStr.
+@param sTxt Исходный текст
+@param sSrcStr Исходная подстрока
+@param sDstStr Результирующая подстрока. По умолчанию пустая строка.
+@return Строка с произведенными заменами
+}
+function ReplaceEnd(sTxt: AnsiString; sSrcStr: AnsiString; sDstStr: AnsiString = ''): AnsiString;
 
 implementation
 
@@ -335,6 +369,63 @@ begin
     Result := LConvEncoding.UTF8ToCP1251(LConvEncoding.CP866ToUTF8(sTxt))
   else
     Result := LConvEncoding.ConvertEncoding(sTxt, sFromEncoding, sToEncoding);
+end;
+
+{
+Проверка на начало строки с подстроки.
+@param sTxt Проверяемый текст
+@param sSubStr Проверяемая подстрока
+@return True - sTxt начинается с sSubStr, False - нет.
+}
+function IsStartsWith(sTxt: AnsiString; sSubStr: AnsiString): Boolean;
+var
+  sub_str: AnsiString;
+begin
+  sub_str := Copy(sTxt, 0, Length(sSubStr));
+  Result := sSubStr = sub_str;
+end;
+
+{
+Проверка на окончание строки с подстроки.
+@param sTxt Проверяемый текст
+@param sSubStr Проверяемая подстрока
+@return True - sTxt оканчивается на sSubStr, False - нет.
+}
+function IsEndsWith(sTxt: AnsiString; sSubStr: AnsiString): Boolean;
+var
+  sub_str: AnsiString;
+begin
+  sub_str := Copy(sTxt, Length(sTxt) - Length(sSubStr), Length(sSubStr));
+  Result := sSubStr = sub_str;
+end;
+
+{
+Заменить подстроку sSrcStr в начале sTxt на sDstStr.
+@param sTxt Исходный текст
+@param sSrcStr Исходная подстрока
+@param sDstStr Результирующая подстрока. По умолчанию пустая строка.
+@return Строка с произведенными заменами
+}
+function ReplaceStart(sTxt: AnsiString; sSrcStr: AnsiString; sDstStr: AnsiString): AnsiString;
+begin
+  Result := sTxt;
+  if IsStartsWith(sTxt, sSrcStr) then
+    // ВНИМАНИЕ! Берем следующий символ--------------V
+    Result := sDstStr + Copy(sTxt, Length(sSrcStr) + 1, Length(sTxt) - Length(sSrcStr));
+end;
+
+{
+Заменить подстроку sSrcStr в конце sTxt на sDstStr.
+@param sTxt Исходный текст
+@param sSrcStr Исходная подстрока
+@param sDstStr Результирующая подстрока. По умолчанию пустая строка.
+@return Строка с произведенными заменами
+}
+function ReplaceEnd(sTxt: AnsiString; sSrcStr: AnsiString; sDstStr: AnsiString = ''): AnsiString;
+begin
+  Result := sTxt;
+  if IsEndsWith(sTxt, sSrcStr) then
+    Result := Copy(sTxt, Length(sTxt) - Length(sSrcStr), Length(sSrcStr)) + sDstStr;
 end;
 
 end.
