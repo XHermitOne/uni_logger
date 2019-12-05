@@ -13,29 +13,27 @@ FROM_UNIXTIME(conv(hex(concat(SUBSTRING(CONVERT(data USING ascii),7,1),
         SUBSTRING(CONVERT(data USING ascii),4,1))), 16,10)) AS dt,
 -- температура
 ASCII(SUBSTRING(CONVERT(data USING ascii),8,1)) AS temperature,
--- показания на входе №1
+-- нижний лимит измеряемого параметра (мА * 100)
+conv(hex(concat(SUBSTRING(CONVERT(data USING ascii),10,1),
+         SUBSTRING(CONVERT(data USING ascii),9,1))), 16,10) AS limit_min,
+-- верхний лимит измеряемого параметра (мА * 100)
 conv(hex(concat(SUBSTRING(CONVERT(data USING ascii),12,1),
-        SUBSTRING(CONVERT(data USING ascii),11,1),
-        SUBSTRING(CONVERT(data USING ascii),10,1),
-        SUBSTRING(CONVERT(data USING ascii),9,1))), 16,10) AS value1,
--- показания на входе №2
+         SUBSTRING(CONVERT(data USING ascii),11,1))), 16,10) AS limit_max,
+-- Причина передачи пакета
+ASCII(SUBSTRING(CONVERT(data USING ascii),13,1)) AS transfer_reason,
+-- Состояние входов/выходов ТП-11
+ASCII(SUBSTRING(CONVERT(data USING ascii),14,1)) AS in_out_state,
+
+-- Измеренный ток устройства (мА * 100)
 conv(hex(concat(SUBSTRING(CONVERT(data USING ascii),16,1),
-        SUBSTRING(CONVERT(data USING ascii),15,1),
-        SUBSTRING(CONVERT(data USING ascii),14,1),
-        SUBSTRING(CONVERT(data USING ascii),13,1))), 16,10) AS value2,
--- показания на входе №3
-conv(hex(concat(SUBSTRING(CONVERT(data USING ascii),20,1),
-        SUBSTRING(CONVERT(data USING ascii),19,1),
-        SUBSTRING(CONVERT(data USING ascii),18,1),
-        SUBSTRING(CONVERT(data USING ascii),17,1))), 16,10) AS value3,
--- показания на входе №4
-conv(hex(concat(SUBSTRING(CONVERT(data USING ascii),24,1),
-        SUBSTRING(CONVERT(data USING ascii),23,1),
-        SUBSTRING(CONVERT(data USING ascii),22,1),
-        SUBSTRING(CONVERT(data USING ascii),21,1))), 16,10) AS value4
+        SUBSTRING(CONVERT(data USING ascii),15,1))), 16,10) AS value,
+-- Давление (Атм)
+(conv(hex(concat(SUBSTRING(CONVERT(data USING ascii),16,1),
+        SUBSTRING(CONVERT(data USING ascii),15,1))), 16,10) - 4.0) / 100.0 / (16.0 / 10.0) AS atm
+
 FROM rawdata, devices
 WHERE rawdata.deveui = devices.deveui AND
-      devices.devname = '-T127' AND
+      devices.devname = '-T170' AND
       rawdata.port = 2 AND 
       rawdata.type = 'CONF_UP' AND
       FROM_UNIXTIME(conv(hex(concat(SUBSTRING(CONVERT(data USING ascii),7,1),
