@@ -141,7 +141,7 @@ begin
             continue;
           idx := Pos('=', option);
           option_name := Copy(option, 0, idx - 1);
-          option_value := Copy(option, idx + 1, Length(option)-idx);
+          option_value := Copy(option, idx + 1, Length(option) - idx);
 
           // Значение опции может начинаться с сигнатуры.
           // Такие случаи необходимо обрабатывать отдельно

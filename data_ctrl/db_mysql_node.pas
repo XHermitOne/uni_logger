@@ -303,11 +303,11 @@ begin
   // Строковое представление временного диапазона для SQL выражения
   str_start_dt := FormatDateTime(obj_proto.DATETIME_TXT_FMT, mStartTime);
   str_stop_dt := FormatDateTime(obj_proto.DATETIME_TXT_FMT, dtTime);
-  log.DebugMsgFmt('Запрашиваемый диапазон. <%s> - <%s>', [str_start_dt, str_stop_dt]);
+  //log.DebugMsgFmt('Запрашиваемый диапазон. <%s> - <%s>', [str_start_dt, str_stop_dt]);
 
   // Список читаемых тегов
   tags := CreateTags();
-  log.DebugMsgFmt('Читаемых тегов <%d>', [tags.Count]);
+  //log.DebugMsgFmt('Читаемых тегов <%d>', [tags.Count]);
 
   // Перед началом чтения необходимо очистить буфер
   ClearTimeState();
@@ -332,7 +332,7 @@ begin
   ExecuteSQL(sql);
   // Определить количество записей результата запроса
   rec_count := FSQLQuery.RecordCount;
-  log.DebugMsgFmt('Количество записей [%d]', [rec_count]);
+  //log.DebugMsgFmt('Количество записей [%d]', [rec_count]);
 
   try
     // Перебор по тегам
@@ -340,7 +340,7 @@ begin
     begin
       tag_name := tags.GetKey(i_tag);
       address := tags.GetStrValue(tag_name);
-      log.DebugMsgFmt('Чтение данных тега <%s> по адресу <%s>', [tag_name, address]);
+      //log.DebugMsgFmt('Чтение данных тега <%s> по адресу <%s>', [tag_name, address]);
 
       // Переход на первую строку
       FSQLQuery.First;
@@ -358,13 +358,13 @@ begin
         // Записать в буфер
         if TimeState.HasKey(dt_str) then
         begin
-          log.DebugMsgFmt('Установка тега <%s> значение: <%s> запись буфера за <%s>', [tag_name, value, dt_str]);
+          //log.DebugMsgFmt('Установка тега <%s> значение: <%s> запись буфера за <%s>', [tag_name, value, dt_str]);
           new_state := TimeState.GetByName(dt_str) As TStrDictionary;
           new_state.SetStrValue(tag_name, value);
         end
         else
         begin
-          log.DebugMsgFmt('Добавление тега <%s> значение: <%s>. Создание новой записи буфера за <%s>', [tag_name, value, dt_str]);
+          //log.DebugMsgFmt('Добавление тега <%s> значение: <%s>. Создание новой записи буфера за <%s>', [tag_name, value, dt_str]);
           new_state := CreateTags(True);
           new_state.SetStrValue(tag_name, value);
           TimeState.AddObject(dt_str, new_state);
@@ -390,21 +390,21 @@ begin
   if Properties.HasKey('dt_frame_tick') then
   begin
     value := Properties.GetStrValue('dt_frame_tick');
-    log.DebugMsgFmt('Кадр реистрируемых данных в буфере <%s>', [value]);
+    // log.DebugMsgFmt('Кадр реистрируемых данных в буфере <%s>', [value]);
     DTFrameTick.Scan(obj_proto.DATETIME_TXT_FMT, value);
   end;
 
   if Properties.HasKey('sql_fmt') then
   begin
     value := Properties.GetStrValue('sql_fmt');
-    log.DebugMsgFmt('Формат SQL <%s>', [value]);
+    // log.DebugMsgFmt('Формат SQL <%s>', [value]);
     SQLFmt := value;
   end;
 
   if Properties.HasKey('dt_field_name') then
   begin
     value := Properties.GetStrValue('dt_field_name');
-    log.DebugMsgFmt('Имя поля даты-времени <%s>', [value]);
+    // log.DebugMsgFmt('Имя поля даты-времени <%s>', [value]);
     DtFieldName := value;
   end;
 end;

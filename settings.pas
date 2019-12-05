@@ -1,7 +1,7 @@
 {
 Модуль поддержки настроек программы
 
-Версия: 0.0.2.4
+Версия: 0.0.2.5
 }
 unit settings;
 
@@ -197,6 +197,7 @@ end;
 
 {
 Загрузка настроек из INI файла.
+Содержимое INI файла грузиться в Content.
 @param (sINIFileName Полное имя конфигурационного файла.
         Если не определено, то генерируется.)
 @return: (True - загрузка параметров прошла успешно,
@@ -233,11 +234,16 @@ var
   i: Integer;
   parent_section_list: Array Of String;
   parent_section_name: AnsiString;
+
 begin
+  // Создаем объект секции
   section := TStrDictionary.Create;
   if FContent.HasKey(sSectionName) then
   begin
+    // Если запрашиваеммая секция есть в INI файле, то обновить объект секции
     obj_section := FContent.GetByName(sSectionName) As TStrDictionary;
+    // В секции из INI файла может отсутствовать наименование
+    // поэтому добавляем его
     obj_section.AddStrValue('name', sSectionName);
     // DebugMsg(Format('Класс секции <%s>', [obj_section.ClassName]));
     if obj_section <> nil then
@@ -250,23 +256,31 @@ begin
 
   if not section.HasKey('parent') then
   begin
+    // Если нет ссылки на родительское описание просто вернуть созданную секцию
     Result := section;
     Exit;
   end
   else if section.GetStrValue('parent') = '' then
   begin
+    // Если ключ parent есть, но он не определен, то удаляем ключ parent bp секции и
+    // возвращаем созданную секцию
     section.DelItem('parent');
     Result := section;
     Exit;
   end
   else if not FContent.HasKey(section.GetStrValue('parent')) then
   begin
+    // Если описание секции с именем указанным в parent нет в INI файле, то
+    // удаляем ключ parent из описания секции, сообщаем об ошибке и
+    // возвращаем созданную секцию
     log.WarningMsgFmt('Запрашиваемая секция <%s> как родительская для <%s> не найдена', [section.GetStrValue('parent'), sSectionName]);
     section.DelItem('parent');
     Result := section;
     Exit;
   end
   else
+    // В качестве родительского ключа может указываться список имен
+    // Проверяем такой случай
     if IsParseStrList(section.GetStrValue('parent')) then
     begin
       // Список имен
@@ -277,8 +291,12 @@ begin
         parent_section_name := parent_section_list[i];
         parent_section := BuildSection(parent_section_name);
         result_section.Update(parent_section);
+        // !!! После обновления результирующей секции необходимо освободить память
+        parent_section.Destroy;
       end;
       result_section.Update(section);
+      // !!! После обновления результирующей секции необходимо освободить память
+      section.Destroy;
       result_section.DelItem('parent');
       Result := result_section;
       Exit;
@@ -288,12 +306,16 @@ begin
       // Имя родительской секции
       parent_section := BuildSection(section.GetStrValue('parent'));
       parent_section.Update(section);
+      // !!! После обновления результирующей секции необходимо освободить память
+      section.Destroy;
       parent_section.DelItem('parent');
       Result := parent_section;
       Exit;
     end;
 
-  Result := section;
+  // Все другие случаи считаем ошибочные
+  section.Destroy;
+  Result := nil;
 end;
 
 {

@@ -1,7 +1,7 @@
 {
 Модуль поддержки словарей
 
-Версия: 0.0.2.3
+Версия: 0.0.2.5
 }
 unit dictionary;
 
@@ -103,9 +103,11 @@ type
       function Update(Dictionary: TStrDictionary; bAutoFree: Boolean = False): Boolean;
       {
       Функция удаления элемента словаря по ключу
-      @param sKey Ключ
+      @param sKey Запрашиваемый ключ
+      @param bAutoFree Автоматически удалить объект-значение?
+      @return True/False
       }
-      function DelItem(sKey: AnsiString): Boolean;
+      function DelItem(sKey: AnsiString; bAutoFree: Boolean = True): Boolean;
       {
       Добавить строку в словарь
       @param sKey Ключ
@@ -192,10 +194,11 @@ end;
 Функция очистки содержимого словаря
 @param bAutoFree Автоматическое удаление элементов из памяти
 }
-function TStrDictionary.ClearContent(bAutoFree: Boolean = True): Boolean;
+function TStrDictionary.ClearContent(bAutoFree: Boolean): Boolean;
 var
   i: Integer;
   obj: TObject;
+
 begin
   Result := False;
   if Count > 0 then
@@ -206,6 +209,7 @@ begin
     end
     else
     begin
+      // Перебираем элементы начиная с последнего
       for i := Count - 1 downto 0 do
       begin
         obj := Objects[i];
@@ -250,7 +254,7 @@ begin
       else
         item_class := '<nil>';
 
-        msg := Format(#9'%s'#9'='#9'%s', [item_name, item_class]);
+        msg := Format('    %s  =  %s', [item_name, item_class]);
         log.ServiceMsg(msg);
       end;
 
@@ -274,7 +278,7 @@ begin
     for i := 0 to GetCount-1 do
     begin
       item_name := Strings[i];
-      log.ServiceMsgFmt(#9'%s', [item_name]);
+      log.ServiceMsgFmt('    %s', [item_name]);
     end;
   except
     log.FatalMsg('Ошибка печати ключей словаря');
@@ -394,6 +398,7 @@ var
   i: Integer;
   key: AnsiString;
   obj: TObject;
+
 begin
   if Dictionary = nil then
   begin
@@ -409,8 +414,11 @@ begin
       if HasKey(key) then
         SetStrValue(key, (obj As TObjString).Value)
       else
+      begin
         // Добавление строкового объекта
-        AddStrValue(key, (obj As TObjString).Value)
+        AddStrValue(key, (obj As TObjString).Value);
+        log.DebugMsgFmt('Добавление ключа <%s>', [key]);
+      end
     else
       //Добавление объекта
       AddObject(key, obj);
@@ -423,13 +431,22 @@ begin
 end;
 
 {
-Функция удаления элемента словаря
+Функция удаления элемента словаря по ключу.
 }
-function TStrDictionary.DelItem(sKey: AnsiString): Boolean;
+function TStrDictionary.DelItem(sKey: AnsiString; bAutoFree: Boolean): Boolean;
 var
   idx: Integer;
+  obj: TObject;
+
 begin
   idx := IndexOf(sKey);
+
+  if bAutoFree then
+  begin
+    obj := Objects[idx];
+    obj.Destroy;
+  end;
+
   Delete(idx);
   Result := True;
 end;
