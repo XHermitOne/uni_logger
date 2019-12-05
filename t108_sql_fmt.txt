@@ -1,0 +1,45 @@
+SELECT
+-- заряд батареи
+ASCII(SUBSTRING(CONVERT(data USING ascii),2,1)) AS battery_charge,
+-- время снятия показаний
+conv(hex(concat(SUBSTRING(CONVERT(data USING ascii),7,1),
+        SUBSTRING(CONVERT(data USING ascii),6,1),
+        SUBSTRING(CONVERT(data USING ascii),5,1),
+        SUBSTRING(CONVERT(data USING ascii),4,1))), 16,10) AS dt_utc,
+-- время снятия показаний
+FROM_UNIXTIME(conv(hex(concat(SUBSTRING(CONVERT(data USING ascii),7,1),
+        SUBSTRING(CONVERT(data USING ascii),6,1),
+        SUBSTRING(CONVERT(data USING ascii),5,1),
+        SUBSTRING(CONVERT(data USING ascii),4,1))), 16,10)) AS dt,
+-- температура
+ASCII(SUBSTRING(CONVERT(data USING ascii),8,1)) AS temperature,
+-- показания на входе №1
+conv(hex(concat(SUBSTRING(CONVERT(data USING ascii),12,1),
+        SUBSTRING(CONVERT(data USING ascii),11,1),
+        SUBSTRING(CONVERT(data USING ascii),10,1),
+        SUBSTRING(CONVERT(data USING ascii),9,1))), 16,10) AS value1,
+-- показания на входе №2
+conv(hex(concat(SUBSTRING(CONVERT(data USING ascii),16,1),
+        SUBSTRING(CONVERT(data USING ascii),15,1),
+        SUBSTRING(CONVERT(data USING ascii),14,1),
+        SUBSTRING(CONVERT(data USING ascii),13,1))), 16,10) AS value2,
+-- показания на входе №3
+conv(hex(concat(SUBSTRING(CONVERT(data USING ascii),20,1),
+        SUBSTRING(CONVERT(data USING ascii),19,1),
+        SUBSTRING(CONVERT(data USING ascii),18,1),
+        SUBSTRING(CONVERT(data USING ascii),17,1))), 16,10) AS value3,
+-- показания на входе №4
+conv(hex(concat(SUBSTRING(CONVERT(data USING ascii),24,1),
+        SUBSTRING(CONVERT(data USING ascii),23,1),
+        SUBSTRING(CONVERT(data USING ascii),22,1),
+        SUBSTRING(CONVERT(data USING ascii),21,1))), 16,10) AS value4
+FROM rawdata, devices
+WHERE rawdata.deveui = devices.deveui AND
+      devices.devname = '-T108' AND
+      rawdata.port = 2 AND 
+      rawdata.type = 'CONF_UP' AND
+      FROM_UNIXTIME(conv(hex(concat(SUBSTRING(CONVERT(data USING ascii),7,1),
+        SUBSTRING(CONVERT(data USING ascii),6,1),
+        SUBSTRING(CONVERT(data USING ascii),5,1),
+        SUBSTRING(CONVERT(data USING ascii),4,1))), 16,10)) BETWEEN '%s' AND '%s'     
+ORDER BY time   
