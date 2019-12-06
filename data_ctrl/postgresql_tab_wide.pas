@@ -172,6 +172,12 @@ begin
     else
       log.InfoMsgFmt('Соединение с БД PostgreSQL <%s : %s : %s>', [aDBHost, aDBName, aDBUserName]);
   except
+    log.ErrorMsg('PostgreSQL connection string:');
+    log.ErrorMsgFmt('    Host:    %s', [aDBHost]);
+    log.ErrorMsgFmt('    Port:    %d', [aDBPort]);
+    log.ErrorMsgFmt('    DatabaseName:    %s', [aDBName]);
+    log.ErrorMsgFmt('    Username:    %s', [aDBUserName]);
+    log.ErrorMsgFmt('    Password:    %s', [aDBPassword]);
     log.FatalMsg('Ошибка настройки параметров подключения к БД PostgreSQL');
     Result := False
   end;
