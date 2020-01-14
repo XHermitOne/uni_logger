@@ -276,7 +276,7 @@ function GetDefaultEncoding(): AnsiString;
 begin
     result := 'utf-8';
     if sysfunc.IsOSWindows() then
-        result := 'cp866';
+        result := 'cp1251';
 end;
 
 {

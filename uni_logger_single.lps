@@ -50,9 +50,10 @@
       <Unit6>
         <Filename Value="utils\log.pas"/>
         <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="7"/>
-        <TopLine Value="135"/>
-        <CursorPos X="67" Y="152"/>
+        <TopLine Value="279"/>
+        <CursorPos X="5" Y="312"/>
         <UsageCount Value="30"/>
         <Loaded Value="True"/>
       </Unit6>
@@ -106,9 +107,8 @@
       <Unit14>
         <Filename Value="data_ctrl\postgresql_tab_wide.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="6"/>
-        <TopLine Value="150"/>
+        <TopLine Value="132"/>
         <CursorPos X="26" Y="175"/>
         <UsageCount Value="30"/>
         <Loaded Value="True"/>
