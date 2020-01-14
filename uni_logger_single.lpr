@@ -167,14 +167,14 @@ begin
   // Очень странно, но при  отключении режима логирования
   // пропадает ошибка Access violation при  вызове ReadRaw
 
-  //if HasOption('l', 'log') then
-  //  LOG_MODE := True;
+  if HasOption('l', 'log') then
+    LOG_MODE := True;
 
   if HasOption('s', 'settings') then
     settings.SETTINGS_INI_FILENAME := Trim(GetOptionValue('s', 'settings'));
 
-  //if LOG_MODE then
-  //  OpenLog(ChangeFileExt(ParamStr(0), '.log'));
+  if LOG_MODE then
+    OpenLog(ChangeFileExt(ParamStr(0), '.log'));
 
   { add your program here }
 
