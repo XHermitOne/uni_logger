@@ -1,2 +1,2 @@
-rem del uni_logger_single.mem
-uni_logger_single.exe --debug --log --settings=settings.ini
+cd c:\uni_logger
+c:\uni_logger\uni_logger_single.exe --debug --log
