@@ -1,7 +1,7 @@
 {
 Модуль поддержки словарей
 
-Версия: 0.0.2.5
+Версия: 0.0.3.1
 }
 unit dictionary;
 
@@ -54,7 +54,6 @@ type
     public
       constructor Create();
       destructor Destroy; override;
-      procedure Free;
 
       {
       Функция очистки содержимого словаря
@@ -178,16 +177,13 @@ end;
 
 destructor TStrDictionary.Destroy;
 begin
-  // ВНИМАНИЕ! Из Destroy необходимо вызывать Free.
-  // В Free не должно быть вызова inherited Free.
-  // Тогда не происходит утечки памяти
-  Free;
-  inherited Destroy;
-end;
-
-procedure TStrDictionary.Free;
-begin
   ClearContent(True);
+
+  // ВНИМАНИЕ! Нельзя использовать функции Free.
+  // Если объект создается при помощи Create, то удаляться из
+  // памяти должен с помощью Dуstroy
+  // Тогда не происходит утечки памяти
+  inherited Destroy;
 end;
 
 {

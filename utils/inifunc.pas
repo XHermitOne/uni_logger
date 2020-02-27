@@ -30,7 +30,6 @@ type
       constructor Create();
       constructor Create(sINIFileName: AnsiString);
       destructor Destroy; override;
-      procedure Free;
 
       {
       Загрузить содержимое INI файла
@@ -81,13 +80,13 @@ end;
 
 destructor TIniDictionary.Destroy;
 begin
-  Free;
-  inherited Destroy;
-end;
-
-procedure TIniDictionary.Free;
-begin
   ClearContent(True);
+
+  // ВНИМАНИЕ! Нельзя использовать функции Free.
+  // Если объект создается при помощи Create, то удаляться из
+  // памяти должен с помощью Dуstroy
+  // Тогда не происходит утечки памяти
+  inherited Destroy;
 end;
 
 {

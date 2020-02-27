@@ -5,7 +5,7 @@
           'ИМЯ_ИСТОЧНИКА_ДАННЫХ.имя_тега:Тип_поля_в_PostgreSQL'.
           Например: 'SOURCE_FIRST.tag_mode:Varchar(20)'
 
-Версия: 0.0.1.3
+Версия: 0.0.3.1
 }
 unit postgresql_tab_wide;
 
@@ -99,7 +99,6 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure Free;
 
     { Выбрать описания тегов из свойств }
     function CreateTags(): TStrDictionary;
@@ -133,19 +132,17 @@ end;
 
 destructor TICPostgreSQLTableWide.Destroy;
 begin
-  Free;
-
-  inherited Destroy;
-end;
-
-procedure TICPostgreSQLTableWide.Free;
-begin
   Disconnect();
-  FSQLQuery.Free;
-  FSQLTransaction.Free;
-  FPQConnection.Free;
 
-  // inherited Free;
+  FSQLQuery.Destroy;
+  FSQLTransaction.Destroy;
+  FPQConnection.Destroy;
+
+  // ВНИМАНИЕ! Нельзя использовать функции Free.
+  // Если объект создается при помощи Create, то удаляться из
+  // памяти должен с помощью Dуstroy
+  // Тогда не происходит утечки памяти
+  inherited Destroy;
 end;
 
 { Настроить параметры соединения с БД }

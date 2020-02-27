@@ -1,7 +1,7 @@
 {
 Модуль классов движка
 
-Версия: 0.0.2.2
+Версия: 0.0.3.1
 }
 
 unit engine;
@@ -46,7 +46,6 @@ type
     public
       constructor Create(TheOwner: TComponent);
       destructor Destroy; override;
-      procedure Free;
 
       {
       Проинициализировать конфигурационные переменные в соответствии с настройками
@@ -215,15 +214,14 @@ end;
 
 destructor TICLoggerProto.Destroy;
 begin
-  Free;
-  inherited Destroy;
-end;
-
-procedure TICLoggerProto.Free;
-begin
   DestroySources();
   DestroyDestinations();
   FSettingsManager.Destroy;
+  // ВНИМАНИЕ! Нельзя использовать функции Free.
+  // Если объект создается при помощи Create, то удаляться из
+  // памяти должен с помощью Dуstroy
+  // Тогда не происходит утечки памяти
+  inherited Destroy;
 end;
 
 {

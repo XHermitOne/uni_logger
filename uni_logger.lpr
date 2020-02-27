@@ -119,7 +119,9 @@ Uses
 
 begin
   { Чтение параметров коммандной строки }
-  if Application.HasOption('T', 'test') then
+  if 
+  Application.Title:='Daemon application';
+ Application.HasOption('T', 'test') then
     { Если указан режим тестирования, то запоминаем его в переменной }
     engine.TEST_SERVICE_MODE := True;
   if Application.HasOption('t', 'tick') then
