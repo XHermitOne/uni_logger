@@ -247,7 +247,7 @@ end;
 }
 function DateTimeToFileTime(dtFileTime: TDateTime): TFileTime;
 var
-  LocalFileTime, Ft: TFileTime;
+  LocalFileTime: TFileTime;
   SystemTime: TSystemTime;
 begin
   Result.dwLowDateTime  := 0;
@@ -256,9 +256,10 @@ begin
   //log.DebugMsgFmt('System time: %d-%d-%d %d:%d:%d.%d', [SystemTime.Year, SystemTime.Month, SystemTime.Day,
   //                                                     SystemTime.Hour, SystemTime.Minute, SystemTime.Second, SystemTime.Millisecond]);
   SystemTimeToFileTime(SystemTime, LocalFileTime);
-  log.DebugMsgFmt('Local file time: %s', [FormatDateTime('YYYY-MM-DD HH:NN:SS', FileTimeToDateTime(LocalFileTime))]);
-  LocalFileTimeToFileTime(LocalFileTime, Ft);
-  log.DebugMsgFmt('File time: %s', [FormatDateTime('YYYY-MM-DD HH:NN:SS', FileTimeToDateTime(Ft))]);
+  //log.DebugMsgFmt('Local file time: %s', [FormatDateTime('YYYY-MM-DD HH:NN:SS', FileTimeToDateTime(LocalFileTime))]);
+  // Перевод к времени по гринвичу:
+  //LocalFileTimeToFileTime(LocalFileTime, Ft);
+  //log.DebugMsgFmt('File time: %s', [FormatDateTime('YYYY-MM-DD HH:NN:SS', FileTimeToDateTime(Ft))]);
   Result := LocalFileTime;
 end;
 {$ENDIF}
