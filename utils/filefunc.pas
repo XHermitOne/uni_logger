@@ -256,9 +256,9 @@ begin
   //log.DebugMsgFmt('System time: %d-%d-%d %d:%d:%d.%d', [SystemTime.Year, SystemTime.Month, SystemTime.Day,
   //                                                     SystemTime.Hour, SystemTime.Minute, SystemTime.Second, SystemTime.Millisecond]);
   SystemTimeToFileTime(SystemTime, LocalFileTime);
-  //log.DebugMsgFmt('Local file time: %s', [FormatDateTime('YYYY-MM-DD HH:NN:SS', FileDateToDateTime(LocalFileTime)]);
-  //LocalFileTimeToFileTime(LocalFileTime, Ft);
-  //log.DebugMsgFmt('File time: %s', [FormatDateTime('YYYY-MM-DD HH:NN:SS', FileDateToDateTime(Ft))]);
+  log.DebugMsgFmt('Local file time: %s', [FormatDateTime('YYYY-MM-DD HH:NN:SS', FileTimeToDateTime(LocalFileTime))]);
+  LocalFileTimeToFileTime(LocalFileTime, Ft);
+  log.DebugMsgFmt('File time: %s', [FormatDateTime('YYYY-MM-DD HH:NN:SS', FileTimeToDateTime(Ft))]);
   Result := LocalFileTime;
 end;
 {$ENDIF}
