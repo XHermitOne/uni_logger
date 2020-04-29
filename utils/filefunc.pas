@@ -253,11 +253,13 @@ begin
   Result.dwLowDateTime  := 0;
   Result.dwHighDateTime := 0;
   DateTimeToSystemTime(dtFileTime, SystemTime);
-  log.DebugMsgFmt('System time: %d-%d-%d %d:%d:%d.%d', [SystemTime.Year, SystemTime.Month, SystemTime.Day,
-                                                       SystemTime.Hour, SystemTime.Minute, SystemTime.Second, SystemTime.Millisecond]);
+  //log.DebugMsgFmt('System time: %d-%d-%d %d:%d:%d.%d', [SystemTime.Year, SystemTime.Month, SystemTime.Day,
+  //                                                     SystemTime.Hour, SystemTime.Minute, SystemTime.Second, SystemTime.Millisecond]);
   SystemTimeToFileTime(SystemTime, LocalFileTime);
-  LocalFileTimeToFileTime(LocalFileTime, Ft);
-  Result := Ft;
+  //log.DebugMsgFmt('Local file time: %s', [FormatDateTime('YYYY-MM-DD HH:NN:SS', FileDateToDateTime(LocalFileTime)]);
+  //LocalFileTimeToFileTime(LocalFileTime, Ft);
+  //log.DebugMsgFmt('File time: %s', [FormatDateTime('YYYY-MM-DD HH:NN:SS', FileDateToDateTime(Ft))]);
+  Result := LocalFileTime;
 end;
 {$ENDIF}
 
