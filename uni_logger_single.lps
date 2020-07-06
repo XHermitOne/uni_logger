@@ -29,11 +29,10 @@
       <Unit3>
         <Filename Value="utils\filefunc.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="4"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="238"/>
         <CursorPos X="3" Y="263"/>
         <UsageCount Value="35"/>
-        <Loaded Value="True"/>
       </Unit3>
       <Unit4>
         <Filename Value="utils\inifunc.pas"/>
@@ -109,10 +108,9 @@
       <Unit14>
         <Filename Value="data_ctrl\postgresql_tab_wide.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="437"/>
-        <CursorPos X="88" Y="460"/>
+        <TopLine Value="447"/>
+        <CursorPos X="106" Y="454"/>
         <UsageCount Value="35"/>
         <Loaded Value="True"/>
       </Unit14>
@@ -241,9 +239,10 @@
       <Unit37>
         <Filename Value="data_ctrl\db_mysql_node.pas"/>
         <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="3"/>
-        <TopLine Value="296"/>
-        <CursorPos X="69" Y="305"/>
+        <TopLine Value="337"/>
+        <CursorPos X="9" Y="358"/>
         <UsageCount Value="35"/>
         <Loaded Value="True"/>
       </Unit37>
@@ -273,7 +272,7 @@
         <UsageCount Value="10"/>
       </Unit41>
     </Units>
-    <JumpHistory Count="7" HistoryIndex="6">
+    <JumpHistory Count="2" HistoryIndex="1">
       <Position1>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
         <Caret Line="441" Column="37" TopLine="398"/>
@@ -282,26 +281,6 @@
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
         <Caret Line="423" Column="44" TopLine="404"/>
       </Position2>
-      <Position3>
-        <Filename Value="utils\filefunc.pas"/>
-        <Caret Line="261" Column="3" TopLine="236"/>
-      </Position3>
-      <Position4>
-        <Filename Value="utils\filefunc.pas"/>
-        <Caret Line="259" Column="113" TopLine="238"/>
-      </Position4>
-      <Position5>
-        <Filename Value="utils\filefunc.pas"/>
-        <Caret Line="261" Column="113" TopLine="238"/>
-      </Position5>
-      <Position6>
-        <Filename Value="utils\filefunc.pas"/>
-        <Caret Line="259" Column="100" TopLine="238"/>
-      </Position6>
-      <Position7>
-        <Filename Value="utils\filefunc.pas"/>
-        <Caret Line="261" Column="83" TopLine="238"/>
-      </Position7>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>

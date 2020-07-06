@@ -340,7 +340,7 @@ begin
     begin
       tag_name := tags.GetKey(i_tag);
       address := tags.GetStrValue(tag_name);
-      //log.DebugMsgFmt('Чтение данных тега <%s> по адресу <%s>', [tag_name, address]);
+      log.DebugMsgFmt('Чтение данных тега <%s> по адресу <%s>', [tag_name, address]);
 
       // Переход на первую строку
       FSQLQuery.First;
@@ -354,6 +354,8 @@ begin
         dt_time := FSQLQuery.FieldByName(DTFieldName).AsDateTime;
         // Время в строковом представлении
         dt_str := FormatDateTime(obj_proto.DATETIME_TXT_FMT, dt_time);
+
+        log.DebugMsgFmt('Время <%s>. Значение <%s>', [dt_str, value]);
 
         // Записать в буфер
         if TimeState.HasKey(dt_str) then
