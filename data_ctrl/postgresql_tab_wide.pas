@@ -456,8 +456,11 @@ begin
       field_names := DATETIME_FIELD_NAME + ', ' + field_names;
     if dtTime <> 0 then
       param_names := ':' + DATETIME_FIELD_NAME + ', ' + param_names;
+
+    log.DebugMsgFmt('Время: <%s>', [dtTime]);
     log.DebugMsgFmt('Имена полей строкой <%s>', [field_names]);
-    log.DebugMsgFmt('Параметры строкой <%s>', [param_names]);
+    // log.DebugMsgFmt('Параметры строкой <%s>', [param_names]);
+
     if dtTime <> 0 then
       sql := Format(INSERT_NOT_EXISTS_RECORD_SQL_FMT, [aTableName, field_names, param_names, aTableName, DATETIME_FIELD_NAME, ':' + DATETIME_FIELD_NAME])
     else
