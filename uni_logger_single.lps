@@ -109,10 +109,9 @@
       <Unit14>
         <Filename Value="data_ctrl\postgresql_tab_wide.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="444"/>
-        <CursorPos X="7" Y="479"/>
+        <TopLine Value="452"/>
+        <CursorPos X="10" Y="479"/>
         <UsageCount Value="35"/>
         <Loaded Value="True"/>
       </Unit14>
@@ -241,9 +240,10 @@
       <Unit37>
         <Filename Value="data_ctrl\db_mysql_node.pas"/>
         <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="3"/>
-        <TopLine Value="317"/>
-        <CursorPos X="3" Y="335"/>
+        <TopLine Value="305"/>
+        <CursorPos X="26" Y="311"/>
         <UsageCount Value="35"/>
         <Loaded Value="True"/>
       </Unit37>
@@ -273,7 +273,7 @@
         <UsageCount Value="10"/>
       </Unit41>
     </Units>
-    <JumpHistory Count="8" HistoryIndex="7">
+    <JumpHistory Count="7" HistoryIndex="6">
       <Position1>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
         <Caret Line="441" Column="37" TopLine="398"/>
@@ -302,10 +302,6 @@
         <Filename Value="utils\filefunc.pas"/>
         <Caret Line="261" Column="83" TopLine="238"/>
       </Position7>
-      <Position8>
-        <Filename Value="data_ctrl\postgresql_tab_wide.pas"/>
-        <Caret Line="455" Column="90" TopLine="538"/>
-      </Position8>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
