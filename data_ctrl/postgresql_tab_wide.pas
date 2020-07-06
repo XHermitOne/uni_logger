@@ -457,7 +457,7 @@ begin
     if dtTime <> 0 then
       param_names := ':' + DATETIME_FIELD_NAME + ', ' + param_names;
 
-    log.DebugMsgFmt('Время: <%s>', [dtTime]);
+    log.DebugMsgFmt('Время: <%s>', [FormatDateTime(obj_proto.DATETIME_TXT_FMT, dtTime)]);
     log.DebugMsgFmt('Имена полей строкой <%s>', [field_names]);
     // log.DebugMsgFmt('Параметры строкой <%s>', [param_names]);
 
