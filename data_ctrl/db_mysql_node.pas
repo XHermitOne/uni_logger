@@ -140,6 +140,13 @@ begin
   FDTFrameTick := dtfunc.TDateTimeDelta.Create;
 
   FSQLQuery := TSQLQuery.Create(nil);
+  // Правильно использовать:
+  //fSQLQuery.Open;
+  //while not fSQLQuery.EOF do begin
+  //  ...
+  //  fSQLQuery.Next;
+  //end;
+  FSQLQuery.PacketRecords := 100;
   FSQLTransaction := TSQLTransaction.Create(nil);
   FDBConnection := TMySQL55Connection.Create(nil);
 end;
@@ -328,7 +335,7 @@ begin
 
   // Получить SQL выражение
   sql := Format(SQLFmt, [str_start_dt, str_stop_dt]);
-  log.DebugMsgFmt('SQL: %s', [sql]);
+  //log.DebugMsgFmt('SQL: %s', [sql]);
   ExecuteSQL(sql);
   // Определить количество записей результата запроса
   rec_count := FSQLQuery.RecordCount;
