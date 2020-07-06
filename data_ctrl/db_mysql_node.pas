@@ -328,7 +328,7 @@ begin
 
   // Получить SQL выражение
   sql := Format(SQLFmt, [str_start_dt, str_stop_dt]);
-  //log.DebugMsgFmt('SQL: %s', [sql]);
+  log.DebugMsgFmt('SQL: %s', [sql]);
   ExecuteSQL(sql);
   // Определить количество записей результата запроса
   rec_count := FSQLQuery.RecordCount;
