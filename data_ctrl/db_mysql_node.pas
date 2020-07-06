@@ -303,7 +303,7 @@ begin
   // Строковое представление временного диапазона для SQL выражения
   str_start_dt := FormatDateTime(obj_proto.DATETIME_TXT_FMT, mStartTime);
   str_stop_dt := FormatDateTime(obj_proto.DATETIME_TXT_FMT, dtTime);
-  //log.DebugMsgFmt('Запрашиваемый диапазон. <%s> - <%s>', [str_start_dt, str_stop_dt]);
+  log.DebugMsgFmt('Запрашиваемый диапазон. <%s> - <%s>', [str_start_dt, str_stop_dt]);
 
   // Список читаемых тегов
   tags := CreateTags();
@@ -332,7 +332,7 @@ begin
   ExecuteSQL(sql);
   // Определить количество записей результата запроса
   rec_count := FSQLQuery.RecordCount;
-  //log.DebugMsgFmt('Количество записей [%d]', [rec_count]);
+  log.DebugMsgFmt('Количество записей [%d]', [rec_count]);
 
   try
     // Перебор по тегам

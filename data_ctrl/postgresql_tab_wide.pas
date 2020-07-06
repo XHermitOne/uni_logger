@@ -476,7 +476,7 @@ begin
     for i := 0 to Length(StringValues) - 1 do
     begin
       field_type := LowerCase(field_type_list[i]);
-      //log.DebugMsgFmt('Параметр <%s> : <%s> : <%s>', [field_name_list[i], field_type, StringValues[i]]);
+      log.DebugMsgFmt('Параметр <%s> : <%s> : <%s>', [field_name_list[i], field_type, StringValues[i]]);
 
       if strfunc.IsStrInList(field_type, ['float']) then
         if StringValues[i] <> '' then
