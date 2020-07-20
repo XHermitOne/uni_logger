@@ -38,8 +38,5 @@ WHERE rawdata.deveui = devices.deveui AND
       devices.devname = '-T103' AND
       rawdata.port = 2 AND 
       rawdata.type = 'CONF_UP' AND
-      FROM_UNIXTIME(conv(hex(concat(SUBSTRING(CONVERT(data USING ascii),7,1),
-        SUBSTRING(CONVERT(data USING ascii),6,1),
-        SUBSTRING(CONVERT(data USING ascii),5,1),
-        SUBSTRING(CONVERT(data USING ascii),4,1))), 16,10)) BETWEEN '%s' AND '%s'     
+      FROM_UNIXTIME(rawdata.time DIV 1000) BETWEEN '%s' AND '%s'     
 ORDER BY time   
