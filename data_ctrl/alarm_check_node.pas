@@ -130,9 +130,6 @@ end;
 
 { Выполнить скрипт проверки аварии }
 function TICAlarmCheckNode.Execute(aScriptTxt: AnsiString): Boolean;
-var
-  lines: TStringList;
-
 begin
   Result := False;
 
@@ -142,9 +139,7 @@ begin
   end;
 
   try
-    // Выделить память под строки и распарсить
-    lines := strfunc.ParseStrList(aScriptTxt);
-    FScript.Script:= lines;
+    FScript.Script.Text := aScriptTxt;
     if FScript.Compile then
       Result := FScript.Execute
     else
@@ -153,8 +148,6 @@ begin
     log.FatalMsgFmt('Ошибка выполнения скрипта определения аварии\n%s', [aScriptTxt]);
   end;
 
-  // Освободить память под строки
-  lines.Destroy;
 end;
 
 {
