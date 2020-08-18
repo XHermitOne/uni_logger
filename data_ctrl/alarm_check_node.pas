@@ -143,9 +143,9 @@ begin
     if FScript.Compile then
       Result := FScript.Execute
     else
-      log.ErrorMsgFmt('Ошибка компиляции скрипта проверки аварии\n%s', [aScriptTxt]);
+      log.ErrorMsgFmt('Ошибка компиляции скрипта проверки аварии <%s>', [aScriptTxt]);
   except
-    log.FatalMsgFmt('Ошибка выполнения скрипта определения аварии\n%s', [aScriptTxt]);
+    log.FatalMsgFmt('Ошибка выполнения скрипта определения аварии <%s>', [aScriptTxt]);
   end;
 
 end;

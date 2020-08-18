@@ -37,10 +37,10 @@
       <Unit4>
         <Filename Value="utils\inifunc.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="72"/>
-        <CursorPos Y="89"/>
+        <EditorIndex Value="1"/>
+        <CursorPos X="16" Y="4"/>
         <UsageCount Value="37"/>
+        <Loaded Value="True"/>
       </Unit4>
       <Unit5>
         <Filename Value="utils\keyboardfunc.pas"/>
@@ -63,7 +63,7 @@
       <Unit8>
         <Filename Value="utils\strfunc.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="3"/>
         <TopLine Value="370"/>
         <CursorPos X="14" Y="64"/>
         <UsageCount Value="37"/>
@@ -86,7 +86,7 @@
       <Unit11>
         <Filename Value="obj_proto.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="3"/>
+        <EditorIndex Value="4"/>
         <TopLine Value="102"/>
         <CursorPos X="31" Y="346"/>
         <UsageCount Value="37"/>
@@ -117,7 +117,7 @@
       <Unit15>
         <Filename Value="data_ctrl\reg_data_ctrl.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="4"/>
+        <EditorIndex Value="5"/>
         <TopLine Value="6"/>
         <CursorPos Y="133"/>
         <UsageCount Value="37"/>
@@ -241,7 +241,7 @@
       <Unit37>
         <Filename Value="data_ctrl\db_mysql_node.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="1"/>
+        <EditorIndex Value="2"/>
         <TopLine Value="110"/>
         <CursorPos X="66" Y="304"/>
         <UsageCount Value="37"/>
@@ -251,8 +251,8 @@
         <Filename Value="data_ctrl\alarm_check_node.pas"/>
         <IsPartOfProject Value="True"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="137"/>
-        <CursorPos Y="170"/>
+        <TopLine Value="130"/>
+        <CursorPos X="71" Y="148"/>
         <UsageCount Value="22"/>
         <Loaded Value="True"/>
       </Unit38>
@@ -282,7 +282,7 @@
         <UsageCount Value="10"/>
       </Unit42>
     </Units>
-    <JumpHistory Count="11" HistoryIndex="10">
+    <JumpHistory Count="12" HistoryIndex="11">
       <Position1>
         <Filename Value="data_ctrl\alarm_check_node.pas"/>
         <Caret Line="71" Column="24" TopLine="16"/>
@@ -327,6 +327,10 @@
         <Filename Value="data_ctrl\alarm_check_node.pas"/>
         <Caret Line="20"/>
       </Position11>
+      <Position12>
+        <Filename Value="utils\inifunc.pas"/>
+        <Caret Line="89" TopLine="78"/>
+      </Position12>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>

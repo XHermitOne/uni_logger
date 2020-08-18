@@ -1,7 +1,7 @@
 {
 Классы работы с INI файлами
 
-Версия: 0.0.3.1
+Версия: 0.0.3.2
 }
 unit inifunc;
 
@@ -148,6 +148,7 @@ begin
           begin
             // Значение опции храниться в отдельном текстовом многострочном файле
             option_value := filefunc.ReadTxtFile(strfunc.ReplaceStart(option_value, MEMO_SIGNATURE, ''));
+            log.DebugMsgFmt('Чтение расширенной настройки <%s> - <%s>', [option_name, option_value]);
           end;
 
           section_dict.AddStrValue(option_name, option_value);
