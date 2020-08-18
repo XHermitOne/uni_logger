@@ -122,7 +122,7 @@ uses
   Interfaces,
   Classes, SysUtils, CustApp,
   memfunc,
-  engine, log, settings
+  engine, log, settings, pascalscript
   { you can add units after this };
 
 type

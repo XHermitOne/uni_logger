@@ -1,7 +1,7 @@
 {
 Функции работы со строками
 
-Версия: 0.0.5.1
+Версия: 0.0.6.1
 }
 unit strfunc;
 
@@ -150,6 +150,13 @@ function ReplaceStart(sTxt: AnsiString; sSrcStr: AnsiString; sDstStr: AnsiString
 @return Строка с произведенными заменами
 }
 function ReplaceEnd(sTxt: AnsiString; sSrcStr: AnsiString; sDstStr: AnsiString = ''): AnsiString;
+
+{
+Проверка на пустую строку.
+@param sTxt Исходный текст
+@return True - строка пустая False - не пустая строка.
+}
+function IsEmptyStr(sTxt: AnsiString): Boolean;
 
 implementation
 
@@ -426,6 +433,16 @@ begin
   Result := sTxt;
   if IsEndsWith(sTxt, sSrcStr) then
     Result := Copy(sTxt, Length(sTxt) - Length(sSrcStr), Length(sSrcStr)) + sDstStr;
+end;
+
+{
+Проверка на пустую строку.
+@param sTxt Исходный текст
+@return True - строка пустая False - не пустая строка.
+}
+function IsEmptyStr(sTxt: AnsiString): Boolean;
+begin
+  Result := Length(sTxt) = 0;
 end;
 
 end.

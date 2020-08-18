@@ -42,7 +42,7 @@ implementation
 uses
   log,
   // Компоненты - источники данных
-  opc_da_node, opc_hda_node, opc_wt_hda_node, db_mysql_node,
+  opc_da_node, opc_hda_node, opc_wt_hda_node, db_mysql_node, alarm_check_node,
   // Компоненты - приемники данных
   postgresql_tab_wide;
 
@@ -74,6 +74,11 @@ begin
   begin
     { Создание и инициализация MySQL БД сервера }
     Result := db_mysql_node.TICMySQLDBNode.Create;
+  end
+  else if sTypeName = alarm_check_node.ALARM_CHECK_NODE_TYPE then
+  begin
+    { Создание и инициализация узла проверки аварии }
+    Result := alarm_check_node.TICAlarmCheckNode.Create;
   end
   else if sTypeName = postgresql_tab_wide.POSTGRESQL_TAB_WIDE_TYPE then
   begin
