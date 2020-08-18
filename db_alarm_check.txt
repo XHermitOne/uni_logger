@@ -1,3 +1,6 @@
+uses
+  log;
+  
 begin 
-  Result := True;
+  log.DebugMsg('--- Проверка выполнения скрипта ---');
 end.

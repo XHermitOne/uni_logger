@@ -41,16 +41,8 @@ type
   TICAlarmCheckNode = class(TICObjectProto)
 
   private
-    //{
-    //Текст скрипт проверки аварии.
-    //В формате Pascal Script (https://wiki.lazarus.freepascal.org/Pascal_Script/ru).
-    //Результат выполнения скрипта - Текущее состояние аварии.
-    //}
-    //FScriptTxt: AnsiString;
-
     {
     Скрипт проверки аварии.
-    Результат выполнения скрипта - Текущее состояние аварии.
     }
     FScript: TPSScript;
 
@@ -73,15 +65,6 @@ type
     destructor Destroy; override;
     procedure Free;
 
-    //{ Выбрать описания тегов из свойств }
-    //function CreateTags(bClearValue: Boolean = False): TStrDictionary;
-    //
-    //{ Установить свойства в виде списка параметров }
-    //procedure SetPropertiesArray(aArgs: Array Of Const); override;
-    //
-    //{ Установить свойства объекта в виде словаря }
-    //procedure SetProperties(dProperties: TStrDictionary); override;
-    //
     {
     Чтение всех внутренних данных, описанных в свойствах.
     @param dtTime: Время актуальности за которое необходимо получить данные.
@@ -92,7 +75,6 @@ type
 
   published
     property AlarmState: Boolean read FAlarmState;
-    //property ScriptTxt: AnsiString read FScriptTxt write FScriptTxt;
     property Script: TPSScript read FScript;
 
 end;
@@ -101,7 +83,6 @@ end;
 implementation
 
 uses
-  //LCLIntf, // Для вычисления времени выполнения
   log, filefunc, memfunc;
 
 
@@ -130,6 +111,8 @@ end;
 
 { Выполнить скрипт проверки аварии }
 function TICAlarmCheckNode.Execute(aScriptTxt: AnsiString): Boolean;
+var
+  i: Integer;
 begin
   Result := False;
 
@@ -139,11 +122,22 @@ begin
   try
     FScript.Script.Text := aScriptTxt;
     if FScript.Compile then
-      Result := FScript.Execute
+    begin
+      if not FScript.Execute then
+      begin
+        log.ErrorMsgFmt('Объект <%s>. Ошибка выполнения скрипта определения аварии <%s>', [Name, aScriptTxt]);
+        log.ErrorMsg(FScript.ExecErrorToString);
+      end
+      else
+        Result := True;
+    end
     else
-      log.ErrorMsgFmt('Ошибка компиляции скрипта проверки аварии <%s>', [aScriptTxt]);
+      log.ErrorMsgFmt('Объект <%s>. Ошибка компиляции скрипта проверки аварии <%s>', [Name, aScriptTxt]);
+      if FScript.CompilerMessageCount > 0 then
+        for i := 0 to FScript.CompilerMessageCount - 1 do
+          log.ErrorMsg(FScript.CompilerErrorToStr(i));
   except
-    log.FatalMsgFmt('Ошибка выполнения скрипта определения аварии <%s>', [aScriptTxt]);
+    log.FatalMsgFmt('Объект <%s>. Ошибка выполнения скрипта определения аварии <%s>', [Name, aScriptTxt]);
   end;
 
 end;
