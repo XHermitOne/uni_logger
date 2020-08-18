@@ -60,6 +60,12 @@ type
     function Execute(aScriptTxt: AnsiString=''): Boolean;
 
 
+  protected
+    procedure PSScriptCompile(Sender: TPSScript);
+    procedure PSScriptExecImport(Sender: TObject; se: TPSExec;
+                                   x: TPSRuntimeClassImporter);
+    procedure PSScriptExecute(Sender: TPSScript);
+
   public
     constructor Create;
     destructor Destroy; override;
@@ -90,9 +96,10 @@ constructor TICAlarmCheckNode.Create;
 begin
   inherited Create;
 
-  FScript:= TPSScript.Create(nil);
-  //FScript.OnCompile:= OnCompile;
-  //FScript.OnExecImport:= OnExecImport;
+  FScript := TPSScript.Create(nil);
+  FScript.OnCompile := @PSScriptCompile;
+  FScript.OnExecImport := @PSScriptExecImport;
+  FScript.OnExecute := @PSScriptExecute;
 end;
 
 destructor TICAlarmCheckNode.Destroy;
@@ -108,6 +115,50 @@ begin
   FScript.Free;
 end;
 
+procedure TICAlarmCheckNode.PSScriptExecImport(Sender: TObject; se: TPSExec; x: TPSRuntimeClassImporter);
+begin
+  RIRegister_Std(x);
+  RIRegister_Classes(x, True);
+  //RIRegister_Controls(x);
+  //RIRegister_Forms(x);
+  RegisterDateTimeLibrary_R(se);
+  RegisterDLLRuntime(se);
+end;
+
+procedure TICAlarmCheckNode.PSScriptCompile(Sender: TPSScript);
+begin
+  RegisterDateTimeLibrary_C(Sender.Comp);
+
+  Sender.AddFunction(@log.DebugMsg, 'procedure DebugMsg(sMsg: AnsiString; bForcePrint: Boolean = False; bForceLog: Boolean = False)');
+  //Sender.AddFunction(@MWrites, 'procedure Writes(const s: string)');
+  //Sender.AddFunction(@MWritedt,'procedure WriteDT(d : TDateTime)');
+  //Sender.AddFunction(@MWritei, 'procedure Writei(const i: Integer)');
+  //Sender.AddFunction(@MWrited, 'procedure Writed(const f: Double)');
+  //Sender.AddFunction(@MWriteln, 'procedure Writeln');
+  //Sender.AddFunction(@MyVal, 'procedure Val(const s: string; var n, z: Integer)');
+
+  Sender.AddFunction(@FileCreate, 'function FileCreate(const FileName: string): integer)');
+  Sender.AddFunction(@FileWrite, 'function FileWrite(Handle: Integer; const Buffer: pChar; Count: LongWord): Integer)');
+  Sender.AddFunction(@FileClose, 'procedure FileClose(handle: integer)');
+
+  //Sender.AddRegisteredVariable('Application', 'TApplication');
+
+  Sender.AddRegisteredVariable('Self', 'TICAlarmCheckNode');
+
+  SIRegister_Std(Sender.Comp);
+  SIRegister_Classes(Sender.Comp,true);
+  //SIRegister_Controls(Sender.Comp);
+  //SIRegister_Forms(Sender.Comp);
+end;
+
+procedure TICAlarmCheckNode.PSScriptExecute(Sender: TPSScript);
+begin
+  //FScript.SetVarToInstance('APPLICATION', Application);
+  FScript.SetVarToInstance('SELF', Self);
+  //FScript.SetVarToInstance('MEMO1', Memo1);
+  //FScript.SetVarToInstance('MEMO2', Memo2);
+  //PPSVariantVariant(PSScript.GetVariable('VARS'))^.Data := VarArrayCreate([0, 1], varShortInt)
+end;
 
 { Выполнить скрипт проверки аварии }
 function TICAlarmCheckNode.Execute(aScriptTxt: AnsiString): Boolean;
