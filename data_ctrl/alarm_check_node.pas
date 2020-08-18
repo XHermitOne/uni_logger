@@ -82,13 +82,13 @@ type
     //{ Установить свойства объекта в виде словаря }
     //procedure SetProperties(dProperties: TStrDictionary); override;
     //
-    //{
-    //Чтение всех внутренних данных, описанных в свойствах.
-    //@param dtTime: Время актуальности за которое необходимо получить данные.
-    //              Если не определено, то берется текущее системное время.
-    //@return Список прочитанных значений.
-    //}
-    //function ReadAll(dtTime: TDateTime = 0): TStringList; override;
+    {
+    Чтение всех внутренних данных, описанных в свойствах.
+    @param dtTime: Время актуальности за которое необходимо получить данные.
+                  Если не определено, то берется текущее системное время.
+    @return Список прочитанных значений.
+    }
+    function ReadAll(dtTime: TDateTime = 0): TStringList; override;
 
   published
     property AlarmState: Boolean read FAlarmState;
@@ -155,6 +155,22 @@ begin
 
   // Освободить память под строки
   lines.Destroy;
+end;
+
+{
+Чтение всех внутренних данных, описанных в свойствах.
+@param dtTime: Время актуальности за которое необходимо получить данные.
+              Если не определено, то берется текущее системное время.
+@return Список прочитанных значений.
+}
+function TICAlarmCheckNode.ReadAll(dtTime: TDateTime): TStringList;
+var
+  execute_result: Boolean;
+begin
+  execute_result := Execute();
+  log.InfoMsgFmt('Объект <%s>. Результат проверки аварии [%s]', [Name, BoolToStr(execute_result)]);
+
+  Result := nil;
 end;
 
 end.
