@@ -41,12 +41,12 @@ type
   TICAlarmCheckNode = class(TICObjectProto)
 
   private
-    {
-    Текст скрипт проверки аварии.
-    В формате Pascal Script (https://wiki.lazarus.freepascal.org/Pascal_Script/ru).
-    Результат выполнения скрипта - Текущее состояние аварии.
-    }
-    FScriptTxt: AnsiString;
+    //{
+    //Текст скрипт проверки аварии.
+    //В формате Pascal Script (https://wiki.lazarus.freepascal.org/Pascal_Script/ru).
+    //Результат выполнения скрипта - Текущее состояние аварии.
+    //}
+    //FScriptTxt: AnsiString;
 
     {
     Скрипт проверки аварии.
@@ -92,7 +92,7 @@ type
 
   published
     property AlarmState: Boolean read FAlarmState;
-    property ScriptTxt: AnsiString read FScriptTxt write FScriptTxt;
+    //property ScriptTxt: AnsiString read FScriptTxt write FScriptTxt;
     property Script: TPSScript read FScript;
 
 end;
@@ -134,9 +134,7 @@ begin
   Result := False;
 
   if strfunc.IsEmptyStr(aScriptTxt) then
-  begin
-     aScriptTxt := FScriptTxt;
-  end;
+     aScriptTxt := Properties.GetStrValue('script');
 
   try
     FScript.Script.Text := aScriptTxt;

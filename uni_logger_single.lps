@@ -87,7 +87,7 @@
         <Filename Value="obj_proto.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="4"/>
-        <TopLine Value="102"/>
+        <TopLine Value="138"/>
         <CursorPos X="31" Y="346"/>
         <UsageCount Value="37"/>
         <Loaded Value="True"/>
@@ -242,8 +242,8 @@
         <Filename Value="data_ctrl\db_mysql_node.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="110"/>
-        <CursorPos X="66" Y="304"/>
+        <TopLine Value="284"/>
+        <CursorPos X="28" Y="323"/>
         <UsageCount Value="37"/>
         <Loaded Value="True"/>
       </Unit37>
@@ -251,8 +251,8 @@
         <Filename Value="data_ctrl\alarm_check_node.pas"/>
         <IsPartOfProject Value="True"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="130"/>
-        <CursorPos X="71" Y="148"/>
+        <TopLine Value="118"/>
+        <CursorPos X="47" Y="133"/>
         <UsageCount Value="22"/>
         <Loaded Value="True"/>
       </Unit38>
@@ -282,7 +282,7 @@
         <UsageCount Value="10"/>
       </Unit42>
     </Units>
-    <JumpHistory Count="12" HistoryIndex="11">
+    <JumpHistory Count="15" HistoryIndex="14">
       <Position1>
         <Filename Value="data_ctrl\alarm_check_node.pas"/>
         <Caret Line="71" Column="24" TopLine="16"/>
@@ -331,6 +331,18 @@
         <Filename Value="utils\inifunc.pas"/>
         <Caret Line="89" TopLine="78"/>
       </Position12>
+      <Position13>
+        <Filename Value="data_ctrl\db_mysql_node.pas"/>
+        <Caret Line="304" Column="66" TopLine="110"/>
+      </Position13>
+      <Position14>
+        <Filename Value="data_ctrl\alarm_check_node.pas"/>
+        <Caret Line="138" TopLine="118"/>
+      </Position14>
+      <Position15>
+        <Filename Value="data_ctrl\db_mysql_node.pas"/>
+        <Caret Line="304" Column="66" TopLine="110"/>
+      </Position15>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
