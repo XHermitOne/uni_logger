@@ -143,7 +143,7 @@ begin
 
   //Sender.AddRegisteredVariable('Application', 'TApplication');
 
-  Sender.AddRegisteredVariable('Self', 'TICAlarmCheckNode');
+  //Sender.AddRegisteredVariable('Self', 'TICAlarmCheckNode');
 
   SIRegister_Std(Sender.Comp);
   SIRegister_Classes(Sender.Comp,true);
@@ -154,7 +154,7 @@ end;
 procedure TICAlarmCheckNode.PSScriptExecute(Sender: TPSScript);
 begin
   //FScript.SetVarToInstance('APPLICATION', Application);
-  FScript.SetVarToInstance('SELF', Self);
+  //FScript.SetVarToInstance('SELF', Self);
   //FScript.SetVarToInstance('MEMO1', Memo1);
   //FScript.SetVarToInstance('MEMO2', Memo2);
   //PPSVariantVariant(PSScript.GetVariable('VARS'))^.Data := VarArrayCreate([0, 1], varShortInt)
