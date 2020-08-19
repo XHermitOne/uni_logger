@@ -129,7 +129,7 @@ procedure TICAlarmCheckNode.PSScriptCompile(Sender: TPSScript);
 begin
   RegisterDateTimeLibrary_C(Sender.Comp);
 
-  Sender.AddFunction(@log.DebugMsg, 'procedure DebugMsg(sMsg: AnsiString; bForcePrint: Boolean = False; bForceLog: Boolean = False)');
+  Sender.AddFunction(@log.DebugMsg, 'procedure DebugMsg(sMsg: AnsiString; bForcePrint: Boolean; bForceLog: Boolean)');
   //Sender.AddFunction(@MWrites, 'procedure Writes(const s: string)');
   //Sender.AddFunction(@MWritedt,'procedure WriteDT(d : TDateTime)');
   //Sender.AddFunction(@MWritei, 'procedure Writei(const i: Integer)');
