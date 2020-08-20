@@ -1,4 +1,4 @@
 begin 
   ErrorMsg('--- Выход из программы ---', True, False);
-  Exit;
+  // Exit;
 end.
