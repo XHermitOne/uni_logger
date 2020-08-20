@@ -14,7 +14,7 @@ uses
   {$IFDEF windows}
   // Windows, ActiveX, ComObj,
   {$ENDIF}
-  Classes, SysUtils, DateUtils, Variants, VarUtils, System,
+  Classes, SysUtils, DateUtils, Variants, VarUtils,
   uPSCompiler,
   uPSR_std, uPSC_std,
   uPSR_classes, uPSC_classes,
@@ -151,7 +151,7 @@ begin
   Sender.AddFunction(@FileWrite, 'function FileWrite(Handle: Integer; const Buffer: pChar; Count: LongWord): Integer)');
   Sender.AddFunction(@FileClose, 'procedure FileClose(handle: integer)');
 
-  Sender.AddFunction(@Exit, 'procedure Exit()');
+  Sender.AddFunction(@Halt, 'procedure Halt(ErrNum: LongInt)');
 
   //Sender.AddRegisteredVariable('Application', 'TApplication');
 
