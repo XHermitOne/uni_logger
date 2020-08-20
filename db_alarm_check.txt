@@ -1,3 +1,4 @@
 begin 
-  DebugMsg('--- Проверка выполнения скрипта ---', True, False);
+  ErrorMsg('--- Р’С‹С…РѕРґ РёР· РїСЂРѕРіСЂР°РјРјС‹ ---', True, False);
+  Exit;
 end.

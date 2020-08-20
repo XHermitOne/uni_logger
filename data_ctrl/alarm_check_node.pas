@@ -14,7 +14,7 @@ uses
   {$IFDEF windows}
   // Windows, ActiveX, ComObj,
   {$ENDIF}
-  Classes, SysUtils, DateUtils, Variants, VarUtils,
+  Classes, SysUtils, DateUtils, Variants, VarUtils, System,
   uPSCompiler,
   uPSR_std, uPSC_std,
   uPSR_classes, uPSC_classes,
@@ -130,6 +130,16 @@ begin
   RegisterDateTimeLibrary_C(Sender.Comp);
 
   Sender.AddFunction(@log.DebugMsg, 'procedure DebugMsg(sMsg: AnsiString; bForcePrint: Boolean; bForceLog: Boolean)');
+  Sender.AddFunction(@log.DebugMsgFmt, 'procedure DebugMsgFmt(sMsgFmt: AnsiString; const aArgs : Array Of Const; bForcePrint: Boolean; bForceLog: Boolean)');
+  Sender.AddFunction(@log.ErrorMsg, 'procedure ErrorMsg(sMsg: AnsiString; bForcePrint: Boolean; bForceLog: Boolean)');
+  Sender.AddFunction(@log.ErrorMsgFmt, 'procedure ErrorMsgFmt(sMsgFmt: AnsiString; const aArgs : Array Of Const; bForcePrint: Boolean; bForceLog: Boolean)');
+  Sender.AddFunction(@log.WarningMsg, 'procedure WarningMsg(sMsg: AnsiString; bForcePrint: Boolean; bForceLog: Boolean)');
+  Sender.AddFunction(@log.WarningMsgFmt, 'procedure WarningMsgFmt(sMsgFmt: AnsiString; const aArgs : Array Of Const; bForcePrint: Boolean; bForceLog: Boolean)');
+  Sender.AddFunction(@log.InfoMsg, 'procedure InfoMsg(sMsg: AnsiString; bForcePrint: Boolean; bForceLog: Boolean)');
+  Sender.AddFunction(@log.InfoMsgFmt, 'procedure InfoMsgFmt(sMsgFmt: AnsiString; const aArgs : Array Of Const; bForcePrint: Boolean; bForceLog: Boolean)');
+  Sender.AddFunction(@log.ServiceMsg, 'procedure ServiceMsg(sMsg: AnsiString; bForcePrint: Boolean; bForceLog: Boolean)');
+  Sender.AddFunction(@log.ServiceMsgFmt, 'procedure ServiceMsgFmt(sMsgFmt: AnsiString; const aArgs : Array Of Const; bForcePrint: Boolean; bForceLog: Boolean)');
+
   //Sender.AddFunction(@MWrites, 'procedure Writes(const s: string)');
   //Sender.AddFunction(@MWritedt,'procedure WriteDT(d : TDateTime)');
   //Sender.AddFunction(@MWritei, 'procedure Writei(const i: Integer)');
@@ -140,6 +150,8 @@ begin
   Sender.AddFunction(@FileCreate, 'function FileCreate(const FileName: string): integer)');
   Sender.AddFunction(@FileWrite, 'function FileWrite(Handle: Integer; const Buffer: pChar; Count: LongWord): Integer)');
   Sender.AddFunction(@FileClose, 'procedure FileClose(handle: integer)');
+
+  Sender.AddFunction(@Exit, 'procedure Exit()');
 
   //Sender.AddRegisteredVariable('Application', 'TApplication');
 
