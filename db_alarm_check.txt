@@ -1,4 +1,7 @@
 begin 
-  ErrorMsg('--- Выход из программы ---', True, False);
-  Halt(1);
+  if not DoPing('10.0.0.31') then
+  begin
+    ErrorMsg('Нет связи с сервером БД MySQL. Выход из программы', True, False);
+    Halt(1);
+  end;
 end.

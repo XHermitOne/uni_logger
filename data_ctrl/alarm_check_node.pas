@@ -89,7 +89,7 @@ end;
 implementation
 
 uses
-  log, filefunc, memfunc;
+  log, filefunc, memfunc, netfunc;
 
 
 constructor TICAlarmCheckNode.Create;
@@ -152,6 +152,8 @@ begin
   Sender.AddFunction(@FileClose, 'procedure FileClose(handle: integer)');
 
   Sender.AddFunction(@Halt, 'procedure Halt(ErrNum: LongInt)');
+
+  Sender.AddFunction(@netfunc.DoPing, 'function DoPing(sHost: AnsiString): Boolean)');
 
   //Sender.AddRegisteredVariable('Application', 'TApplication');
 
