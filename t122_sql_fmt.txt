@@ -37,6 +37,6 @@ FROM rawdata, devices
 WHERE rawdata.deveui = devices.deveui AND
       devices.devname = '-T122' AND
       rawdata.port = 2 AND 
-      rawdata.type = 'CONF_UP' AND
+      (rawdata.type = 'CONF_UP' OR rawdata.type = 'CONF_UP+MAC_LINKADR_ANS') AND
       FROM_UNIXTIME(rawdata.time DIV 1000) BETWEEN '%s' AND '%s'     
 ORDER BY time   
