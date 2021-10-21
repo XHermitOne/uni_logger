@@ -108,6 +108,8 @@ value_time_tick = 0000-00-00 01:00:00
 
 ## Дополнения
 Для доступа к OPC серверу через WtHDAClient.dll необходимо скопировать DLL из папки wthdaclient в %SYSTEMROOT%\System32
+Регистрация DLL:
+%windir%\System32\regsvr32.exe /u WtHDAClient.dll
 
 Описание приемника данных:
 
@@ -139,6 +141,14 @@ fields = ['ИМЯ_ИСТОЧНИКА.имя_тега:тип_поля_в_бд', .
 
 ## Дополнения
 Для записи данных в PostgreSQL необходимо скопировать DLL из папки packages в %SYSTEMROOT%\System32
+
+Регистрация DLL (x32):
+%windir%\System32\regsvr32.exe /u libmysql.dll
+%windir%\System32\regsvr32.exe /u libpq.dll
+
+Регистрация DLL (x64):
+%windir%\SysWOW64\regsvr32.exe /u libmysql.dll
+%windir%\SysWOW64\regsvr32.exe /u libpq.dll
 
 В случае запуска программы черех планировщик задач необходимо проверить запущенали служба Windows OpcEnum.
 В случае если эта служба не запущена, то программа не может опросить/запустить OPC сервера и зависает.
