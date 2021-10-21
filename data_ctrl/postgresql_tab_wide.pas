@@ -88,6 +88,10 @@ type
     function GetPrevSQL(): AnsiString;
     { Получить SQL выражение пост-обработки }
     function GetPostSQL(): AnsiString;
+    { Получить SQL выражение пред-обработки добавления данных }
+    function GetPrevAddSQL(): AnsiString;
+    { Получить SQL выражение пост-обработки добавления данных }
+    function GetPostAddSQL(): AnsiString;
 
     { Функция добавления записи }
     function InsertRecord(aTableName: AnsiString; StringValues: Array Of String;  dtTime: TDateTime=0): Boolean;
@@ -251,8 +255,12 @@ var
   values: Array Of String;
   time_values: TMemRecordSet;
   fields: TStringList;
+  prev_sql, post_sql: AnsiString;
 begin
   log.DebugMsgFmt('Запись всех внутренних данных. Объект <%s>', [Name]);
+
+  prev_sql := GetPrevSQL();
+  post_sql := GetPostSQL();
 
   Result := True;
   // properties := GetProperties();
@@ -276,6 +284,15 @@ begin
     fields.Destroy;
   end;
 
+  // Пред-обработка
+  if not strfunc.IsEmptyStr(prev_sql) then
+  begin
+    if ExecuteSQL(prev_sql) then
+      log.InfoMsgFmt('Пред-обработка. SQL <%s>', [prev_sql])
+    else
+      log.InfoMsgFmt('Ошибка пред-обработки. SQL <%s>', [prev_sql])
+  end;
+
   // Добавить запись
   values := ReadStateValues();
   if (Length(values) > 0) and (not values[0].IsEmpty) then
@@ -286,6 +303,15 @@ begin
     Result := Result and InsertRecords(Properties.GetStrValue('table_name'), time_values);
   // После использования обязательно удаляем рекордсет
   time_values.Destroy;
+
+  // Пост-обработка
+  if not strfunc.IsEmptyStr(post_sql) then
+  begin
+    if ExecuteSQL(post_sql) then
+      log.InfoMsgFmt('Пост-обработка. SQL <%s>', [post_sql])
+    else
+      log.InfoMsgFmt('Ошибка пост-обработки. SQL <%s>', [post_sql])
+  end;
 
   // Закрываем соединение
   if not Disconnect() then
@@ -453,6 +479,18 @@ begin
   Result := Properties.GetStrValue('post_sql');
 end;
 
+{ Получить SQL выражение пред обработки добавления данных }
+function TICPostgreSQLTableWide.GetPrevAddSQL(): AnsiString;
+begin
+  Result := Properties.GetStrValue('prev_add_sql');
+end;
+
+{ Получить SQL выражение пост обработки добавления данных }
+function TICPostgreSQLTableWide.GetPostAddSQL(): AnsiString;
+begin
+  Result := Properties.GetStrValue('post_add_sql');
+end;
+
 { Функция добавления записи }
 function TICPostgreSQLTableWide.InsertRecord(aTableName: AnsiString; StringValues: Array Of String; dtTime: TDateTime): Boolean;
 var
@@ -465,8 +503,8 @@ var
 begin
   Result := False;
   try
-    prev_sql := GetPrevSQL();
-    post_sql := GetPostSQL();
+    prev_sql := GetPrevAddSQL();
+    post_sql := GetPostAddSQL();
     field_name_list := GetFieldNames();
     field_type_list := GetFieldTypes();
 
@@ -494,7 +532,7 @@ begin
     if not strfunc.IsEmptyStr(prev_sql) then
     begin
       FSQLQuery.SQL.Add(prev_sql);
-      log.InfoMsgFmt('Пред-обработка. SQL <%s>', [prev_sql]);
+      log.InfoMsgFmt('Пред-обработка добавления данных. SQL <%s>', [prev_sql]);
     end;
 
     FSQLQuery.SQL.Add(sql);
@@ -502,7 +540,7 @@ begin
     if not strfunc.IsEmptyStr(post_sql) then
     begin
       FSQLQuery.SQL.Add(post_sql);
-      log.InfoMsgFmt('Пост-обработка. SQL <%s>', [post_sql]);
+      log.InfoMsgFmt('Пост-обработка добавления данных. SQL <%s>', [post_sql]);
     end;
 
     if dtTime <> 0 then
