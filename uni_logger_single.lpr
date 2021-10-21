@@ -224,6 +224,8 @@ end;
 var
   Application: TUniLoggerSingleApplication;
 
+{$R *.res}
+
 begin
   //memfunc.InitStatusMemory();
 

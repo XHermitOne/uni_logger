@@ -13,6 +13,7 @@
       <Title Value="UniLogger single mode"/>
       <UseAppBundle Value="False"/>
       <ResourceType Value="res"/>
+      <Icon Value="0"/>
     </General>
     <BuildModes Count="1">
       <Item1 Name="Default" Default="True"/>
@@ -22,13 +23,13 @@
     </PublishOptions>
     <RunParams>
       <local>
-        <CommandLineParams Value="--debug --settings=settings_dbg.ini"/>
+        <CommandLineParams Value="--debug --log --settings=settings.ini"/>
       </local>
       <FormatVersion Value="2"/>
       <Modes Count="1">
         <Mode0 Name="default">
           <local>
-            <CommandLineParams Value="--debug --settings=settings_dbg.ini"/>
+            <CommandLineParams Value="--debug --log --settings=settings.ini"/>
           </local>
         </Mode0>
       </Modes>
@@ -222,6 +223,10 @@
       <OtherUnitFiles Value="utils;data_ctrl;opc_client;opcdelphi;wthdaclient"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
+    <CodeGeneration>
+      <TargetCPU Value="i386"/>
+      <TargetOS Value="win32"/>
+    </CodeGeneration>
     <Linking>
       <Debugging>
         <GenerateDebugInfo Value="False"/>
