@@ -28,10 +28,10 @@ const
   DATETIME_FIELD_NAME: AnsiString = 'dt_log';
 
   CREATE_TABLE_SQL_FMT: AnsiString = 'CREATE TABLE %s (id BIGSERIAL NOT NULL, %s, CONSTRAINT %s_pkey PRIMARY KEY (id));';
-  INSERT_RECORD_SQL_FMT: AnsiString = 'INSERT INTO %s (%s) VALUES (%s)';
+  INSERT_RECORD_SQL_FMT: AnsiString = 'INSERT INTO %s (%s) VALUES (%s);';
   // Добавление не существующей записи
-  INSERT_NOT_EXISTS_RECORD_SQL_FMT: AnsiString = 'INSERT INTO %s (%s) SELECT %s WHERE NOT EXISTS (SELECT 1 FROM %s WHERE %s = %s)';
-  UPSERT_RECORD_SQL_FMT: AnsiString = 'INSERT INTO %s (%s) VALUES (%s) ON CONFLICT (%s) DO UPDATE SET (%s) = (%s)';
+  INSERT_NOT_EXISTS_RECORD_SQL_FMT: AnsiString = 'INSERT INTO %s (%s) SELECT %s WHERE NOT EXISTS (SELECT 1 FROM %s WHERE %s = %s);';
+  UPSERT_RECORD_SQL_FMT: AnsiString = 'INSERT INTO %s (%s) VALUES (%s) ON CONFLICT (%s) DO UPDATE SET (%s) = (%s);';
 
   DB_DATETIME_FMT: AnsiString = 'yyyy-mm-dd hh:mm:ss';
   DB_DATE_SEPARATOR: Char = '-';
