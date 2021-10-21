@@ -232,12 +232,15 @@ begin
   end;
 
   try
-    FSQLQuery.Close;
+    // FSQLQuery.Close;
     FSQLQuery.SQL.Clear;
     //FSQLQuery.Insert;
     FSQLQuery.SQL.Add(aSQL);
-    FSQLQuery.Open;
+    // FSQLQuery.Open;
+    FSQLQuery.ExecSQL;
+    FSQLTransaction.Commit;
   except
+    FSQLTransaction.Rollback;
     log.ErrorMsg('Ошибка выполнения SQL выражения');
     log.FatalMsgFmt('%s', [aSQL]);
     Result := False;
