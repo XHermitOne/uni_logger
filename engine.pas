@@ -23,7 +23,7 @@ const
 
   DEFAULT_TIMER_TICK: Integer = 1000;
 
-  VERSION: AnsiString = '0.0.2.2';
+  VERSION: AnsiString = '0.0.3.1';
 
 
 type

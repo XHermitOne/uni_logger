@@ -5,7 +5,7 @@
           'ИМЯ_ИСТОЧНИКА_ДАННЫХ.имя_тега:Тип_поля_в_PostgreSQL'.
           Например: 'SOURCE_FIRST.tag_mode:Varchar(20)'
 
-Версия: 0.0.4.1
+Версия: 0.0.4.2
 }
 unit postgresql_tab_wide;
 

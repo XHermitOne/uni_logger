@@ -135,7 +135,9 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+
     procedure WriteHelp; virtual;
+    procedure WriteVersion; virtual;
   end;
 
 { TUniLoggerSingleApplication }
@@ -145,7 +147,7 @@ var
   ErrorMsg: String;
 begin
   // Чтание параметров коммандной строки
-  ErrorMsg := CheckOptions('hdls:','help debug log settings:');
+  ErrorMsg := CheckOptions('hvdls:', 'help version debug log settings:');
   if ErrorMsg <> '' then
   begin
     ShowException(Exception.Create(ErrorMsg));
@@ -157,6 +159,13 @@ begin
   if HasOption('h', 'help') then
   begin
     WriteHelp;
+    Terminate;
+    Exit;
+  end;
+
+  if HasOption('v', 'version') then
+  begin
+    WriteVersion;
     Terminate;
     Exit;
   end;
@@ -216,9 +225,15 @@ begin
   PrintColorTxt(Format('Версия: %s', [engine.VERSION]), CYAN_COLOR_TEXT);
   PrintColorTxt('Парметры коммандной строки:', CYAN_COLOR_TEXT);
   PrintColorTxt(Format('    Помощь: %s --help', [ExeName]), CYAN_COLOR_TEXT);
+  PrintColorTxt(Format('    Версия программы: %s --version', [ExeName]), CYAN_COLOR_TEXT);
   PrintColorTxt(Format('    Режим вывода сообщений в консоль: %s --debug', [ExeName]), CYAN_COLOR_TEXT);
   PrintColorTxt(Format('    Режим вывода сообщений в журнал: %s --log', [ExeName]), CYAN_COLOR_TEXT);
   PrintColorTxt(Format('    Файл настройки: %s --settings=имя_файла_настройки.ini', [ExeName]), CYAN_COLOR_TEXT);
+end;
+
+procedure TUniLoggerSingleApplication.WriteVersion;
+begin
+  PrintColorTxt(Format('uni_logger_single. Версия: %s', [engine.VERSION]), CYAN_COLOR_TEXT);
 end;
 
 var
