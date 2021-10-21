@@ -84,6 +84,11 @@ type
     { Получить список Источник_данных.тег из описания }
     function GetSrcTagList(aFields: TStringList = nil): TStringList;
 
+    { Получить SQL выражение пред-обработки }
+    function GetPrevSQL(): AnsiString;
+    { Получить SQL выражение пост-обработки }
+    function GetPostSQL(): AnsiString;
+
     { Функция добавления записи }
     function InsertRecord(aTableName: AnsiString; StringValues: Array Of String;  dtTime: TDateTime=0): Boolean;
 
@@ -436,17 +441,32 @@ begin
     aFields.Destroy;
 end;
 
+{ Получить SQL выражение пред обработки }
+function TICPostgreSQLTableWide.GetPrevSQL(): AnsiString;
+begin
+  Result := Properties.GetStrValue('prev_sql');
+end;
+
+{ Получить SQL выражение пост обработки }
+function TICPostgreSQLTableWide.GetPostSQL(): AnsiString;
+begin
+  Result := Properties.GetStrValue('post_sql');
+end;
+
 { Функция добавления записи }
 function TICPostgreSQLTableWide.InsertRecord(aTableName: AnsiString; StringValues: Array Of String; dtTime: TDateTime): Boolean;
 var
   field_names, param_names: AnsiString;
   sql, field_type: AnsiString;
+  prev_sql, post_sql: AnsiString;
   field_name_list: Array Of String;
   field_type_list: Array Of String;
   i: Integer;
 begin
   Result := False;
   try
+    prev_sql = GetPrevSQL();
+    post_sql = GetPostSQL();
     field_name_list := GetFieldNames();
     field_type_list := GetFieldTypes();
 
@@ -470,7 +490,20 @@ begin
 
     // FSQLQuery.Database := FPQConnection;
     FSQLQuery.SQL.Clear;
+
+    if not strfunc.IsEmptyStr(prev_sql) then
+    begin
+      FSQLQuery.SQL.Add(prev_sql);
+      log.DebugMsgFmt('Пред-обработка. SQL <%s>', [prev_sql]);
+    end;
+
     FSQLQuery.SQL.Add(sql);
+
+    if not strfunc.IsEmptyStr(post_sql) then
+    begin
+      FSQLQuery.SQL.Add(post_sql);
+      log.DebugMsgFmt('Пост-обработка. SQL <%s>', [post_sql]);
+    end;
 
     if dtTime <> 0 then
       FSQLQuery.Params.ParamByName(DATETIME_FIELD_NAME).AsDateTime := dtTime;

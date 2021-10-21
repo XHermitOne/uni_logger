@@ -1,0 +1,4 @@
+UPDATE log_t108_tab_wide 
+SET v1_m3 = (v1 + start_count) * alter_measure 
+FROM ref_count_node_tab 
+WHERE ref_count_node_tab.cod = '-T108/1' AND log_t108_tab_wide.v1_m3 IS NULL;

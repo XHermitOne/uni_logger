@@ -1,0 +1,9 @@
+UPDATE log_t122_tab_wide 
+SET v1_m3 = (v1 + start_count) * alter_measure 
+FROM ref_count_node_tab 
+WHERE ref_count_node_tab.cod = '-T122/1' AND log_t122_tab_wide.v1_m3 IS NULL; 
+
+UPDATE log_t122_tab_wide 
+SET v2_m3 = (v2 + start_count) * alter_measure 
+FROM ref_count_node_tab 
+WHERE ref_count_node_tab.cod = '-T122/2' AND log_t122_tab_wide.v2_m3 IS NULL;
