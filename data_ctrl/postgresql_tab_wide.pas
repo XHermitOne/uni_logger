@@ -5,7 +5,7 @@
           'ИМЯ_ИСТОЧНИКА_ДАННЫХ.имя_тега:Тип_поля_в_PostgreSQL'.
           Например: 'SOURCE_FIRST.tag_mode:Varchar(20)'
 
-Версия: 0.0.3.1
+Версия: 0.0.4.1
 }
 unit postgresql_tab_wide;
 
@@ -465,8 +465,8 @@ var
 begin
   Result := False;
   try
-    prev_sql = GetPrevSQL();
-    post_sql = GetPostSQL();
+    prev_sql := GetPrevSQL();
+    post_sql := GetPostSQL();
     field_name_list := GetFieldNames();
     field_type_list := GetFieldTypes();
 

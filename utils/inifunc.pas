@@ -1,7 +1,7 @@
 {
 Классы работы с INI файлами
 
-Версия: 0.0.3.2
+Версия: 0.0.3.3
 }
 unit inifunc;
 
@@ -96,7 +96,8 @@ function TIniDictionary.LoadIniFile(sINIFileName: AnsiString): Boolean;
 var
   i_section, i_option, idx: Integer;
   ini_file: TIniFile;
-  sections, options: TStringList;
+  section_list: TStringList;
+  option_list: TStringList;
   section_name, option, option_name, option_value: AnsiString;
   section_dict: TStrDictionary;
 
@@ -120,21 +121,21 @@ begin
 
   // ВНИМАНИЕ! Перед использованием списков строк в функции
   // надо их создать/выделить под них память
-  sections := TStringList.Create;
-  options := TStringList.Create;
+  section_list := TStringList.Create;
+  option_list := TStringList.Create;
   try
     try
-      ini_file.ReadSections(sections);
-      for i_section :=0 to sections.Count - 1 do
+      ini_file.ReadSections(section_list);
+      for i_section :=0 to section_list.Count - 1 do
       begin
-        section_name := sections[i_section];
+        section_name := section_list[i_section];
         section_dict := TStrDictionary.Create;
 
-        options.Clear;
-        ini_file.ReadSectionValues(section_name, options);
-        for i_option :=0 to options.Count - 1 do
+        option_list.Clear;
+        ini_file.ReadSectionValues(section_name, option_list);
+        for i_option :=0 to option_list.Count - 1 do
         begin
-          option := Trim(options[i_option]);
+          option := Trim(option_list[i_option]);
           if AnsiStartsStr(';', option) then
             // Это коментарий обрабатывать не надо
             continue;
@@ -163,8 +164,8 @@ begin
     log.FatalMsg('Ошибка загрузки настроек программы');
   end;
   // ВНИМАНИЕ! В конце обязательно освободить память
-  options.Destroy;
-  sections.Destroy;
+  option_list.Destroy;
+  section_list.Destroy;
 end;
 
 {
