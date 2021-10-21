@@ -494,7 +494,7 @@ begin
     if not strfunc.IsEmptyStr(prev_sql) then
     begin
       FSQLQuery.SQL.Add(prev_sql);
-      log.DebugMsgFmt('Пред-обработка. SQL <%s>', [prev_sql]);
+      log.InfoMsgFmt('Пред-обработка. SQL <%s>', [prev_sql]);
     end;
 
     FSQLQuery.SQL.Add(sql);
@@ -502,7 +502,7 @@ begin
     if not strfunc.IsEmptyStr(post_sql) then
     begin
       FSQLQuery.SQL.Add(post_sql);
-      log.DebugMsgFmt('Пост-обработка. SQL <%s>', [post_sql]);
+      log.InfoMsgFmt('Пост-обработка. SQL <%s>', [post_sql]);
     end;
 
     if dtTime <> 0 then
@@ -537,6 +537,8 @@ begin
   except
     FSQLTransaction.Rollback;
     log.FatalMsg('Ошибка добавления записи');
+    log.ErrorMsg('SQL:');
+    log.ErrorMsgFmt('%s', [FSQLQuery.SQL.Text]);
   end;
 end ;
 
