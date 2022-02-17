@@ -92,25 +92,29 @@
       <Unit12>
         <Filename Value="data_ctrl\opc_da_node.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="208"/>
         <UsageCount Value="86"/>
+        <Loaded Value="True"/>
       </Unit12>
       <Unit13>
         <Filename Value="data_ctrl\opc_hda_node.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="423"/>
-        <CursorPos X="44" Y="423"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="350"/>
+        <CursorPos Y="451"/>
         <UsageCount Value="86"/>
+        <Loaded Value="True"/>
       </Unit13>
       <Unit14>
         <Filename Value="data_ctrl\postgresql_tab_wide.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <WindowIndex Value="-1"/>
-        <TopLine Value="228"/>
-        <CursorPos Y="240"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="279"/>
+        <CursorPos X="17" Y="289"/>
         <UsageCount Value="86"/>
+        <Loaded Value="True"/>
       </Unit14>
       <Unit15>
         <Filename Value="data_ctrl\reg_data_ctrl.pas"/>
@@ -238,9 +242,8 @@
       <Unit37>
         <Filename Value="data_ctrl\db_mysql_node.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
-        <TopLine Value="162"/>
-        <CursorPos X="39" Y="152"/>
+        <TopLine Value="413"/>
+        <CursorPos Y="338"/>
         <UsageCount Value="86"/>
         <Loaded Value="True"/>
       </Unit37>

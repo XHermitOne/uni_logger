@@ -323,13 +323,6 @@ begin
   str_stop_dt := FormatDateTime(obj_proto.DATETIME_TXT_FMT, dtTime);
   log.DebugMsgFmt('Запрашиваемый диапазон. <%s> - <%s>', [str_start_dt, str_stop_dt]);
 
-  // Список читаемых тегов
-  tags := CreateTags();
-  //log.DebugMsgFmt('Читаемых тегов <%d>', [tags.Count]);
-
-  // Перед началом чтения необходимо очистить буфер
-  ClearTimeState();
-
   // Соединение с БД
   if not Connect(Properties.GetStrValue('db_host'),
                  StrToInt(properties.GetStrValue('db_port')),
@@ -341,6 +334,13 @@ begin
     Result := nil;
     Exit;
   end;
+
+  // Список читаемых тегов
+  tags := CreateTags();
+  //log.DebugMsgFmt('Читаемых тегов <%d>', [tags.Count]);
+
+  // Перед началом чтения необходимо очистить буфер
+  ClearTimeState();
 
   Result := TStringList.Create;
 
