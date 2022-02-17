@@ -1,8 +1,8 @@
 begin 
   if not DoPing('10.0.0.31') then
   begin
-    ErrorMsg('Нет связи с сервером КИП БД MySQL. Выход из программы', True, False);
-    Halt(1);
+    ErrorMsg('Нет связи с сервером КИП БД MySQL', True, False);
+    { Halt(1); }
   end
   else
     InfoMsg('Проверка связи с сервером КИП БД MySQL ... OK', True, False);
