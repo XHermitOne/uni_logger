@@ -126,7 +126,9 @@ implementation
 
 uses
     LCLIntf, // Для вычисления времени выполнения
-    log, memfunc,
+    log,
+    memfunc,
+    netfunc,
     engine;
 
 constructor TICPostgreSQLTableWide.Create;
@@ -158,6 +160,14 @@ end;
 function TICPostgreSQLTableWide.Connect(aDBHost: AnsiString; aDBPort: Integer;
   aDBName: AnsiString; aDBUserName: AnsiString; aDBPassword: AnsiString): Boolean;
 begin
+  {Проверка связи с сервером БД}
+  if not netfunc.DoPing(aDBHost) then
+  begin
+    log.ErrorMsgFmt('Не доступен сервер БД PostgreSQL <%s>', [aDBHost]);
+    Result := False;
+    Exit;
+  end;
+
   {подключение к SQL}
   try
     FPQConnection.HostName := aDBHost;

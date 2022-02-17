@@ -1,7 +1,7 @@
 {
 Модуль узла MySQL БД сервера.
 
-Версия: 0.0.1.1
+Версия: 0.0.2.1
 }
 
 unit db_mysql_node;
@@ -130,7 +130,10 @@ implementation
 
 uses
   LCLIntf, // Для вычисления времени выполнения
-  log, filefunc, memfunc;
+  log,
+  filefunc,
+  netfunc,
+  memfunc;
 
 
 constructor TICMySQLDBNode.Create;
@@ -177,6 +180,14 @@ end;
 function TICMySQLDBNode.Connect(aDBHost: AnsiString; aDBPort: Integer;
                                 aDBName: AnsiString; aDBUserName: AnsiString; aDBPassword: AnsiString): Boolean;
 begin
+  {Проверка связи с сервером БД}
+  if not netfunc.DoPing(aDBHost) then
+  begin
+    log.ErrorMsgFmt('Не доступен сервер БД MySQL <%s>', [aDBHost]);
+    Result := False;
+    Exit;
+  end;
+
   {подключение к SQL}
   try
     FDBConnection.HostName := aDBHost;

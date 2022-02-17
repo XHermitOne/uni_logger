@@ -160,7 +160,10 @@ implementation
 
 uses
   LCLIntf, // Для вычисления времени выполнения
-  log, filefunc, memfunc;
+  log,
+  filefunc,
+  netfunc,
+  memfunc;
 
 
 constructor TICWtOPCHDANode.Create;
@@ -381,6 +384,15 @@ begin
   if sOPCServerName = '' then
     sOPCServerName := FOPCServerName;
   //log.InfoMsgFmt('Установка связи с <%s : %s>', [sComputer, sOPCServerName]);
+
+  {Проверка связи с хостом}
+  if not netfunc.DoPing(sComputer) then
+  begin
+    log.ErrorMsgFmt('Не доступен компьютер OPC <%s>', [sComputer]);
+    Result := False;
+    Exit;
+  end;
+
 
   // Подключение к OPC
   if Trim(sOPCServerName) <> '' then

@@ -4,7 +4,7 @@
     <PathDelim Value="\"/>
     <Version Value="11"/>
     <BuildModes Active="Default"/>
-    <Units Count="41">
+    <Units Count="42">
       <Unit0>
         <Filename Value="uni_logger.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -36,19 +36,18 @@
       <Unit3>
         <Filename Value="engine.pas"/>
         <IsPartOfProject Value="True"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="311"/>
         <CursorPos X="53" Y="343"/>
         <UsageCount Value="262"/>
-        <Loaded Value="True"/>
       </Unit3>
       <Unit4>
         <Filename Value="obj_proto.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="7"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="138"/>
         <CursorPos X="14" Y="156"/>
         <UsageCount Value="262"/>
-        <Loaded Value="True"/>
       </Unit4>
       <Unit5>
         <Filename Value="settings.pas"/>
@@ -61,10 +60,9 @@
       <Unit6>
         <Filename Value="data_ctrl\reg_data_ctrl.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="5"/>
+        <EditorIndex Value="-1"/>
         <CursorPos X="36" Y="15"/>
         <UsageCount Value="262"/>
-        <Loaded Value="True"/>
       </Unit6>
       <Unit7>
         <Filename Value="data_ctrl\remoute_opc_node.pas"/>
@@ -175,20 +173,18 @@
       <Unit19>
         <Filename Value="utils\filefunc.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="4"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="16"/>
         <CursorPos X="41" Y="110"/>
         <UsageCount Value="262"/>
-        <Loaded Value="True"/>
       </Unit19>
       <Unit20>
         <Filename Value="utils\inifunc.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="42"/>
         <CursorPos X="25" Y="69"/>
         <UsageCount Value="262"/>
-        <Loaded Value="True"/>
       </Unit20>
       <Unit21>
         <Filename Value="utils\keyboardfunc.pas"/>
@@ -219,11 +215,10 @@
       <Unit24>
         <Filename Value="utils\strfunc.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="3"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="391"/>
         <CursorPos Y="431"/>
         <UsageCount Value="262"/>
-        <Loaded Value="True"/>
       </Unit24>
       <Unit25>
         <Filename Value="utils\sysfunc.pas"/>
@@ -236,12 +231,10 @@
       <Unit26>
         <Filename Value="data_ctrl\postgresql_tab_wide.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="6"/>
-        <TopLine Value="222"/>
-        <CursorPos Y="262"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="263"/>
+        <CursorPos X="5" Y="310"/>
         <UsageCount Value="259"/>
-        <Loaded Value="True"/>
       </Unit26>
       <Unit27>
         <Filename Value="data_ctrl\opc_da_node.pas"/>
@@ -327,24 +320,23 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="16"/>
         <CursorPos Y="39"/>
-        <UsageCount Value="176"/>
+        <UsageCount Value="177"/>
       </Unit36>
       <Unit37>
         <Filename Value="data_ctrl\db_mysql_node.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="1"/>
-        <CursorPos X="37" Y="23"/>
-        <UsageCount Value="28"/>
-        <Loaded Value="True"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="148"/>
+        <CursorPos Y="190"/>
+        <UsageCount Value="29"/>
       </Unit37>
       <Unit38>
         <Filename Value="data_ctrl\opc_wt_hda_node.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="8"/>
-        <TopLine Value="322"/>
-        <CursorPos X="59" Y="354"/>
-        <UsageCount Value="28"/>
-        <Loaded Value="True"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="144"/>
+        <CursorPos Y="165"/>
+        <UsageCount Value="29"/>
       </Unit38>
       <Unit39>
         <Filename Value="data_ctrl\opc_server_node.pas"/>
@@ -359,80 +351,20 @@
         <CursorPos Y="10"/>
         <UsageCount Value="59"/>
       </Unit40>
+      <Unit41>
+        <Filename Value="utils\netfunc.pas"/>
+        <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="15"/>
+        <CursorPos X="5" Y="15"/>
+        <UsageCount Value="21"/>
+      </Unit41>
     </Units>
-    <JumpHistory Count="18" HistoryIndex="17">
-      <Position1>
-        <Filename Value="data_ctrl\db_mysql_node.pas"/>
-        <Caret Line="154" Column="7" TopLine="119"/>
-      </Position1>
-      <Position2>
-        <Filename Value="data_ctrl\db_mysql_node.pas"/>
-        <Caret Line="197" Column="62" TopLine="168"/>
-      </Position2>
-      <Position3>
-        <Filename Value="data_ctrl\db_mysql_node.pas"/>
-        <Caret Line="190" Column="48" TopLine="168"/>
-      </Position3>
-      <Position4>
-        <Filename Value="engine.pas"/>
-        <Caret Line="343" Column="53" TopLine="311"/>
-      </Position4>
-      <Position5>
-        <Filename Value="data_ctrl\db_mysql_node.pas"/>
-        <Caret Line="24" Column="34" TopLine="4"/>
-      </Position5>
-      <Position6>
-        <Filename Value="data_ctrl\db_mysql_node.pas"/>
-        <Caret Line="20"/>
-      </Position6>
-      <Position7>
-        <Filename Value="data_ctrl\db_mysql_node.pas"/>
-        <Caret Line="19" Column="17"/>
-      </Position7>
-      <Position8>
-        <Filename Value="data_ctrl\reg_data_ctrl.pas"/>
-        <Caret Line="56" Column="27" TopLine="56"/>
-      </Position8>
-      <Position9>
-        <Filename Value="data_ctrl\reg_data_ctrl.pas"/>
-        <Caret Line="79" Column="56" TopLine="56"/>
-      </Position9>
-      <Position10>
-        <Filename Value="utils\inifunc.pas"/>
-        <Caret Line="69" Column="25" TopLine="42"/>
-      </Position10>
-      <Position11>
-        <Filename Value="data_ctrl\db_mysql_node.pas"/>
-        <Caret Line="97" Column="32" TopLine="63"/>
-      </Position11>
-      <Position12>
-        <Filename Value="data_ctrl\db_mysql_node.pas"/>
-        <Caret Line="323" Column="3" TopLine="293"/>
-      </Position12>
-      <Position13>
-        <Filename Value="data_ctrl\db_mysql_node.pas"/>
-        <Caret Line="366" Column="40" TopLine="346"/>
-      </Position13>
-      <Position14>
-        <Filename Value="data_ctrl\db_mysql_node.pas"/>
-        <Caret Line="403" Column="101" TopLine="403"/>
-      </Position14>
-      <Position15>
-        <Filename Value="data_ctrl\db_mysql_node.pas"/>
-        <Caret Line="429" Column="3" TopLine="399"/>
-      </Position15>
-      <Position16>
-        <Filename Value="data_ctrl\db_mysql_node.pas"/>
-      </Position16>
-      <Position17>
-        <Filename Value="data_ctrl\db_mysql_node.pas"/>
-        <Caret Line="105" Column="53" TopLine="73"/>
-      </Position17>
-      <Position18>
-        <Filename Value="data_ctrl\reg_data_ctrl.pas"/>
-        <Caret Line="15" Column="36"/>
-      </Position18>
-    </JumpHistory>
+    <General>
+      <ActiveWindowIndexAtStart Value="-1"/>
+    </General>
+    <JumpHistory HistoryIndex="-1"/>
     <RunParams>
       <FormatVersion Value="2"/>
       <Modes Count="0" ActiveMode="default"/>
