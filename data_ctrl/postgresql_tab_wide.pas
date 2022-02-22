@@ -5,7 +5,7 @@
           'ИМЯ_ИСТОЧНИКА_ДАННЫХ.имя_тега:Тип_поля_в_PostgreSQL'.
           Например: 'SOURCE_FIRST.tag_mode:Varchar(20)'
 
-Версия: 0.0.4.2
+Версия: 0.0.5.1
 }
 unit postgresql_tab_wide;
 
@@ -29,6 +29,8 @@ const
 
   CREATE_TABLE_SQL_FMT: AnsiString = 'CREATE TABLE %s (id BIGSERIAL NOT NULL, %s, CONSTRAINT %s_pkey PRIMARY KEY (id));';
   INSERT_RECORD_SQL_FMT: AnsiString = 'INSERT INTO %s (%s) VALUES (%s);';
+  UPDATE_RECORD_SQL_FMT: AnsiString = 'UPDATE %s SET (%s) = (%s) WHERE %s = %s;';
+
   // Добавление не существующей записи
   INSERT_NOT_EXISTS_RECORD_SQL_FMT: AnsiString = 'INSERT INTO %s (%s) SELECT %s WHERE NOT EXISTS (SELECT 1 FROM %s WHERE %s = %s);';
   UPSERT_RECORD_SQL_FMT: AnsiString = 'INSERT INTO %s (%s) VALUES (%s) ON CONFLICT (%s) DO UPDATE SET (%s) = (%s);';
@@ -533,7 +535,8 @@ begin
     //log.DebugMsgFmt('Параметры строкой <%s>', [param_names]);
 
     if dtTime <> 0 then
-      sql := Format(INSERT_NOT_EXISTS_RECORD_SQL_FMT, [aTableName, field_names, param_names, aTableName, DATETIME_FIELD_NAME, ':' + DATETIME_FIELD_NAME])
+      //sql := Format(INSERT_NOT_EXISTS_RECORD_SQL_FMT, [aTableName, field_names, param_names, aTableName, DATETIME_FIELD_NAME, ':' + DATETIME_FIELD_NAME])
+      sql := Format(UPDATE_RECORD_SQL_FMT, [aTableName, field_names, param_names, DATETIME_FIELD_NAME, ':' + DATETIME_FIELD_NAME])
     else
       sql := Format(INSERT_RECORD_SQL_FMT, [aTableName, field_names, param_names]);
     // sql := Format(UPSERT_RECORD_SQL_FMT, [aTableName, field_names, param_names, DATETIME_FIELD_NAME, field_names, param_names]);
