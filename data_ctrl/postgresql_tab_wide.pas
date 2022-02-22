@@ -530,7 +530,7 @@ begin
 
     log.DebugMsgFmt('Время: <%s>', [FormatDateTime(obj_proto.DATETIME_TXT_FMT, dtTime)]);
     log.DebugMsgFmt('Имена полей строкой <%s>', [field_names]);
-    // log.DebugMsgFmt('Параметры строкой <%s>', [param_names]);
+    log.DebugMsgFmt('Параметры строкой <%s>', [param_names]);
 
     if dtTime <> 0 then
       sql := Format(INSERT_NOT_EXISTS_RECORD_SQL_FMT, [aTableName, field_names, param_names, aTableName, DATETIME_FIELD_NAME, ':' + DATETIME_FIELD_NAME])
