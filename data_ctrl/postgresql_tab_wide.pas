@@ -529,8 +529,8 @@ begin
       param_names := ':' + DATETIME_FIELD_NAME + ', ' + param_names;
 
     log.DebugMsgFmt('Время: <%s>', [FormatDateTime(obj_proto.DATETIME_TXT_FMT, dtTime)]);
-    log.DebugMsgFmt('Имена полей строкой <%s>', [field_names]);
-    log.DebugMsgFmt('Параметры строкой <%s>', [param_names]);
+    //log.DebugMsgFmt('Имена полей строкой <%s>', [field_names]);
+    //log.DebugMsgFmt('Параметры строкой <%s>', [param_names]);
 
     if dtTime <> 0 then
       sql := Format(INSERT_NOT_EXISTS_RECORD_SQL_FMT, [aTableName, field_names, param_names, aTableName, DATETIME_FIELD_NAME, ':' + DATETIME_FIELD_NAME])
@@ -563,7 +563,7 @@ begin
     for i := 0 to Length(StringValues) - 1 do
     begin
       field_type := LowerCase(field_type_list[i]);
-      // log.DebugMsgFmt('Параметр <%s> : <%s> : <%s>', [field_name_list[i], field_type, StringValues[i]]);
+      log.DebugMsgFmt('Параметр <%s> : <%s> : <%s>', [field_name_list[i], field_type, StringValues[i]]);
 
       if strfunc.IsStrInList(field_type, ['float']) then
         if StringValues[i] <> '' then
