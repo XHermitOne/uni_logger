@@ -549,12 +549,12 @@ begin
     else
       sql := Format(INSERT_RECORD_SQL_FMT, [aTableName, field_names, param_names]);
     // sql := Format(UPSERT_RECORD_SQL_FMT, [aTableName, field_names, param_names, DATETIME_FIELD_NAME, field_names, param_names]);
-    //log.DebugMsgFmt('Добавление записи. SQL <%s>', [sql]);
-
+    log.DebugMsgFmt('Добавление записи. SQL <%s>', [sql]);
     FSQLQuery.SQL.Add(sql);
 
     // Обновить существующие записи
     sql := Format(UPDATE_RECORD_SQL_FMT, [aTableName, field_names, param_names, DATETIME_FIELD_NAME, ':' + DATETIME_FIELD_NAME]);
+    log.DebugMsgFmt('Обновление записи. SQL <%s>', [sql]);
     FSQLQuery.SQL.Add(sql);
 
     if not strfunc.IsEmptyStr(post_sql) then
