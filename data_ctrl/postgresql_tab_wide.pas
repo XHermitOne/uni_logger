@@ -5,7 +5,7 @@
           'ИМЯ_ИСТОЧНИКА_ДАННЫХ.имя_тега:Тип_поля_в_PostgreSQL'.
           Например: 'SOURCE_FIRST.tag_mode:Varchar(20)'
 
-Версия: 0.0.5.1
+Версия: 0.0.6.1
 }
 unit postgresql_tab_wide;
 
@@ -94,6 +94,10 @@ type
     function GetPrevAddSQL(): AnsiString;
     { Получить SQL выражение пост-обработки добавления данных }
     function GetPostAddSQL(): AnsiString;
+    { Получить SQL выражение пред-обработки обновления данных }
+    function GetPrevUpdSQL(): AnsiString;
+    { Получить SQL выражение пост-обработки обновления данных }
+    function GetPostUpdSQL(): AnsiString;
 
     { Функция добавления записи }
     function InsertRecord(aTableName: AnsiString; StringValues: Array Of String;  dtTime: TDateTime=0): Boolean;
@@ -509,6 +513,18 @@ begin
   Result := Properties.GetStrValue('post_add_sql');
 end;
 
+{ Получить SQL выражение пред обработки обновления данных }
+function TICPostgreSQLTableWide.GetPrevUpdSQL(): AnsiString;
+begin
+  Result := Properties.GetStrValue('prev_upd_sql');
+end;
+
+{ Получить SQL выражение пост обработки обновления данных }
+function TICPostgreSQLTableWide.GetPostUpdSQL(): AnsiString;
+begin
+  Result := Properties.GetStrValue('post_upd_sql');
+end;
+
 { Функция добавления записи }
 function TICPostgreSQLTableWide.InsertRecord(aTableName: AnsiString; StringValues: Array Of String; dtTime: TDateTime): Boolean;
 var
@@ -555,11 +571,6 @@ begin
     // log.DebugMsgFmt('Добавление записи. SQL <%s>', [sql]);
     FSQLQuery.SQL.Add(sql);
 
-    // Обновить существующие записи
-    //sql := Format(UPDATE_RECORD_SQL_FMT, [aTableName, field_names, param_names, DATETIME_FIELD_NAME, ':' + DATETIME_FIELD_NAME]);
-    // log.DebugMsgFmt('Обновление записи. SQL <%s>', [sql]);
-    //FSQLQuery.SQL.Add(sql);
-
     if not strfunc.IsEmptyStr(post_sql) then
     begin
       FSQLQuery.SQL.Add(post_sql);
@@ -573,7 +584,7 @@ begin
     for i := 0 to Length(StringValues) - 1 do
     begin
       field_type := LowerCase(field_type_list[i]);
-      log.DebugMsgFmt('Параметр <%s> : <%s> : <%s>', [field_name_list[i], field_type, StringValues[i]]);
+      // log.DebugMsgFmt('Параметр <%s> : <%s> : <%s>', [field_name_list[i], field_type, StringValues[i]]);
 
       if strfunc.IsStrInList(field_type, ['float']) then
         if StringValues[i] <> '' then
@@ -608,15 +619,15 @@ function TICPostgreSQLTableWide.UpdateRecord(aTableName: AnsiString; StringValue
 var
   field_names, param_names: AnsiString;
   sql, field_type: AnsiString;
-  //prev_sql, post_sql: AnsiString;
+  prev_sql, post_sql: AnsiString;
   field_name_list: Array Of String;
   field_type_list: Array Of String;
   i: Integer;
 begin
   Result := False;
   try
-    //prev_sql := GetPrevAddSQL();
-    //post_sql := GetPostAddSQL();
+    prev_sql := GetPrevUpdSQL();
+    post_sql := GetPostUpdSQL();
     field_name_list := GetFieldNames();
     field_type_list := GetFieldTypes();
 
@@ -634,30 +645,26 @@ begin
     // FSQLQuery.Database := FPQConnection;
     FSQLQuery.SQL.Clear;
 
-    //if not strfunc.IsEmptyStr(prev_sql) then
-    //begin
-    //  FSQLQuery.SQL.Add(prev_sql);
-    //  log.InfoMsgFmt('Пред-обработка добавления данных. SQL <%s>', [prev_sql]);
-    //end;
+    if not strfunc.IsEmptyStr(prev_sql) then
+    begin
+      FSQLQuery.SQL.Add(prev_sql);
+      log.InfoMsgFmt('Пред-обработка обновления данных. SQL <%s>', [prev_sql]);
+    end;
 
-    // Добавить запись если не существует
     if dtTime <> 0 then
     begin
       // Обновить существующие записи
       //sql := Format(INSERT_NOT_EXISTS_RECORD_SQL_FMT, [aTableName, field_names, param_names, aTableName, DATETIME_FIELD_NAME, ':' + DATETIME_FIELD_NAME])
       sql := Format(UPDATE_RECORD_SQL_FMT, [aTableName, field_names, param_names, DATETIME_FIELD_NAME, ':' + DATETIME_FIELD_NAME]);
+      //log.DebugMsgFmt('Обновление записи. SQL <%s>', [sql]);
       FSQLQuery.SQL.Add(sql);
     end;
-    //else
-    //  sql := Format(INSERT_RECORD_SQL_FMT, [aTableName, field_names, param_names]);
-    // sql := Format(UPSERT_RECORD_SQL_FMT, [aTableName, field_names, param_names, DATETIME_FIELD_NAME, field_names, param_names]);
-    // log.DebugMsgFmt('Добавление записи. SQL <%s>', [sql]);
 
-    //if not strfunc.IsEmptyStr(post_sql) then
-    //begin
-    //  FSQLQuery.SQL.Add(post_sql);
-    //  log.InfoMsgFmt('Пост-обработка добавления данных. SQL <%s>', [post_sql]);
-    //end;
+    if not strfunc.IsEmptyStr(post_sql) then
+    begin
+      FSQLQuery.SQL.Add(post_sql);
+      log.InfoMsgFmt('Пост-обработка обновления данных. SQL <%s>', [post_sql]);
+    end;
 
     if dtTime <> 0 then
       FSQLQuery.Params.ParamByName(DATETIME_FIELD_NAME).AsDateTime := dtTime;
@@ -666,7 +673,7 @@ begin
     for i := 0 to Length(StringValues) - 1 do
     begin
       field_type := LowerCase(field_type_list[i]);
-      log.DebugMsgFmt('Параметр <%s> : <%s> : <%s>', [field_name_list[i], field_type, StringValues[i]]);
+      // log.DebugMsgFmt('Параметр <%s> : <%s> : <%s>', [field_name_list[i], field_type, StringValues[i]]);
 
       if strfunc.IsStrInList(field_type, ['float']) then
         if StringValues[i] <> '' then
