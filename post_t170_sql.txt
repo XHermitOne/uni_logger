@@ -1,0 +1,21 @@
+-- Вычисление приращений
+UPDATE 
+	log_t170_tab_wide
+SET
+	value_delta = subquery.delta_value
+	
+FROM
+	(SELECT
+		log_t170_tab_wide.id AS id,
+		log_t170_tab_wide.dt_log, 
+		log_t170_tab_wide.value - lag(log_t170_tab_wide.value) OVER (ORDER BY log_t170_tab_wide.dt_log) AS delta_value
+	FROM
+		log_t170_tab_wide
+	WHERE
+		log_t170_tab_wide.dt_log >= NOW() - interval '30 day'
+	ORDER by 
+		log_t170_tab_wide.dt_log
+	LIMIT ALL OFFSET 1
+	) AS subquery
+WHERE 
+	log_t170_tab_wide.id = subquery.id;
