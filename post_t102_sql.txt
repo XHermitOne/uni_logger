@@ -1,3 +1,4 @@
+-- Вычисление метров кубических
 UPDATE log_t102_tab_wide 
 SET v2_m3 = (v2 + start_count) * alter_measure 
 FROM ref_count_node_tab WHERE ref_count_node_tab.cod = '-T102/2' AND log_t102_tab_wide.v2_m3 IS NULL;
@@ -5,3 +6,31 @@ FROM ref_count_node_tab WHERE ref_count_node_tab.cod = '-T102/2' AND log_t102_ta
 UPDATE log_t102_tab_wide 
 SET v3_m3 = (v3 + start_count) * alter_measure 
 FROM ref_count_node_tab WHERE ref_count_node_tab.cod = '-T102/3' AND log_t102_tab_wide.v3_m3 IS NULL;
+
+-- Вычисление приращений
+UPDATE 
+	log_t102_tab_wide
+SET
+	v2_delta = subquery.delta_v2, 
+	v2_m3_delta = subquery.delta_v2_m3,
+	v3_delta = subquery.delta_v3, 
+	v3_m3_delta = subquery.delta_v3_m3
+	
+FROM
+	(SELECT
+		log_t102_tab_wide.id AS id,
+		log_t102_tab_wide.dt_log, 
+		log_t102_tab_wide.v2 - lag(log_t102_tab_wide.v2) OVER (ORDER BY log_t102_tab_wide.dt_log) AS delta_v2,
+		log_t102_tab_wide.v2_m3 - lag(log_t102_tab_wide.v2_m3) OVER (ORDER BY log_t102_tab_wide.dt_log) AS delta_v2_m3,
+		log_t102_tab_wide.v3 - lag(log_t102_tab_wide.v3) OVER (ORDER BY log_t102_tab_wide.dt_log) AS delta_v3,
+		log_t102_tab_wide.v3_m3 - lag(log_t102_tab_wide.v3_m3) OVER (ORDER BY log_t102_tab_wide.dt_log) AS delta_v3_m3
+	FROM
+		log_t102_tab_wide
+	WHERE
+		log_t102_tab_wide.dt_log >= NOW() - interval '30 day'
+	ORDER by 
+		log_t102_tab_wide.dt_log
+	LIMIT ALL OFFSET 1
+	) AS subquery
+WHERE 
+	log_t102_tab_wide.id = subquery.id;
