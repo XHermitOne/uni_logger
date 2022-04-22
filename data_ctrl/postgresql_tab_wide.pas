@@ -549,7 +549,7 @@ begin
     if dtTime <> 0 then
       param_names := ':' + DATETIME_FIELD_NAME + ', ' + param_names;
 
-    log.DebugMsgFmt('Время: <%s>', [FormatDateTime(obj_proto.DATETIME_TXT_FMT, dtTime)]);
+    //log.DebugMsgFmt('Время: <%s>', [FormatDateTime(obj_proto.DATETIME_TXT_FMT, dtTime)]);
     //log.DebugMsgFmt('Имена полей строкой <%s>', [field_names]);
     //log.DebugMsgFmt('Параметры строкой <%s>', [param_names]);
 
@@ -568,7 +568,7 @@ begin
     else
       sql := Format(INSERT_RECORD_SQL_FMT, [aTableName, field_names, param_names]);
     // sql := Format(UPSERT_RECORD_SQL_FMT, [aTableName, field_names, param_names, DATETIME_FIELD_NAME, field_names, param_names]);
-    // log.DebugMsgFmt('Добавление записи. SQL <%s>', [sql]);
+    log.DebugMsgFmt('Добавление записи. SQL <%s>', [sql]);
     FSQLQuery.SQL.Add(sql);
 
     if not strfunc.IsEmptyStr(post_sql) then
@@ -638,7 +638,7 @@ begin
     if dtTime <> 0 then
       param_names := ':' + DATETIME_FIELD_NAME + ', ' + param_names;
 
-    log.DebugMsgFmt('Время: <%s>', [FormatDateTime(obj_proto.DATETIME_TXT_FMT, dtTime)]);
+    //log.DebugMsgFmt('Время: <%s>', [FormatDateTime(obj_proto.DATETIME_TXT_FMT, dtTime)]);
     //log.DebugMsgFmt('Имена полей строкой <%s>', [field_names]);
     //log.DebugMsgFmt('Параметры строкой <%s>', [param_names]);
 
@@ -656,7 +656,7 @@ begin
       // Обновить существующие записи
       //sql := Format(INSERT_NOT_EXISTS_RECORD_SQL_FMT, [aTableName, field_names, param_names, aTableName, DATETIME_FIELD_NAME, ':' + DATETIME_FIELD_NAME])
       sql := Format(UPDATE_RECORD_SQL_FMT, [aTableName, field_names, param_names, DATETIME_FIELD_NAME, ':' + DATETIME_FIELD_NAME]);
-      //log.DebugMsgFmt('Обновление записи. SQL <%s>', [sql]);
+      log.DebugMsgFmt('Обновление записи. SQL <%s>', [sql]);
       FSQLQuery.SQL.Add(sql);
     end;
 

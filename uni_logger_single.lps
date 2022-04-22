@@ -111,8 +111,8 @@
         <IsPartOfProject Value="True"/>
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="535"/>
-        <CursorPos X="42" Y="546"/>
+        <TopLine Value="675"/>
+        <CursorPos X="7" Y="697"/>
         <UsageCount Value="86"/>
         <Loaded Value="True"/>
       </Unit14>
@@ -242,8 +242,8 @@
       <Unit37>
         <Filename Value="data_ctrl\db_mysql_node.pas"/>
         <IsPartOfProject Value="True"/>
-        <TopLine Value="413"/>
-        <CursorPos Y="338"/>
+        <TopLine Value="360"/>
+        <CursorPos X="10" Y="388"/>
         <UsageCount Value="86"/>
         <Loaded Value="True"/>
       </Unit37>

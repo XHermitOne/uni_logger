@@ -346,7 +346,7 @@ begin
 
   // Получить SQL выражение
   sql := Format(SQLFmt, [str_start_dt, str_stop_dt]);
-  //log.DebugMsgFmt('SQL: %s', [sql]);
+  log.DebugMsgFmt('MySQL get DATA SQL: %s', [sql]);
   ExecuteSQL(sql);
   // Определить количество записей результата запроса
   rec_count := FSQLQuery.RecordCount;
@@ -358,7 +358,7 @@ begin
     begin
       tag_name := tags.GetKey(i_tag);
       address := tags.GetStrValue(tag_name);
-      log.DebugMsgFmt('Чтение данных тега <%s> по адресу <%s>', [tag_name, address]);
+      // log.DebugMsgFmt('Чтение данных тега <%s> по адресу <%s>', [tag_name, address]);
 
       // Переход на первую строку
       FSQLQuery.First;
@@ -373,7 +373,7 @@ begin
         // Время в строковом представлении
         dt_str := FormatDateTime(obj_proto.DATETIME_TXT_FMT, dt_time);
 
-        log.DebugMsgFmt('Время <%s>. Значение <%s>', [dt_str, value]);
+        log.DebugMsgFmt('Тег <%s>. Адрес <%s>. Время <%s>. Значение <%s>', [tag_name, address, dt_str, value]);
 
         // Записать в буфер
         if TimeState.HasKey(dt_str) then
