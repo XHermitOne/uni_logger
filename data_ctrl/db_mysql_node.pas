@@ -149,6 +149,7 @@ begin
   //  ...
   //  fSQLQuery.Next;
   //end;
+  // ВНИМАНИЕ! Этот параметр увеличил на случай долго не загрузки данных
   FSQLQuery.PacketRecords := 1000;
   FSQLTransaction := TSQLTransaction.Create(nil);
   FDBConnection := TMySQL55Connection.Create(nil);
@@ -373,7 +374,7 @@ begin
         // Время в строковом представлении
         dt_str := FormatDateTime(obj_proto.DATETIME_TXT_FMT, dt_time);
 
-        log.DebugMsgFmt('Имя <%s : %s>. Тег <%s>. Адрес <%s>. Время <%s>. Значение <%s>', [self.Name, self.Description, address, dt_str, value]);
+        //log.DebugMsgFmt('Имя <%s : %s>. Тег <%s>. Адрес <%s>. Время <%s>. Значение <%s>', [self.Name, self.Description, address, dt_str, value]);
 
         // Записать в буфер
         if TimeState.HasKey(dt_str) then
