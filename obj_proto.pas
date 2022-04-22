@@ -1,7 +1,7 @@
 {
 Модуль абстрактного объекта системы
 
-Версия: 0.0.3.2
+Версия: 0.0.4.1
 }
 unit obj_proto;
 
@@ -162,6 +162,7 @@ type
 
   published
     property Name: AnsiString read GetName write SetName;
+    property Description: AnsiString read FDescription;
     property Properties: TStrDictionary read GetProperties write SetProperties;
     property State: TStrDictionary read FState write FState;
     property TimeState: TStrDictionary read FTimeStateBuffer write FTimeStateBuffer;

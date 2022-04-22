@@ -1,7 +1,7 @@
 {
 Модуль узла MySQL БД сервера.
 
-Версия: 0.0.2.1
+Версия: 0.0.2.2
 }
 
 unit db_mysql_node;
@@ -373,7 +373,7 @@ begin
         // Время в строковом представлении
         dt_str := FormatDateTime(obj_proto.DATETIME_TXT_FMT, dt_time);
 
-        log.DebugMsgFmt('Тег <%s>. Адрес <%s>. Время <%s>. Значение <%s>', [tag_name, address, dt_str, value]);
+        log.DebugMsgFmt('Имя <%s : %s>. Тег <%s>. Адрес <%s>. Время <%s>. Значение <%s>', [self.Name, self.Description, address, dt_str, value]);
 
         // Записать в буфер
         if TimeState.HasKey(dt_str) then
