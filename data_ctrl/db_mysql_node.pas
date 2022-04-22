@@ -149,7 +149,7 @@ begin
   //  ...
   //  fSQLQuery.Next;
   //end;
-  FSQLQuery.PacketRecords := 100;
+  FSQLQuery.PacketRecords := 1000;
   FSQLTransaction := TSQLTransaction.Create(nil);
   FDBConnection := TMySQL55Connection.Create(nil);
 end;

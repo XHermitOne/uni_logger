@@ -109,7 +109,6 @@
       <Unit14>
         <Filename Value="data_ctrl\postgresql_tab_wide.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="3"/>
         <CursorPos X="16" Y="8"/>
         <UsageCount Value="87"/>
@@ -241,7 +240,9 @@
       <Unit37>
         <Filename Value="data_ctrl\db_mysql_node.pas"/>
         <IsPartOfProject Value="True"/>
-        <CursorPos X="16" Y="4"/>
+        <IsVisibleTab Value="True"/>
+        <TopLine Value="139"/>
+        <CursorPos X="34" Y="152"/>
         <UsageCount Value="87"/>
         <Loaded Value="True"/>
       </Unit37>
