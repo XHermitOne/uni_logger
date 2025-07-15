@@ -234,7 +234,7 @@ uses
   OPCTypes, OPCCOMN, OPCError, //OPCCallback,
   log, strfunc;
 
-{$R OPC.RES}
+{$R OPC.res}
 
 resourcestring
   S_OPC_E_INVALIDHANDLE = 'The value of the handle is invalid.';

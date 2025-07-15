@@ -8,10 +8,12 @@
       <Unit0>
         <Filename Value="uni_logger_single.lpr"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="133"/>
-        <CursorPos X="52" Y="150"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="228"/>
+        <CursorPos X="4" Y="242"/>
         <UsageCount Value="87"/>
+        <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="utils\dictionary.pas"/>
@@ -127,7 +129,11 @@
       <Unit17>
         <Filename Value="opc_client\opc_client.pas"/>
         <IsPartOfProject Value="True"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="210"/>
+        <CursorPos Y="237"/>
         <UsageCount Value="87"/>
+        <Loaded Value="True"/>
       </Unit17>
       <Unit18>
         <Filename Value="opc_client\OPCCallback.pas"/>
@@ -245,7 +251,6 @@
       <Unit38>
         <Filename Value="data_ctrl\alarm_check_node.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
         <TopLine Value="19"/>
         <CursorPos Y="28"/>
         <UsageCount Value="72"/>
@@ -304,7 +309,7 @@
         <UsageCount Value="10"/>
       </Unit46>
     </Units>
-    <JumpHistory Count="3" HistoryIndex="2">
+    <JumpHistory Count="7" HistoryIndex="6">
       <Position1>
         <Filename Value="data_ctrl\alarm_check_node.pas"/>
         <Caret Line="33" Column="36" TopLine="10"/>
@@ -317,6 +322,22 @@
         <Filename Value="data_ctrl\alarm_check_node.pas"/>
         <Caret Line="30" Column="16" TopLine="19"/>
       </Position3>
+      <Position4>
+        <Filename Value="data_ctrl\alarm_check_node.pas"/>
+        <Caret Line="28" TopLine="19"/>
+      </Position4>
+      <Position5>
+        <Filename Value="opc_client\opc_client.pas"/>
+        <Caret Line="18" Column="64"/>
+      </Position5>
+      <Position6>
+        <Filename Value="opc_client\opc_client.pas"/>
+        <Caret Line="33" TopLine="33"/>
+      </Position6>
+      <Position7>
+        <Filename Value="opc_client\opc_client.pas"/>
+        <Caret Line="237" TopLine="210"/>
+      </Position7>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
