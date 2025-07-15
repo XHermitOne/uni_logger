@@ -32,7 +32,7 @@ conv(hex(concat(SUBSTRING(CONVERT(data USING ascii),20,1),
 conv(hex(concat(SUBSTRING(CONVERT(data USING ascii),24,1),
         SUBSTRING(CONVERT(data USING ascii),23,1),
         SUBSTRING(CONVERT(data USING ascii),22,1),
-        SUBSTRING(CONVERT(data USING ascii),21,1))), 16,10) AS value4
+        SUBSTRING(CONVERT(data USING ascii),21,1))), 16,10) AS value4,
 -- показания на входе №1 в M3
 -- (SELECT json_extract(deviceattributes.value, '$.name') FROM deviceattributes WHERE deviceattributes.attribute = 'other_info_1' AND deviceattributes.deveui = rawdata.deveui) AS device_name1,
 (SELECT value1/CONVERT(json_extract(deviceattributes.value, '$.division'), FLOAT) + CONVERT(json_extract(deviceattributes.value, '$.init_value'), FLOAT) FROM deviceattributes WHERE deviceattributes.attribute = 'other_info_1' AND deviceattributes.deveui = rawdata.deveui) AS value1_m3,

@@ -5,7 +5,7 @@
           'ИМЯ_ИСТОЧНИКА_ДАННЫХ.имя_тега:Тип_поля_в_PostgreSQL'.
           Например: 'SOURCE_FIRST.tag_mode:Varchar(20)'
 
-Версия: 0.0.6.2
+Версия: 0.0.7.1
 }
 unit postgresql_tab_wide;
 
@@ -591,7 +591,7 @@ begin
           FSQLQuery.Params.ParamByName(field_name_list[i]).AsFloat := StrToFloat(StringValues[i])
         else
           FSQLQuery.Params.ParamByName(field_name_list[i]).AsFloat := 0.0
-      else if strfunc.IsStrInList(field_type, ['integer']) then
+      else if strfunc.IsStrInList(field_type, ['integer', 'int4', 'int8', 'bigint']) then
         if StringValues[i] <> '' then
           FSQLQuery.Params.ParamByName(field_name_list[i]).AsInteger := StrToInt(StringValues[i])
         else
@@ -680,7 +680,7 @@ begin
           FSQLQuery.Params.ParamByName(field_name_list[i]).AsFloat := StrToFloat(StringValues[i])
         else
           FSQLQuery.Params.ParamByName(field_name_list[i]).AsFloat := 0.0
-      else if strfunc.IsStrInList(field_type, ['integer']) then
+      else if strfunc.IsStrInList(field_type, ['integer', 'int4', 'int8', 'bigint']) then
         if StringValues[i] <> '' then
           FSQLQuery.Params.ParamByName(field_name_list[i]).AsInteger := StrToInt(StringValues[i])
         else
