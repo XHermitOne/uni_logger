@@ -22,7 +22,7 @@ uses
   //uPSC_forms, uPSR_forms,
   uPSRuntime,
   uPSComponent,
-  uPSDisassembly,
+//  uPSDisassembly,
   uPSR_dateutils, uPSC_dateutils,
   uPSR_dll, uPSC_dll,
 
