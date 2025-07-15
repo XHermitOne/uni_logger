@@ -33,6 +33,19 @@ conv(hex(concat(SUBSTRING(CONVERT(data USING ascii),24,1),
         SUBSTRING(CONVERT(data USING ascii),23,1),
         SUBSTRING(CONVERT(data USING ascii),22,1),
         SUBSTRING(CONVERT(data USING ascii),21,1))), 16,10) AS value4
+-- показания на входе №1 в M3
+-- (SELECT json_extract(deviceattributes.value, '$.name') FROM deviceattributes WHERE deviceattributes.attribute = 'other_info_1' AND deviceattributes.deveui = rawdata.deveui) AS device_name1,
+(SELECT value1/CONVERT(json_extract(deviceattributes.value, '$.division'), FLOAT) + CONVERT(json_extract(deviceattributes.value, '$.init_value'), FLOAT) FROM deviceattributes WHERE deviceattributes.attribute = 'other_info_1' AND deviceattributes.deveui = rawdata.deveui) AS value1_m3,
+-- показания на входе №2 в M3
+-- (SELECT json_extract(deviceattributes.value, '$.name') FROM deviceattributes WHERE deviceattributes.attribute = 'other_info_2' AND deviceattributes.deveui = rawdata.deveui) AS device_name2,
+(SELECT value2/CONVERT(json_extract(deviceattributes.value, '$.division'), FLOAT) + CONVERT(json_extract(deviceattributes.value, '$.init_value'), FLOAT) FROM deviceattributes WHERE deviceattributes.attribute = 'other_info_2' AND deviceattributes.deveui = rawdata.deveui) AS value2_m3,
+-- показания на входе №3 в M3
+-- (SELECT json_extract(deviceattributes.value, '$.name') FROM deviceattributes WHERE deviceattributes.attribute = 'other_info_3' AND deviceattributes.deveui = rawdata.deveui) AS device_name3,
+(SELECT value3/CONVERT(json_extract(deviceattributes.value, '$.division'), FLOAT) + CONVERT(json_extract(deviceattributes.value, '$.init_value'), FLOAT) FROM deviceattributes WHERE deviceattributes.attribute = 'other_info_3' AND deviceattributes.deveui = rawdata.deveui) AS value3_m3,
+-- показания на входе №4 в M3
+-- (SELECT json_extract(deviceattributes.value, '$.name') FROM deviceattributes WHERE deviceattributes.attribute = 'other_info_4' AND deviceattributes.deveui = rawdata.deveui) AS device_name4,
+(SELECT value4/CONVERT(json_extract(deviceattributes.value, '$.division'), FLOAT) + CONVERT(json_extract(deviceattributes.value, '$.init_value'), FLOAT) FROM deviceattributes WHERE deviceattributes.attribute = 'other_info_4' AND deviceattributes.deveui = rawdata.deveui) AS value4_m3
+
 FROM rawdata, devices
 WHERE rawdata.deveui = devices.deveui AND
       devices.devname = '-T105' AND
