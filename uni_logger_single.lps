@@ -247,7 +247,7 @@
         <IsPartOfProject Value="True"/>
         <IsVisibleTab Value="True"/>
         <TopLine Value="19"/>
-        <CursorPos X="3" Y="25"/>
+        <CursorPos Y="28"/>
         <UsageCount Value="72"/>
         <Loaded Value="True"/>
       </Unit38>
@@ -299,10 +299,9 @@
       </Unit45>
       <Unit46>
         <Filename Value="C:\lazarus\components\PascalScript\Source\uPSDisassembly.pas"/>
-        <EditorIndex Value="1"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="37"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
       </Unit46>
     </Units>
     <JumpHistory Count="3" HistoryIndex="2">

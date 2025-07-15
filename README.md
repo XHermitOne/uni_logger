@@ -161,6 +161,10 @@ post_add_sql =
 %windir%\SysWOW64\regsvr32.exe /u libmysql.dll
 %windir%\SysWOW64\regsvr32.exe /u libpq.dll
 
+Скачать установочные пакеты можно с
+MySQL: https://downloads.mysql.com/archives/community/
+PostgreSQL: https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
+
 В случае запуска программы черех планировщик задач необходимо проверить запущенали служба Windows OpcEnum.
 В случае если эта служба не запущена, то программа не может опросить/запустить OPC сервера и зависает.
 Повторный запуск в таком случае программы не производится.
